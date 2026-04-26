@@ -5,7 +5,32 @@ import { useRouter } from "next/navigation";
 export default function AdminPage() {
   const router = useRouter();
 
-  const actions = [
+  const adminStats = [
+    { title: "Total Clients", value: "128" },
+    { title: "Pending Approvals", value: "14" },
+    { title: "Expiring Consents", value: "9" },
+    { title: "Documents Uploaded", value: "342" },
+  ];
+
+  const clientStatusUpdates = [
+    {
+      company: "ABC Industries Pvt Ltd",
+      document: "CCA Certificate",
+      status: "Approved",
+    },
+    {
+      company: "XYZ Chemicals",
+      document: "BMW Authorization",
+      status: "Pending",
+    },
+    {
+      company: "Sun Pharma Unit",
+      document: "Annual Return",
+      status: "Need Upload",
+    },
+  ];
+
+  const quickActions = [
     "Add New Client",
     "Update Compliance Status",
     "Approve Uploaded Documents",
@@ -23,6 +48,7 @@ export default function AdminPage() {
       }}
     >
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        {/* Header */}
         <div
           style={{
             background: "#ffffff",
@@ -31,12 +57,15 @@ export default function AdminPage() {
             marginBottom: "30px",
           }}
         >
-          <h1 style={{ margin: 0, color: "#166534" }}>Admin Panel</h1>
+          <h1 style={{ margin: 0, color: "#166534" }}>
+            Admin Panel
+          </h1>
           <p style={{ color: "#64748b" }}>
             GreenEnvis Internal Management Dashboard
           </p>
         </div>
 
+        {/* Stats */}
         <div
           style={{
             display: "grid",
@@ -45,39 +74,91 @@ export default function AdminPage() {
             marginBottom: "30px",
           }}
         >
-          {[
-            ["Total Clients", "128"],
-            ["Pending Approvals", "14"],
-            ["Expiring Consents", "9"],
-            ["Documents Uploaded", "342"],
-          ].map((item, index) => (
+          {adminStats.map((item, index) => (
             <div
               key={index}
               style={{
                 background: "#ffffff",
-                padding: "20px",
-                borderRadius: "14px",
+                padding: "25px",
+                borderRadius: "16px",
               }}
             >
-              <p style={{ margin: 0, color: "#64748b" }}>{item[0]}</p>
+              <p style={{ margin: 0, color: "#64748b" }}>
+                {item.title}
+              </p>
+
               <h2 style={{ marginTop: "10px", color: "#166534" }}>
-                {item[1]}
+                {item.value}
               </h2>
             </div>
           ))}
         </div>
 
+        {/* Client Status Update System */}
         <div
           style={{
             background: "#ffffff",
             padding: "30px",
             borderRadius: "16px",
+            marginBottom: "30px",
+          }}
+        >
+          <h2>Client Status Update System</h2>
+
+          <div style={{ display: "grid", gap: "16px" }}>
+            {clientStatusUpdates.map((item, index) => (
+              <div
+                key={index}
+                style={{
+                  border: "1px solid #cbd5e1",
+                  padding: "18px",
+                  borderRadius: "10px",
+                }}
+              >
+                <p>
+                  <strong>Company:</strong> {item.company}
+                </p>
+
+                <p>
+                  <strong>Document:</strong> {item.document}
+                </p>
+
+                <p>
+                  <strong>Status:</strong> {item.status}
+                </p>
+
+                <button
+                  style={{
+                    marginTop: "10px",
+                    background: "#16a34a",
+                    color: "#fff",
+                    border: "none",
+                    padding: "10px 16px",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Update Status
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "30px",
+            borderRadius: "16px",
+            marginBottom: "30px",
           }}
         >
           <h2>Quick Actions</h2>
 
           <div style={{ display: "grid", gap: "14px" }}>
-            {actions.map((action, index) => (
+            {quickActions.map((action, index) => (
               <div
                 key={index}
                 style={{
@@ -90,7 +171,16 @@ export default function AdminPage() {
               </div>
             ))}
           </div>
+        </div>
 
+        {/* Admin Logout */}
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "30px",
+            borderRadius: "16px",
+          }}
+        >
           <button
             onClick={() => {
               alert("Admin Logged Out");
@@ -104,7 +194,6 @@ export default function AdminPage() {
               borderRadius: "10px",
               fontWeight: "bold",
               cursor: "pointer",
-              marginTop: "25px",
             }}
           >
             Admin Logout
