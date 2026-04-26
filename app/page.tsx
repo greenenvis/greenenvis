@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 export default function HomePage() {
   const services = [
     "GPCB Consent (CTE / CCA)",
@@ -15,50 +13,6 @@ export default function HomePage() {
     "Water & Air Analysis",
   ];
 
-  const reasons = [
-    "Fast GPCB Application Processing",
-    "Expert Compliance Guidance",
-    "All Gujarat Service Support",
-    "Industry-Specific Solutions",
-    "Zero Hidden Charges",
-    "Quick Documentation Support",
-  ];
-
-  const [form, setForm] = useState({
-    industryName: "",
-    contactPerson: "",
-    mobile: "",
-    email: "",
-    service: "",
-    details: "",
-  });
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = () => {
-    const message = `Hello GreenEnvis,
-
-Industry Name: ${form.industryName}
-Contact Person: ${form.contactPerson}
-Mobile Number: ${form.mobile}
-Email Address: ${form.email}
-Required Service: ${form.service}
-Requirement Details: ${form.details}`;
-
-    const whatsappURL = `https://wa.me/918780723063?text=${encodeURIComponent(
-      message
-    )}`;
-
-    window.open(whatsappURL, "_blank");
-  };
-
   return (
     <div
       style={{
@@ -66,30 +20,8 @@ Requirement Details: ${form.details}`;
         minHeight: "100vh",
         fontFamily: "Arial, sans-serif",
         padding: "40px 20px",
-        position: "relative",
       }}
     >
-      {/* WhatsApp Floating Button */}
-      <a
-        href="https://wa.me/918780723063"
-        target="_blank"
-        style={{
-          position: "fixed",
-          bottom: "30px",
-          right: "30px",
-          background: "#25D366",
-          color: "#fff",
-          padding: "16px 22px",
-          borderRadius: "50px",
-          textDecoration: "none",
-          fontWeight: "bold",
-          boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
-          zIndex: 999,
-        }}
-      >
-        WhatsApp Us
-      </a>
-
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
         {/* Header */}
         <div
@@ -97,7 +29,6 @@ Requirement Details: ${form.details}`;
             background: "#ffffff",
             padding: "25px 40px",
             borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -105,7 +36,7 @@ Requirement Details: ${form.details}`;
           }}
         >
           <div>
-            <h1 style={{ margin: 0, fontSize: "36px", color: "#166534" }}>
+            <h1 style={{ margin: 0, fontSize: "34px", color: "#166534" }}>
               GreenEnvis
             </h1>
             <p style={{ marginTop: "8px", color: "#64748b" }}>
@@ -113,29 +44,58 @@ Requirement Details: ${form.details}`;
             </p>
           </div>
 
-          <a
-            href="https://wa.me/918780723063"
-            target="_blank"
-            style={{
-              padding: "12px 22px",
-              borderRadius: "10px",
-              color: "#fff",
-              background: "#16a34a",
-              fontWeight: "bold",
-              textDecoration: "none",
-            }}
-          >
-            Free Consultation
-          </a>
+          <div style={{ display: "flex", gap: "15px" }}>
+            <a
+              href="/login"
+              style={{
+                background: "#16a34a",
+                color: "#fff",
+                padding: "12px 18px",
+                borderRadius: "10px",
+                textDecoration: "none",
+                fontWeight: "bold",
+              }}
+            >
+              Client Login
+            </a>
+
+            <a
+              href="/admin-login"
+              style={{
+                background: "#0f172a",
+                color: "#fff",
+                padding: "12px 18px",
+                borderRadius: "10px",
+                textDecoration: "none",
+                fontWeight: "bold",
+              }}
+            >
+              Admin Login
+            </a>
+
+            <a
+              href="https://wa.me/918780723063"
+              target="_blank"
+              style={{
+                background: "#25D366",
+                color: "#fff",
+                padding: "12px 18px",
+                borderRadius: "10px",
+                textDecoration: "none",
+                fontWeight: "bold",
+              }}
+            >
+              Free Consultation
+            </a>
+          </div>
         </div>
 
-        {/* Hero */}
+        {/* Hero Section */}
         <div
           style={{
             background: "#ffffff",
             padding: "40px",
             borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
             marginBottom: "40px",
           }}
         >
@@ -153,41 +113,16 @@ Requirement Details: ${form.details}`;
           </p>
         </div>
 
-        {/* About */}
-        <div
-          style={{
-            background: "#ffffff",
-            padding: "40px",
-            borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
-            marginBottom: "40px",
-          }}
-        >
-          <h3 style={{ fontSize: "28px", marginBottom: "20px" }}>
-            About GreenEnvis
-          </h3>
-
-          <p style={{ color: "#475569", lineHeight: "1.8" }}>
-            GreenEnvis provides complete environmental compliance services
-            across Gujarat including GPCB Consent, BMW Authorization,
-            EPR Registration, Used Oil EPR, Hazardous Waste Authorization,
-            CGWA Clearance, Environmental Audit and complete documentation support.
-          </p>
-        </div>
-
         {/* Services */}
         <div
           style={{
             background: "#ffffff",
             padding: "40px",
             borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
             marginBottom: "40px",
           }}
         >
-          <h3 style={{ fontSize: "28px", marginBottom: "30px" }}>
-            Our Services
-          </h3>
+          <h2 style={{ marginBottom: "25px" }}>Our Services</h2>
 
           <div
             style={{
@@ -196,14 +131,13 @@ Requirement Details: ${form.details}`;
               gap: "20px",
             }}
           >
-            {services.map((service) => (
+            {services.map((service, index) => (
               <div
-                key={service}
+                key={index}
                 style={{
-                  background: "#f8fafc",
-                  padding: "20px",
-                  borderRadius: "12px",
-                  border: "1px solid #e2e8f0",
+                  border: "1px solid #cbd5e1",
+                  padding: "18px",
+                  borderRadius: "10px",
                 }}
               >
                 {service}
@@ -212,140 +146,15 @@ Requirement Details: ${form.details}`;
           </div>
         </div>
 
-        {/* Why Choose Us */}
+        {/* Quick Contact */}
         <div
           style={{
             background: "#ffffff",
             padding: "40px",
             borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
-            marginBottom: "40px",
           }}
         >
-          <h3 style={{ fontSize: "28px", marginBottom: "30px" }}>
-            Why Choose GreenEnvis
-          </h3>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
-              gap: "20px",
-            }}
-          >
-            {reasons.map((reason) => (
-              <div
-                key={reason}
-                style={{
-                  background: "#f8fafc",
-                  padding: "20px",
-                  borderRadius: "12px",
-                  border: "1px solid #e2e8f0",
-                }}
-              >
-                ✅ {reason}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Working Inquiry Form */}
-        <div
-          style={{
-            background: "#ffffff",
-            padding: "40px",
-            borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
-            marginBottom: "40px",
-          }}
-        >
-          <h3 style={{ fontSize: "28px", marginBottom: "30px" }}>
-            Industry Inquiry Form
-          </h3>
-
-          <div style={{ display: "grid", gap: "20px" }}>
-            <input
-              name="industryName"
-              placeholder="Industry Name"
-              value={form.industryName}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-
-            <input
-              name="contactPerson"
-              placeholder="Contact Person Name"
-              value={form.contactPerson}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-
-            <input
-              name="mobile"
-              placeholder="Mobile Number"
-              value={form.mobile}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-
-            <input
-              name="email"
-              placeholder="Email Address"
-              value={form.email}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-
-            <input
-              name="service"
-              placeholder="Required Service"
-              value={form.service}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-
-            <textarea
-              name="details"
-              placeholder="Your Requirement Details"
-              value={form.details}
-              onChange={handleChange}
-              style={{
-                ...inputStyle,
-                minHeight: "140px",
-                resize: "none",
-              }}
-            />
-
-            <button
-              onClick={handleSubmit}
-              style={{
-                background: "#16a34a",
-                color: "#fff",
-                border: "none",
-                padding: "16px",
-                borderRadius: "10px",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
-            >
-              Submit on WhatsApp
-            </button>
-          </div>
-        </div>
-
-        {/* Contact */}
-        <div
-          style={{
-            background: "#ffffff",
-            padding: "40px",
-            borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
-            marginBottom: "40px",
-          }}
-        >
-          <h3 style={{ fontSize: "28px", marginBottom: "30px" }}>
-            Quick Contact
-          </h3>
+          <h2>Quick Contact</h2>
 
           <p><strong>📞 Mobile:</strong> 8780723063</p>
           <p><strong>📧 Email:</strong> info@greenenvis.com</p>
@@ -356,12 +165,3 @@ Requirement Details: ${form.details}`;
     </div>
   );
 }
-
-const inputStyle = {
-  width: "100%",
-  padding: "16px",
-  borderRadius: "10px",
-  border: "1px solid #cbd5e1",
-  fontSize: "16px",
-  outline: "none",
-};
