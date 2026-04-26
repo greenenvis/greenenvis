@@ -18,9 +18,32 @@ export default function HomePage() {
         minHeight: "100vh",
         fontFamily: "Arial, sans-serif",
         padding: "40px 20px",
+        position: "relative",
       }}
     >
+      {/* WhatsApp Floating Button */}
+      <a
+        href="https://wa.me/918780723063"
+        target="_blank"
+        style={{
+          position: "fixed",
+          bottom: "30px",
+          right: "30px",
+          background: "#25D366",
+          color: "#fff",
+          padding: "16px 22px",
+          borderRadius: "50px",
+          textDecoration: "none",
+          fontWeight: "bold",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
+          zIndex: 999,
+        }}
+      >
+        WhatsApp Us
+      </a>
+
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        {/* Header */}
         <div
           style={{
             background: "#ffffff",
@@ -58,6 +81,7 @@ export default function HomePage() {
           </a>
         </div>
 
+        {/* Hero Section */}
         <div
           style={{
             background: "#ffffff",
@@ -81,12 +105,14 @@ export default function HomePage() {
           </p>
         </div>
 
+        {/* Services Section */}
         <div
           style={{
             background: "#ffffff",
             padding: "40px",
             borderRadius: "16px",
             boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+            marginBottom: "40px",
           }}
         >
           <h3 style={{ fontSize: "28px", marginBottom: "30px" }}>
@@ -113,6 +139,27 @@ export default function HomePage() {
                 {service}
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Contact Section */}
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "40px",
+            borderRadius: "16px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+          }}
+        >
+          <h3 style={{ fontSize: "28px", marginBottom: "30px" }}>
+            Quick Contact
+          </h3>
+
+          <div style={{ lineHeight: "2", fontSize: "18px", color: "#334155" }}>
+            <p><strong>📞 Mobile:</strong> 8780723063</p>
+            <p><strong>📧 Email:</strong> info@greenenvis.com</p>
+            <p><strong>📍 Service Area:</strong> All Gujarat</p>
+            <p><strong>🏢 Support:</strong> GPCB / CPCB / EPR / Compliance Consultancy</p>
           </div>
         </div>
       </div>
