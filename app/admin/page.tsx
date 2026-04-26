@@ -1,14 +1,11 @@
 "use client";
-import { useRouter } from "next/navigation";
-export default function AdminPanel() {
-  const router = useRouter(); = [
-    { title: "Total Clients", value: "128" },
-    { title: "Pending Approvals", value: "14" },
-    { title: "Expiring Consents", value: "9" },
-    { title: "Documents Uploaded", value: "342" },
-  ];
 
-  const quickActions = [
+import { useRouter } from "next/navigation";
+
+export default function AdminPage() {
+  const router = useRouter();
+
+  const actions = [
     "Add New Client",
     "Update Compliance Status",
     "Approve Uploaded Documents",
@@ -16,24 +13,7 @@ export default function AdminPanel() {
     "Generate Client Report",
   ];
 
-  return (<button
-  onClick={() => {
-    alert("Admin Logged Out");
-    router.push("/admin-login");
-  }}
-  style={{
-    background: "#dc2626",
-    color: "#fff",
-    border: "none",
-    padding: "14px 20px",
-    borderRadius: "10px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    marginTop: "20px",
-  }}
->
-  Admin Logout
-</button>
+  return (
     <div
       style={{
         backgroundColor: "#f5f7fa",
@@ -43,25 +23,20 @@ export default function AdminPanel() {
       }}
     >
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        {/* Header */}
         <div
           style={{
             background: "#ffffff",
-            padding: "30px 40px",
+            padding: "30px",
             borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
             marginBottom: "30px",
           }}
         >
-          <h1 style={{ margin: 0, color: "#166534" }}>
-            Admin Panel
-          </h1>
-          <p style={{ marginTop: "10px", color: "#64748b" }}>
+          <h1 style={{ margin: 0, color: "#166534" }}>Admin Panel</h1>
+          <p style={{ color: "#64748b" }}>
             GreenEnvis Internal Management Dashboard
           </p>
         </div>
 
-        {/* Stats */}
         <div
           style={{
             display: "grid",
@@ -70,75 +45,72 @@ export default function AdminPanel() {
             marginBottom: "30px",
           }}
         >
-          {adminStats.map((item) => (
+          {[
+            ["Total Clients", "128"],
+            ["Pending Approvals", "14"],
+            ["Expiring Consents", "9"],
+            ["Documents Uploaded", "342"],
+          ].map((item, index) => (
             <div
-              key={item.title}
+              key={index}
               style={{
                 background: "#ffffff",
-                padding: "30px",
-                borderRadius: "16px",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+                padding: "20px",
+                borderRadius: "14px",
               }}
             >
-              <p style={{ color: "#64748b", marginBottom: "10px" }}>
-                {item.title}
-              </p>
-
-              <h2 style={{ margin: 0, color: "#166534" }}>
-                {item.value}
+              <p style={{ margin: 0, color: "#64748b" }}>{item[0]}</p>
+              <h2 style={{ marginTop: "10px", color: "#166534" }}>
+                {item[1]}
               </h2>
             </div>
           ))}
         </div>
 
-        {/* Quick Actions */}
         <div
           style={{
             background: "#ffffff",
-            padding: "35px",
+            padding: "30px",
             borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
           }}
         >
-          <h2 style={{ marginBottom: "25px" }}>
-            Quick Actions
-          </h2>
+          <h2>Quick Actions</h2>
 
-          <div style={{ display: "grid", gap: "15px" }}>
-            {quickActions.map((action) => (
+          <div style={{ display: "grid", gap: "14px" }}>
+            {actions.map((action, index) => (
               <div
-                key={action}
+                key={index}
                 style={{
-                  background: "#f8fafc",
-                  padding: "18px",
+                  border: "1px solid #cbd5e1",
+                  padding: "16px",
                   borderRadius: "10px",
-                  border: "1px solid #e2e8f0",
                 }}
               >
                 {action}
               </div>
             ))}
           </div>
+
+          <button
+            onClick={() => {
+              alert("Admin Logged Out");
+              router.push("/admin-login");
+            }}
+            style={{
+              background: "#dc2626",
+              color: "#fff",
+              border: "none",
+              padding: "14px 20px",
+              borderRadius: "10px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              marginTop: "25px",
+            }}
+          >
+            Admin Logout
+          </button>
         </div>
       </div>
     </div>
   );
 }
-<button
-  onClick={() => {
-    alert("Admin Logged Out");
-    router.push("/admin-login");
-  }}
-  style={{
-    background: "#dc2626",
-    color: "#fff",
-    border: "none",
-    padding: "14px 20px",
-    borderRadius: "10px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    marginTop: "20px",
-  }}
->
-  Admin Logout
-</button>
