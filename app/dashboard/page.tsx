@@ -154,3 +154,21 @@ export default function ClientDashboard() {
     </div>
   );
 }
+<button
+  onClick={() => {
+    alert("Logged Out Successfully");
+    router.push("/login");
+  }}
+  style={{
+    background: "#dc2626",
+    color: "#fff",
+    border: "none",
+    padding: "14px 20px",
+    borderRadius: "10px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    marginTop: "20px",
+  }}
+>
+  Logout
+</button>

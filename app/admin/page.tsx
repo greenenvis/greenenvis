@@ -124,3 +124,21 @@ export default function AdminPanel() {
     </div>
   );
 }
+<button
+  onClick={() => {
+    alert("Admin Logged Out");
+    router.push("/admin-login");
+  }}
+  style={{
+    background: "#dc2626",
+    color: "#fff",
+    border: "none",
+    padding: "14px 20px",
+    borderRadius: "10px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    marginTop: "20px",
+  }}
+>
+  Admin Logout
+</button>
