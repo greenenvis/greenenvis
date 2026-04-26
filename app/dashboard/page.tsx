@@ -1,5 +1,7 @@
+"use client";
+import { useRouter } from "next/navigation";
 export default function ClientDashboard() {
-  const clientData = {
+  const router = useRouter(); = {
     company: "ABC Industries Pvt Ltd",
     status: "Active",
     nextRenewal: "15 July 2026",
@@ -14,7 +16,24 @@ export default function ClientDashboard() {
     "Annual Return Filing - Upcoming",
   ];
 
-  return (
+  return (<button
+  onClick={() => {
+    alert("Logged Out Successfully");
+    router.push("/login");
+  }}
+  style={{
+    background: "#dc2626",
+    color: "#fff",
+    border: "none",
+    padding: "14px 20px",
+    borderRadius: "10px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    marginTop: "20px",
+  }}
+>
+  Logout
+</button>
     <div
       style={{
         background: "#f5f7fa",
