@@ -51,7 +51,6 @@ export default function HomePage() {
       </a>
 
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        {/* Header */}
         <div
           style={{
             background: "#ffffff",
@@ -89,7 +88,6 @@ export default function HomePage() {
           </a>
         </div>
 
-        {/* Hero */}
         <div
           style={{
             background: "#ffffff",
@@ -113,7 +111,6 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Services */}
         <div
           style={{
             background: "#ffffff",
@@ -124,91 +121,50 @@ export default function HomePage() {
           }}
         >
           <h3 style={{ fontSize: "28px", marginBottom: "30px" }}>
-            Our Services
+            Industry Inquiry Form
           </h3>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "20px",
-            }}
-          >
-            {services.map((service) => (
-              <div
-                key={service}
-                style={{
-                  background: "#f8fafc",
-                  padding: "20px",
-                  borderRadius: "12px",
-                  border: "1px solid #e2e8f0",
-                }}
-              >
-                {service}
-              </div>
-            ))}
-          </div>
-        </div>
+          <div style={{ display: "grid", gap: "20px" }}>
+            <input placeholder="Industry Name" style={inputStyle} />
+            <input placeholder="Contact Person Name" style={inputStyle} />
+            <input placeholder="Mobile Number" style={inputStyle} />
+            <input placeholder="Email Address" style={inputStyle} />
+            <input placeholder="Required Service" style={inputStyle} />
+            <textarea
+              placeholder="Your Requirement Details"
+              style={{
+                ...inputStyle,
+                minHeight: "140px",
+                resize: "none",
+              }}
+            />
 
-        {/* Why Choose Us */}
-        <div
-          style={{
-            background: "#ffffff",
-            padding: "40px",
-            borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
-            marginBottom: "40px",
-          }}
-        >
-          <h3 style={{ fontSize: "28px", marginBottom: "30px" }}>
-            Why Choose GreenEnvis
-          </h3>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
-              gap: "20px",
-            }}
-          >
-            {reasons.map((reason) => (
-              <div
-                key={reason}
-                style={{
-                  background: "#f8fafc",
-                  padding: "20px",
-                  borderRadius: "12px",
-                  border: "1px solid #e2e8f0",
-                  fontWeight: "500",
-                }}
-              >
-                ✅ {reason}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Contact */}
-        <div
-          style={{
-            background: "#ffffff",
-            padding: "40px",
-            borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
-          }}
-        >
-          <h3 style={{ fontSize: "28px", marginBottom: "30px" }}>
-            Quick Contact
-          </h3>
-
-          <div style={{ lineHeight: "2", fontSize: "18px", color: "#334155" }}>
-            <p><strong>📞 Mobile:</strong> 8780723063</p>
-            <p><strong>📧 Email:</strong> info@greenenvis.com</p>
-            <p><strong>📍 Service Area:</strong> All Gujarat</p>
-            <p><strong>🏢 Support:</strong> GPCB / CPCB / EPR / Compliance Consultancy</p>
+            <button
+              style={{
+                background: "#16a34a",
+                color: "#fff",
+                border: "none",
+                padding: "16px",
+                borderRadius: "10px",
+                fontWeight: "bold",
+                fontSize: "16px",
+                cursor: "pointer",
+              }}
+            >
+              Submit Inquiry
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+const inputStyle = {
+  width: "100%",
+  padding: "16px",
+  borderRadius: "10px",
+  border: "1px solid #cbd5e1",
+  fontSize: "16px",
+  outline: "none",
+};
