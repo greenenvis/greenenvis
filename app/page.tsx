@@ -11,6 +11,15 @@ export default function HomePage() {
     "Water & Air Analysis",
   ];
 
+  const reasons = [
+    "Fast GPCB Application Processing",
+    "Expert Compliance Guidance",
+    "All Gujarat Service Support",
+    "Industry-Specific Solutions",
+    "Zero Hidden Charges",
+    "Quick Documentation Support",
+  ];
+
   return (
     <div
       style={{
@@ -21,7 +30,6 @@ export default function HomePage() {
         position: "relative",
       }}
     >
-      {/* WhatsApp Floating Button */}
       <a
         href="https://wa.me/918780723063"
         target="_blank"
@@ -81,7 +89,7 @@ export default function HomePage() {
           </a>
         </div>
 
-        {/* Hero Section */}
+        {/* Hero */}
         <div
           style={{
             background: "#ffffff",
@@ -105,7 +113,7 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Services Section */}
+        {/* Services */}
         <div
           style={{
             background: "#ffffff",
@@ -142,7 +150,45 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Contact Section */}
+        {/* Why Choose Us */}
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "40px",
+            borderRadius: "16px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+            marginBottom: "40px",
+          }}
+        >
+          <h3 style={{ fontSize: "28px", marginBottom: "30px" }}>
+            Why Choose GreenEnvis
+          </h3>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: "20px",
+            }}
+          >
+            {reasons.map((reason) => (
+              <div
+                key={reason}
+                style={{
+                  background: "#f8fafc",
+                  padding: "20px",
+                  borderRadius: "12px",
+                  border: "1px solid #e2e8f0",
+                  fontWeight: "500",
+                }}
+              >
+                ✅ {reason}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Contact */}
         <div
           style={{
             background: "#ffffff",
