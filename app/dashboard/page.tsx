@@ -20,6 +20,24 @@ export default function ClientDashboard() {
     "Annual Return Filing - Upcoming",
   ];
 
+  const documents = [
+    {
+      name: "CCA Certificate",
+      status: "Approved",
+      renewal: "15 Dec 2026",
+    },
+    {
+      name: "BMW Authorization",
+      status: "Pending",
+      renewal: "05 Aug 2026",
+    },
+    {
+      name: "Annual Return",
+      status: "Need Upload",
+      renewal: "30 June 2026",
+    },
+  ];
+
   return (
     <div
       style={{
@@ -30,6 +48,7 @@ export default function ClientDashboard() {
       }}
     >
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        {/* Header */}
         <div
           style={{
             background: "#ffffff",
@@ -46,6 +65,7 @@ export default function ClientDashboard() {
           </p>
         </div>
 
+        {/* Company Information */}
         <div
           style={{
             background: "#ffffff",
@@ -73,6 +93,7 @@ export default function ClientDashboard() {
           </p>
         </div>
 
+        {/* Compliance Status */}
         <div
           style={{
             background: "#ffffff",
@@ -99,6 +120,7 @@ export default function ClientDashboard() {
           </div>
         </div>
 
+        {/* Upload Documents */}
         <div
           style={{
             background: "#ffffff",
@@ -135,6 +157,44 @@ export default function ClientDashboard() {
           </button>
         </div>
 
+        {/* Document Tracking */}
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "30px",
+            borderRadius: "16px",
+            marginBottom: "30px",
+          }}
+        >
+          <h2>Document Tracking</h2>
+
+          <div style={{ display: "grid", gap: "16px" }}>
+            {documents.map((doc, index) => (
+              <div
+                key={index}
+                style={{
+                  border: "1px solid #cbd5e1",
+                  padding: "18px",
+                  borderRadius: "10px",
+                }}
+              >
+                <p>
+                  <strong>Document:</strong> {doc.name}
+                </p>
+
+                <p>
+                  <strong>Status:</strong> {doc.status}
+                </p>
+
+                <p>
+                  <strong>Renewal Date:</strong> {doc.renewal}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Logout */}
         <div
           style={{
             background: "#ffffff",
