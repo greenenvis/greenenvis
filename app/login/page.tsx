@@ -1,4 +1,26 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 export default function LoginPage() {
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = () => {
+    if (
+      email === "client@greenenvis.com" &&
+      password === "123456"
+    ) {
+      alert("Login Successful");
+      router.push("/dashboard");
+    } else {
+      alert("Invalid Email or Password");
+    }
+  };
+
   return (
     <div
       style={{
@@ -45,16 +67,21 @@ export default function LoginPage() {
           <input
             type="email"
             placeholder="Enter Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             style={inputStyle}
           />
 
           <input
             type="password"
             placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             style={inputStyle}
           />
 
           <button
+            onClick={handleLogin}
             style={{
               background: "#16a34a",
               color: "#ffffff",
@@ -76,7 +103,7 @@ export default function LoginPage() {
               fontSize: "14px",
             }}
           >
-            Need support? Contact GreenEnvis Team
+            Demo Login: client@greenenvis.com / 123456
           </p>
         </div>
       </div>
