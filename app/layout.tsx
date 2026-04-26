@@ -1,3 +1,4 @@
+import "./globals.css";
 export const metadata = {
   title: "GreenEnvis",
   description: "Environmental Compliance Made Simple",
