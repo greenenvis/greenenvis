@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 export default function HomePage() {
   const services = [
     "GPCB Consent (CTE / CCA)",
@@ -19,6 +23,41 @@ export default function HomePage() {
     "Zero Hidden Charges",
     "Quick Documentation Support",
   ];
+
+  const [form, setForm] = useState({
+    industryName: "",
+    contactPerson: "",
+    mobile: "",
+    email: "",
+    service: "",
+    details: "",
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = () => {
+    const message = `Hello GreenEnvis,
+
+Industry Name: ${form.industryName}
+Contact Person: ${form.contactPerson}
+Mobile Number: ${form.mobile}
+Email Address: ${form.email}
+Required Service: ${form.service}
+Requirement Details: ${form.details}`;
+
+    const whatsappURL = `https://wa.me/918780723063?text=${encodeURIComponent(
+      message
+    )}`;
+
+    window.open(whatsappURL, "_blank");
+  };
 
   return (
     <div
@@ -90,7 +129,7 @@ export default function HomePage() {
           </a>
         </div>
 
-        {/* Hero Section */}
+        {/* Hero */}
         <div
           style={{
             background: "#ffffff",
@@ -114,7 +153,7 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* About Company */}
+        {/* About */}
         <div
           style={{
             background: "#ffffff",
@@ -128,7 +167,7 @@ export default function HomePage() {
             About GreenEnvis
           </h3>
 
-          <p style={{ fontSize: "17px", color: "#475569", lineHeight: "1.8" }}>
+          <p style={{ color: "#475569", lineHeight: "1.8" }}>
             GreenEnvis provides complete environmental compliance services
             across Gujarat including GPCB Consent, BMW Authorization,
             EPR Registration, Used Oil EPR, Hazardous Waste Authorization,
@@ -136,7 +175,7 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Our Services */}
+        {/* Services */}
         <div
           style={{
             background: "#ffffff",
@@ -210,7 +249,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Industry Inquiry Form */}
+        {/* Working Inquiry Form */}
         <div
           style={{
             background: "#ffffff",
@@ -225,13 +264,51 @@ export default function HomePage() {
           </h3>
 
           <div style={{ display: "grid", gap: "20px" }}>
-            <input placeholder="Industry Name" style={inputStyle} />
-            <input placeholder="Contact Person Name" style={inputStyle} />
-            <input placeholder="Mobile Number" style={inputStyle} />
-            <input placeholder="Email Address" style={inputStyle} />
-            <input placeholder="Required Service" style={inputStyle} />
+            <input
+              name="industryName"
+              placeholder="Industry Name"
+              value={form.industryName}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+
+            <input
+              name="contactPerson"
+              placeholder="Contact Person Name"
+              value={form.contactPerson}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+
+            <input
+              name="mobile"
+              placeholder="Mobile Number"
+              value={form.mobile}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+
+            <input
+              name="email"
+              placeholder="Email Address"
+              value={form.email}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+
+            <input
+              name="service"
+              placeholder="Required Service"
+              value={form.service}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+
             <textarea
+              name="details"
               placeholder="Your Requirement Details"
+              value={form.details}
+              onChange={handleChange}
               style={{
                 ...inputStyle,
                 minHeight: "140px",
@@ -240,6 +317,7 @@ export default function HomePage() {
             />
 
             <button
+              onClick={handleSubmit}
               style={{
                 background: "#16a34a",
                 color: "#fff",
@@ -250,12 +328,12 @@ export default function HomePage() {
                 cursor: "pointer",
               }}
             >
-              Submit Inquiry
+              Submit on WhatsApp
             </button>
           </div>
         </div>
 
-        {/* Quick Contact */}
+        {/* Contact */}
         <div
           style={{
             background: "#ffffff",
@@ -272,18 +350,7 @@ export default function HomePage() {
           <p><strong>📞 Mobile:</strong> 8780723063</p>
           <p><strong>📧 Email:</strong> info@greenenvis.com</p>
           <p><strong>📍 Service Area:</strong> All Gujarat</p>
-          <p><strong>🏢 Support:</strong> GPCB / CPCB / EPR / Compliance Consultancy</p>
-        </div>
-
-        {/* Footer */}
-        <div
-          style={{
-            textAlign: "center",
-            padding: "30px",
-            color: "#64748b",
-          }}
-        >
-          © 2026 GreenEnvis | Environmental Compliance Made Simple
+          <p><strong>🏢 Support:</strong> GPCB / CPCB / EPR Consultancy</p>
         </div>
       </div>
     </div>
