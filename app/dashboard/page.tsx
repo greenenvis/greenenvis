@@ -1,14 +1,18 @@
 "use client";
+
 import { useRouter } from "next/navigation";
+
 export default function ClientDashboard() {
-  const router = useRouter(); = {
+  const router = useRouter();
+
+  const company = {
     company: "ABC Industries Pvt Ltd",
     status: "Active",
     nextRenewal: "15 July 2026",
-    consultant: "GreenEnvis Support Team",
+    support: "GreenEnvis Support Team",
   };
 
-  const complianceItems = [
+  const complianceStatus = [
     "GPCB Consent (CCA) - Approved",
     "BMW Authorization - Pending",
     "Used Oil EPR - Submitted",
@@ -16,94 +20,77 @@ export default function ClientDashboard() {
     "Annual Return Filing - Upcoming",
   ];
 
-  return (<button
-  onClick={() => {
-    alert("Logged Out Successfully");
-    router.push("/login");
-  }}
-  style={{
-    background: "#dc2626",
-    color: "#fff",
-    border: "none",
-    padding: "14px 20px",
-    borderRadius: "10px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    marginTop: "20px",
-  }}
->
-  Logout
-</button>
+  return (
     <div
       style={{
-        background: "#f5f7fa",
+        backgroundColor: "#f5f7fa",
         minHeight: "100vh",
         fontFamily: "Arial, sans-serif",
         padding: "40px 20px",
       }}
     >
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        {/* Header */}
         <div
           style={{
             background: "#ffffff",
-            padding: "25px 40px",
+            padding: "30px",
             borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
             marginBottom: "30px",
           }}
         >
           <h1 style={{ margin: 0, color: "#166534" }}>
             Client Dashboard
           </h1>
-          <p style={{ color: "#64748b", marginTop: "10px" }}>
+          <p style={{ color: "#64748b" }}>
             Welcome to your compliance management portal
           </p>
         </div>
 
-        {/* Company Info */}
         <div
           style={{
             background: "#ffffff",
-            padding: "35px",
+            padding: "30px",
             borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
             marginBottom: "30px",
           }}
         >
-          <h2 style={{ marginBottom: "20px" }}>
-            Company Information
-          </h2>
+          <h2>Company Information</h2>
 
-          <p><strong>Company:</strong> {clientData.company}</p>
-          <p><strong>Status:</strong> {clientData.status}</p>
-          <p><strong>Next Renewal:</strong> {clientData.nextRenewal}</p>
-          <p><strong>Support:</strong> {clientData.consultant}</p>
+          <p>
+            <strong>Company:</strong> {company.company}
+          </p>
+
+          <p>
+            <strong>Status:</strong> {company.status}
+          </p>
+
+          <p>
+            <strong>Next Renewal:</strong> {company.nextRenewal}
+          </p>
+
+          <p>
+            <strong>Support:</strong> {company.support}
+          </p>
         </div>
 
-        {/* Compliance Status */}
         <div
           style={{
             background: "#ffffff",
-            padding: "35px",
+            padding: "30px",
             borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
             marginBottom: "30px",
           }}
         >
-          <h2 style={{ marginBottom: "25px" }}>
-            Compliance Status
-          </h2>
+          <h2>Compliance Status</h2>
 
-          <div style={{ display: "grid", gap: "15px" }}>
-            {complianceItems.map((item) => (
+          <div style={{ display: "grid", gap: "14px" }}>
+            {complianceStatus.map((item, index) => (
               <div
-                key={item}
+                key={index}
                 style={{
-                  background: "#f8fafc",
-                  padding: "18px",
+                  border: "1px solid #cbd5e1",
+                  padding: "16px",
                   borderRadius: "10px",
-                  border: "1px solid #e2e8f0",
                 }}
               >
                 {item}
@@ -112,26 +99,23 @@ export default function ClientDashboard() {
           </div>
         </div>
 
-        {/* Upload Section */}
         <div
           style={{
             background: "#ffffff",
-            padding: "35px",
+            padding: "30px",
             borderRadius: "16px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+            marginBottom: "30px",
           }}
         >
-          <h2 style={{ marginBottom: "20px" }}>
-            Upload Documents
-          </h2>
+          <h2>Upload Documents</h2>
 
           <input
             type="file"
             style={{
-              padding: "12px",
+              width: "100%",
+              padding: "14px",
               border: "1px solid #cbd5e1",
               borderRadius: "10px",
-              width: "100%",
               marginBottom: "20px",
             }}
           />
@@ -141,7 +125,7 @@ export default function ClientDashboard() {
               background: "#16a34a",
               color: "#fff",
               border: "none",
-              padding: "14px 24px",
+              padding: "14px 20px",
               borderRadius: "10px",
               fontWeight: "bold",
               cursor: "pointer",
@@ -150,25 +134,33 @@ export default function ClientDashboard() {
             Upload File
           </button>
         </div>
+
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "30px",
+            borderRadius: "16px",
+          }}
+        >
+          <button
+            onClick={() => {
+              alert("Logged Out Successfully");
+              router.push("/login");
+            }}
+            style={{
+              background: "#dc2626",
+              color: "#fff",
+              border: "none",
+              padding: "14px 20px",
+              borderRadius: "10px",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </div>
   );
 }
-<button
-  onClick={() => {
-    alert("Logged Out Successfully");
-    router.push("/login");
-  }}
-  style={{
-    background: "#dc2626",
-    color: "#fff",
-    border: "none",
-    padding: "14px 20px",
-    borderRadius: "10px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    marginTop: "20px",
-  }}
->
-  Logout
-</button>
