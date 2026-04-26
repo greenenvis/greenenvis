@@ -30,6 +30,7 @@ export default function HomePage() {
         position: "relative",
       }}
     >
+      {/* WhatsApp Floating Button */}
       <a
         href="https://wa.me/918780723063"
         target="_blank"
@@ -51,6 +52,7 @@ export default function HomePage() {
       </a>
 
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        {/* Header */}
         <div
           style={{
             background: "#ffffff",
@@ -88,6 +90,7 @@ export default function HomePage() {
           </a>
         </div>
 
+        {/* Hero Section */}
         <div
           style={{
             background: "#ffffff",
@@ -111,6 +114,103 @@ export default function HomePage() {
           </p>
         </div>
 
+        {/* About Company */}
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "40px",
+            borderRadius: "16px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+            marginBottom: "40px",
+          }}
+        >
+          <h3 style={{ fontSize: "28px", marginBottom: "20px" }}>
+            About GreenEnvis
+          </h3>
+
+          <p style={{ fontSize: "17px", color: "#475569", lineHeight: "1.8" }}>
+            GreenEnvis provides complete environmental compliance services
+            across Gujarat including GPCB Consent, BMW Authorization,
+            EPR Registration, Used Oil EPR, Hazardous Waste Authorization,
+            CGWA Clearance, Environmental Audit and complete documentation support.
+          </p>
+        </div>
+
+        {/* Our Services */}
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "40px",
+            borderRadius: "16px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+            marginBottom: "40px",
+          }}
+        >
+          <h3 style={{ fontSize: "28px", marginBottom: "30px" }}>
+            Our Services
+          </h3>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "20px",
+            }}
+          >
+            {services.map((service) => (
+              <div
+                key={service}
+                style={{
+                  background: "#f8fafc",
+                  padding: "20px",
+                  borderRadius: "12px",
+                  border: "1px solid #e2e8f0",
+                }}
+              >
+                {service}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Why Choose Us */}
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "40px",
+            borderRadius: "16px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+            marginBottom: "40px",
+          }}
+        >
+          <h3 style={{ fontSize: "28px", marginBottom: "30px" }}>
+            Why Choose GreenEnvis
+          </h3>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: "20px",
+            }}
+          >
+            {reasons.map((reason) => (
+              <div
+                key={reason}
+                style={{
+                  background: "#f8fafc",
+                  padding: "20px",
+                  borderRadius: "12px",
+                  border: "1px solid #e2e8f0",
+                }}
+              >
+                ✅ {reason}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Industry Inquiry Form */}
         <div
           style={{
             background: "#ffffff",
@@ -147,13 +247,43 @@ export default function HomePage() {
                 padding: "16px",
                 borderRadius: "10px",
                 fontWeight: "bold",
-                fontSize: "16px",
                 cursor: "pointer",
               }}
             >
               Submit Inquiry
             </button>
           </div>
+        </div>
+
+        {/* Quick Contact */}
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "40px",
+            borderRadius: "16px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+            marginBottom: "40px",
+          }}
+        >
+          <h3 style={{ fontSize: "28px", marginBottom: "30px" }}>
+            Quick Contact
+          </h3>
+
+          <p><strong>📞 Mobile:</strong> 8780723063</p>
+          <p><strong>📧 Email:</strong> info@greenenvis.com</p>
+          <p><strong>📍 Service Area:</strong> All Gujarat</p>
+          <p><strong>🏢 Support:</strong> GPCB / CPCB / EPR / Compliance Consultancy</p>
+        </div>
+
+        {/* Footer */}
+        <div
+          style={{
+            textAlign: "center",
+            padding: "30px",
+            color: "#64748b",
+          }}
+        >
+          © 2026 GreenEnvis | Environmental Compliance Made Simple
         </div>
       </div>
     </div>
