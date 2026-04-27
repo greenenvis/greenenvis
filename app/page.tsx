@@ -37,7 +37,7 @@ export default function HomePage() {
         fontFamily: "Arial, sans-serif",
       }}
     >
-      {/* Top Header */}
+      {/* Header */}
       <div
         style={{
           background: "#ffffff",
@@ -55,29 +55,15 @@ export default function HomePage() {
           }}
         >
           <div>
-            <h1
-              style={{
-                margin: 0,
-                fontSize: "42px",
-                color: "#0b2a6f",
-                fontWeight: "bold",
-              }}
-            >
+            <h1 style={{ margin: 0, fontSize: "42px", color: "#0b2a6f" }}>
               GREENENVIS
             </h1>
-
-            <p
-              style={{
-                marginTop: "8px",
-                color: "#475569",
-                fontSize: "16px",
-              }}
-            >
+            <p style={{ marginTop: "8px", color: "#475569" }}>
               Gujarat Environmental Compliance Portal
             </p>
           </div>
 
-          <div style={{ textAlign: "right" }}>
+          <div>
             <p style={{ margin: 0, fontWeight: "bold", color: "#166534" }}>
               GPCB • CPCB • COMPLIANCE
             </p>
@@ -88,13 +74,8 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Navigation Bar */}
-      <div
-        style={{
-          background: "#0b4f84",
-          padding: "0",
-        }}
-      >
+      {/* Navigation */}
+      <div style={{ background: "#0b4f84" }}>
         <div
           style={{
             maxWidth: "1400px",
@@ -109,8 +90,6 @@ export default function HomePage() {
             ["Admin Login", "/admin-login"],
             ["Client Dashboard", "/dashboard"],
             ["Admin Panel", "/admin"],
-            ["Services", "#services"],
-            ["Contact", "#contact"],
           ].map((item, index) => (
             <a
               key={index}
@@ -119,7 +98,6 @@ export default function HomePage() {
                 color: "#ffffff",
                 padding: "18px 24px",
                 textDecoration: "none",
-                borderRight: "1px solid rgba(255,255,255,0.15)",
                 fontWeight: "500",
               }}
             >
@@ -129,7 +107,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div
         style={{
           maxWidth: "1400px",
@@ -146,12 +123,10 @@ export default function HomePage() {
             marginBottom: "30px",
           }}
         >
-          {/* Notice Board */}
           <div
             style={{
               background: "#ffffff",
               borderRadius: "10px",
-              overflow: "hidden",
               border: "1px solid #dbe4ee",
             }}
           >
@@ -161,7 +136,6 @@ export default function HomePage() {
                 color: "#ffffff",
                 padding: "16px 20px",
                 fontWeight: "bold",
-                fontSize: "20px",
               }}
             >
               Notice Board
@@ -169,26 +143,15 @@ export default function HomePage() {
 
             <div style={{ padding: "25px" }}>
               {notices.map((notice, index) => (
-                <p
-                  key={index}
-                  style={{
-                    marginBottom: "18px",
-                    color: "#1e3a8a",
-                    lineHeight: "1.6",
-                  }}
-                >
-                  ▸ {notice}
-                </p>
+                <p key={index}>▸ {notice}</p>
               ))}
             </div>
           </div>
 
-          {/* Current Advertisement */}
           <div
             style={{
               background: "#ffffff",
               borderRadius: "10px",
-              overflow: "hidden",
               border: "1px solid #dbe4ee",
             }}
           >
@@ -198,7 +161,6 @@ export default function HomePage() {
                 color: "#ffffff",
                 padding: "16px 20px",
                 fontWeight: "bold",
-                fontSize: "20px",
               }}
             >
               Current Advertisement
@@ -206,35 +168,23 @@ export default function HomePage() {
 
             <div style={{ padding: "25px" }}>
               {advertisements.map((item, index) => (
-                <p
-                  key={index}
-                  style={{
-                    marginBottom: "18px",
-                    color: "#1e3a8a",
-                    lineHeight: "1.6",
-                  }}
-                >
-                  ▸ {item}
-                </p>
+                <p key={index}>▸ {item}</p>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Services Section */}
+        {/* Services */}
         <div
-          id="services"
           style={{
             background: "#ffffff",
-            borderRadius: "10px",
             padding: "30px",
+            borderRadius: "10px",
             marginBottom: "30px",
             border: "1px solid #dbe4ee",
           }}
         >
-          <h2 style={{ marginTop: 0, color: "#0b2a6f" }}>
-            Our Services
-          </h2>
+          <h2>Our Services</h2>
 
           <div
             style={{
@@ -250,7 +200,6 @@ export default function HomePage() {
                   border: "1px solid #cbd5e1",
                   padding: "18px",
                   borderRadius: "8px",
-                  background: "#f8fafc",
                 }}
               >
                 {service}
@@ -259,19 +208,60 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Contact Section */}
+        {/* Working Inquiry Form */}
         <div
-          id="contact"
           style={{
             background: "#ffffff",
-            borderRadius: "10px",
             padding: "30px",
+            borderRadius: "10px",
+            marginBottom: "30px",
             border: "1px solid #dbe4ee",
           }}
         >
-          <h2 style={{ marginTop: 0, color: "#0b2a6f" }}>
-            Quick Contact
-          </h2>
+          <h2>Industry Inquiry Form</h2>
+
+          <div style={{ display: "grid", gap: "16px" }}>
+            <input placeholder="Industry Name" style={inputStyle} />
+            <input placeholder="Contact Person Name" style={inputStyle} />
+            <input placeholder="Mobile Number" style={inputStyle} />
+            <input placeholder="Email Address" style={inputStyle} />
+            <input placeholder="Required Service" style={inputStyle} />
+
+            <textarea
+              placeholder="Requirement Details"
+              style={{
+                ...inputStyle,
+                minHeight: "140px",
+                resize: "none",
+              }}
+            />
+
+            <button
+              style={{
+                background: "#16a34a",
+                color: "#ffffff",
+                border: "none",
+                padding: "16px",
+                borderRadius: "10px",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              Submit Inquiry
+            </button>
+          </div>
+        </div>
+
+        {/* Contact */}
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "30px",
+            borderRadius: "10px",
+            border: "1px solid #dbe4ee",
+          }}
+        >
+          <h2>Quick Contact</h2>
 
           <p><strong>Mobile:</strong> 8780723063</p>
           <p><strong>Email:</strong> info@greenenvis.com</p>
@@ -282,3 +272,12 @@ export default function HomePage() {
     </div>
   );
 }
+
+const inputStyle = {
+  width: "100%",
+  padding: "14px",
+  border: "1px solid #cbd5e1",
+  borderRadius: "8px",
+  fontSize: "15px",
+  outline: "none",
+};
