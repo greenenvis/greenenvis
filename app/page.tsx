@@ -117,19 +117,23 @@ export default function HomePage() {
           }}
         />
 
-        <button
-          onClick={handleSubmit}
-          style={{
-            width: "100%",
-            background: "#16a34a",
-            color: "#ffffff",
-            border: "none",
-            padding: "16px",
-            borderRadius: "10px",
-            fontWeight: "bold",
-            cursor: "pointer",
-            fontSize: "16px",
-          }}
+<button
+  type="button"
+  onClick={() => {
+    console.log("Button Clicked");
+    handleSubmit();
+  }}
+  style={{
+    width: "100%",
+    background: "#16a34a",
+    color: "#ffffff",
+    border: "none",
+    padding: "16px",
+    borderRadius: "10px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    fontSize: "16px",
+  }}
         >
           Submit Inquiry
         </button>
