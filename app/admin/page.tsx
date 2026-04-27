@@ -5,67 +5,130 @@ import { useRouter } from "next/navigation";
 export default function AdminPage() {
   const router = useRouter();
 
-  const adminStats = [
-    { title: "Total Clients", value: "128" },
-    { title: "Pending Approvals", value: "14" },
-    { title: "Expiring Consents", value: "9" },
-    { title: "Documents Uploaded", value: "342" },
+  const summaryCards = [
+    { title: "Total Clients", value: "128", color: "#2563eb" },
+    { title: "Pending Approval", value: "14", color: "#dc2626" },
+    { title: "Renewal Due", value: "09", color: "#f59e0b" },
+    { title: "Payments Received", value: "342", color: "#16a34a" },
   ];
 
-  const clientStatusUpdates = [
+  const clients = [
     {
-      company: "ABC Industries Pvt Ltd",
-      document: "CCA Certificate",
-      status: "Approved",
-    },
-    {
-      company: "XYZ Chemicals",
-      document: "BMW Authorization",
+      name: "ABC Industries Pvt Ltd",
+      service: "CCA Renewal",
       status: "Pending",
+      payment: "Paid",
     },
     {
-      company: "Sun Pharma Unit",
-      document: "Annual Return",
-      status: "Need Upload",
+      name: "XYZ Chemicals",
+      service: "BMW Authorization",
+      status: "Approved",
+      payment: "Pending",
     },
-  ];
-
-  const quickActions = [
-    "Add New Client",
-    "Update Compliance Status",
-    "Approve Uploaded Documents",
-    "Send Renewal Reminder",
-    "Generate Client Report",
+    {
+      name: "Sun Pharma Unit",
+      service: "Used Oil EPR",
+      status: "In Review",
+      payment: "Paid",
+    },
   ];
 
   return (
     <div
       style={{
-        backgroundColor: "#f5f7fa",
+        display: "flex",
         minHeight: "100vh",
+        backgroundColor: "#f1f5f9",
         fontFamily: "Arial, sans-serif",
-        padding: "40px 20px",
       }}
     >
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      {/* Sidebar */}
+      <div
+        style={{
+          width: "280px",
+          background: "#ffffff",
+          borderRight: "1px solid #dbe4ee",
+          padding: "20px",
+        }}
+      >
+        <div style={{ marginBottom: "30px", textAlign: "center" }}>
+          <img
+            src="/logo.png"
+            alt="GreenEnvis Logo"
+            style={{
+              width: "180px",
+              marginBottom: "10px",
+            }}
+          />
+        </div>
+
+        <div style={{ display: "grid", gap: "12px" }}>
+          {[
+            "Admin Dashboard",
+            "Client Management",
+            "Pending Approvals",
+            "Renewal Reminder",
+            "Payment Status",
+            "Reports",
+            "Support",
+          ].map((item, index) => (
+            <div
+              key={index}
+              style={{
+                padding: "14px 16px",
+                borderRadius: "10px",
+                background: index === 0 ? "#e0f2fe" : "#ffffff",
+                border: "1px solid #dbe4ee",
+                cursor: "pointer",
+                fontWeight: index === 0 ? "bold" : "normal",
+              }}
+            >
+              {item}
+            </div>
+          ))}
+        </div>
+
+        <button
+          onClick={() => {
+            alert("Admin Logged Out");
+            router.push("/admin-login");
+          }}
+          style={{
+            marginTop: "30px",
+            width: "100%",
+            background: "#dc2626",
+            color: "#ffffff",
+            border: "none",
+            padding: "14px",
+            borderRadius: "10px",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* Main Content */}
+      <div style={{ flex: 1, padding: "30px" }}>
         {/* Header */}
         <div
           style={{
             background: "#ffffff",
-            padding: "30px",
-            borderRadius: "16px",
-            marginBottom: "30px",
+            padding: "20px 30px",
+            borderRadius: "14px",
+            marginBottom: "25px",
           }}
         >
           <h1 style={{ margin: 0, color: "#166534" }}>
-            Admin Panel
+            Admin Client Management Panel
           </h1>
-          <p style={{ color: "#64748b" }}>
-            GreenEnvis Internal Management Dashboard
+          <p style={{ color: "#64748b", marginTop: "8px" }}>
+            Full Internal Management & Client Control System
           </p>
         </div>
 
-        {/* Stats */}
+        {/* Summary Cards */}
         <div
           style={{
             display: "grid",
@@ -74,132 +137,125 @@ export default function AdminPage() {
             marginBottom: "30px",
           }}
         >
-          {adminStats.map((item, index) => (
+          {summaryCards.map((card, index) => (
             <div
               key={index}
               style={{
-                background: "#ffffff",
-                padding: "25px",
-                borderRadius: "16px",
+                background: card.color,
+                color: "#ffffff",
+                padding: "24px",
+                borderRadius: "14px",
               }}
             >
-              <p style={{ margin: 0, color: "#64748b" }}>
-                {item.title}
-              </p>
-
-              <h2 style={{ marginTop: "10px", color: "#166534" }}>
-                {item.value}
-              </h2>
+              <h3 style={{ margin: 0 }}>{card.title}</h3>
+              <h1 style={{ marginTop: "10px" }}>{card.value}</h1>
             </div>
           ))}
         </div>
 
-        {/* Client Status Update System */}
+        {/* Client Management Table */}
         <div
           style={{
             background: "#ffffff",
+            borderRadius: "14px",
             padding: "30px",
-            borderRadius: "16px",
-            marginBottom: "30px",
           }}
         >
-          <h2>Client Status Update System</h2>
+          <h2 style={{ marginTop: 0 }}>
+            Client Management Table
+          </h2>
 
-          <div style={{ display: "grid", gap: "16px" }}>
-            {clientStatusUpdates.map((item, index) => (
-              <div
-                key={index}
-                style={{
-                  border: "1px solid #cbd5e1",
-                  padding: "18px",
-                  borderRadius: "10px",
-                }}
-              >
-                <p>
-                  <strong>Company:</strong> {item.company}
-                </p>
+          <div style={{ overflowX: "auto" }}>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                marginTop: "20px",
+              }}
+            >
+              <thead>
+                <tr style={{ background: "#0b4f84", color: "#ffffff" }}>
+                  <th style={thStyle}>Client Name</th>
+                  <th style={thStyle}>Service</th>
+                  <th style={thStyle}>Status</th>
+                  <th style={thStyle}>Payment</th>
+                  <th style={thStyle}>Action</th>
+                </tr>
+              </thead>
 
-                <p>
-                  <strong>Document:</strong> {item.document}
-                </p>
+              <tbody>
+                {clients.map((client, index) => (
+                  <tr key={index}>
+                    <td style={tdStyle}>{client.name}</td>
+                    <td style={tdStyle}>{client.service}</td>
+                    <td style={tdStyle}>{client.status}</td>
+                    <td style={tdStyle}>{client.payment}</td>
+                    <td style={tdStyle}>
+                      <button
+                        style={{
+                          background: "#16a34a",
+                          color: "#ffffff",
+                          border: "none",
+                          padding: "8px 14px",
+                          borderRadius: "8px",
+                          cursor: "pointer",
+                          marginRight: "10px",
+                        }}
+                      >
+                        Approve
+                      </button>
 
-                <p>
-                  <strong>Status:</strong> {item.status}
-                </p>
-
-                <button
-                  style={{
-                    marginTop: "10px",
-                    background: "#16a34a",
-                    color: "#fff",
-                    border: "none",
-                    padding: "10px 16px",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Update Status
-                </button>
-              </div>
-            ))}
+                      <button
+                        style={{
+                          background: "#dc2626",
+                          color: "#ffffff",
+                          border: "none",
+                          padding: "8px 14px",
+                          borderRadius: "8px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Reject
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div
+        {/* WhatsApp Floating Button */}
+        <a
+          href="https://wa.me/918780723063"
+          target="_blank"
           style={{
-            background: "#ffffff",
-            padding: "30px",
-            borderRadius: "16px",
-            marginBottom: "30px",
+            position: "fixed",
+            bottom: "30px",
+            right: "30px",
+            background: "#25D366",
+            color: "#ffffff",
+            padding: "16px 22px",
+            borderRadius: "50px",
+            textDecoration: "none",
+            fontWeight: "bold",
+            boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
+            zIndex: 999,
           }}
         >
-          <h2>Quick Actions</h2>
-
-          <div style={{ display: "grid", gap: "14px" }}>
-            {quickActions.map((action, index) => (
-              <div
-                key={index}
-                style={{
-                  border: "1px solid #cbd5e1",
-                  padding: "16px",
-                  borderRadius: "10px",
-                }}
-              >
-                {action}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Admin Logout */}
-        <div
-          style={{
-            background: "#ffffff",
-            padding: "30px",
-            borderRadius: "16px",
-          }}
-        >
-          <button
-            onClick={() => {
-              alert("Admin Logged Out");
-              router.push("/admin-login");
-            }}
-            style={{
-              background: "#dc2626",
-              color: "#fff",
-              border: "none",
-              padding: "14px 20px",
-              borderRadius: "10px",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
-            Admin Logout
-          </button>
-        </div>
+          WhatsApp Us
+        </a>
       </div>
     </div>
   );
 }
+
+const thStyle = {
+  padding: "14px",
+  textAlign: "left" as const,
+};
+
+const tdStyle = {
+  padding: "14px",
+  borderBottom: "1px solid #e2e8f0",
+};
