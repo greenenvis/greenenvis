@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AdminPage() {
@@ -12,7 +13,7 @@ export default function AdminPage() {
     { title: "Payments Received", value: "342", color: "#16a34a" },
   ];
 
-  const clients = [
+  const [clients, setClients] = useState([
     {
       name: "ABC Industries Pvt Ltd",
       service: "CCA Renewal",
@@ -31,7 +32,15 @@ export default function AdminPage() {
       status: "In Review",
       payment: "Paid",
     },
-  ];
+  ]);
+
+  const updateStatus = (index: number, newStatus: string) => {
+    const updatedClients = [...clients];
+    updatedClients[index].status = newStatus;
+    setClients(updatedClients);
+
+    alert(`Client status updated to: ${newStatus}`);
+  };
 
   return (
     <div
@@ -121,10 +130,10 @@ export default function AdminPage() {
           }}
         >
           <h1 style={{ margin: 0, color: "#166534" }}>
-            Admin Client Management Panel
+            Real Approve / Reject System
           </h1>
           <p style={{ color: "#64748b", marginTop: "8px" }}>
-            Full Internal Management & Client Control System
+            Admin can update client application status instantly
           </p>
         </div>
 
@@ -153,7 +162,7 @@ export default function AdminPage() {
           ))}
         </div>
 
-        {/* Client Management Table */}
+        {/* Client Table */}
         <div
           style={{
             background: "#ffffff",
@@ -162,7 +171,7 @@ export default function AdminPage() {
           }}
         >
           <h2 style={{ marginTop: 0 }}>
-            Client Management Table
+            Client Status Management
           </h2>
 
           <div style={{ overflowX: "auto" }}>
@@ -190,8 +199,10 @@ export default function AdminPage() {
                     <td style={tdStyle}>{client.service}</td>
                     <td style={tdStyle}>{client.status}</td>
                     <td style={tdStyle}>{client.payment}</td>
+
                     <td style={tdStyle}>
                       <button
+                        onClick={() => updateStatus(index, "Approved")}
                         style={{
                           background: "#16a34a",
                           color: "#ffffff",
@@ -206,6 +217,7 @@ export default function AdminPage() {
                       </button>
 
                       <button
+                        onClick={() => updateStatus(index, "Rejected")}
                         style={{
                           background: "#dc2626",
                           color: "#ffffff",
@@ -225,7 +237,7 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* WhatsApp Floating Button */}
+        {/* WhatsApp */}
         <a
           href="https://wa.me/918780723063"
           target="_blank"
@@ -239,7 +251,6 @@ export default function AdminPage() {
             borderRadius: "50px",
             textDecoration: "none",
             fontWeight: "bold",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
             zIndex: 999,
           }}
         >
