@@ -13,6 +13,8 @@ export default function HomePage() {
     details: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -23,33 +25,47 @@ export default function HomePage() {
   };
 
   const handleSubmit = async () => {
-    const { error } = await supabase
-      .from("inquiries")
-      .insert([
-        {
-          industry_name: form.industry_name,
-          contact_person: form.contact_person,
-          mobile: form.mobile,
-          email: form.email,
-          service: form.service,
-          details: form.details,
-        },
-      ]);
+    try {
+      setLoading(true);
 
-    if (error) {
-      console.log(error);
-      alert("Error saving inquiry");
-    } else {
-      alert("Inquiry Submitted Successfully!");
+      console.log("Submit button clicked");
 
-      setForm({
-        industry_name: "",
-        contact_person: "",
-        mobile: "",
-        email: "",
-        service: "",
-        details: "",
-      });
+      const { data, error } = await supabase
+        .from("inquiries")
+        .insert([
+          {
+            industry_name: form.industry_name,
+            contact_person: form.contact_person,
+            mobile: form.mobile,
+            email: form.email,
+            service: form.service,
+            details: form.details,
+          },
+        ])
+        .select();
+
+      console.log("Response:", data, error);
+
+      if (error) {
+        alert("Error saving inquiry");
+        console.log(error);
+      } else {
+        alert("Inquiry Submitted Successfully!");
+
+        setForm({
+          industry_name: "",
+          contact_person: "",
+          mobile: "",
+          email: "",
+          service: "",
+          details: "",
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      alert("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -64,14 +80,14 @@ export default function HomePage() {
     >
       <div
         style={{
-          maxWidth: "800px",
+          maxWidth: "850px",
           margin: "0 auto",
           background: "#ffffff",
           padding: "30px",
           borderRadius: "16px",
         }}
       >
-        <h1 style={{ color: "#166534" }}>
+        <h1 style={{ marginBottom: "25px" }}>
           Industry Inquiry Form
         </h1>
 
@@ -129,20 +145,21 @@ export default function HomePage() {
         <button
           type="button"
           onClick={handleSubmit}
+          disabled={loading}
           style={{
             width: "100%",
             backgroundColor: "#16a34a",
             color: "#ffffff",
             border: "none",
             padding: "16px",
-            marginTop: "20px",
             borderRadius: "10px",
             fontWeight: "bold",
             fontSize: "16px",
             cursor: "pointer",
+            marginTop: "10px",
           }}
         >
-          Submit Inquiry
+          {loading ? "Submitting..." : "Submit Inquiry"}
         </button>
       </div>
     </div>
