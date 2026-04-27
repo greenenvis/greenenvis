@@ -23,8 +23,6 @@ export default function HomePage() {
   };
 
   const handleSubmit = async () => {
-    console.log("Submit Clicked");
-
     const { error } = await supabase
       .from("inquiries")
       .insert([
@@ -124,7 +122,7 @@ export default function HomePage() {
           onChange={handleChange}
           style={{
             ...inputStyle,
-            height: "140px",
+            height: "150px",
           }}
         />
 
@@ -133,14 +131,15 @@ export default function HomePage() {
           onClick={handleSubmit}
           style={{
             width: "100%",
-            background: "#16a34a",
+            backgroundColor: "#16a34a",
             color: "#ffffff",
             border: "none",
             padding: "16px",
+            marginTop: "20px",
             borderRadius: "10px",
             fontWeight: "bold",
-            cursor: "pointer",
             fontSize: "16px",
+            cursor: "pointer",
           }}
         >
           Submit Inquiry
