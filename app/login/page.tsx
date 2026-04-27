@@ -1,121 +1,284 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+export default function HomePage() {
+  const notices = [
+    "Provisional List of Candidates for Environmental Compliance Review",
+    "Exam Syllabus (Prelim) of GPCB Environmental Engineer Compliance Audit",
+    "Provisional Answerkey of Used Oil EPR Compliance Review",
+    "Assistant Director Environmental Audit Notification",
+    "Important Notice Regarding Renewal Submission Deadline",
+  ];
 
-export default function LoginPage() {
-  const router = useRouter();
+  const advertisements = [
+    "New CTE / CCA Applications Open",
+    "BMW Authorization Fresh Applications",
+    "Used Oil EPR Annual Return Submission",
+    "Hazardous Waste Authorization Updates",
+    "CGWA Clearance Compliance Window Open",
+  ];
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleLogin = () => {
-    if (
-      email === "client@greenenvis.com" &&
-      password === "123456"
-    ) {
-      alert("Login Successful");
-      router.push("/dashboard");
-    } else {
-      alert("Invalid Email or Password");
-    }
-  };
+  const services = [
+    "GPCB Consent (CTE / CCA)",
+    "BMW Authorization",
+    "EPR Registration",
+    "Used Oil EPR",
+    "Hazardous Waste Authorization",
+    "CGWA Clearance",
+    "Environmental Audit",
+    "Stack Monitoring",
+    "Water & Air Analysis",
+  ];
 
   return (
     <div
       style={{
-        backgroundColor: "#f5f7fa",
+        backgroundColor: "#f4f7fb",
         minHeight: "100vh",
         fontFamily: "Arial, sans-serif",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "20px",
       }}
     >
+      {/* Top Header */}
       <div
         style={{
-          width: "100%",
-          maxWidth: "500px",
           background: "#ffffff",
-          padding: "40px",
-          borderRadius: "16px",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+          padding: "20px 40px",
+          borderBottom: "1px solid #dbe4ee",
         }}
       >
-        <h1
+        <div
           style={{
-            marginBottom: "10px",
-            color: "#166534",
-            textAlign: "center",
+            maxWidth: "1400px",
+            margin: "0 auto",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          Client Login
-        </h1>
+          <div>
+            <h1
+              style={{
+                margin: 0,
+                fontSize: "42px",
+                color: "#0b2a6f",
+                fontWeight: "bold",
+              }}
+            >
+              GREENENVIS
+            </h1>
 
-        <p
+            <p
+              style={{
+                marginTop: "8px",
+                color: "#475569",
+                fontSize: "16px",
+              }}
+            >
+              Gujarat Environmental Compliance Portal
+            </p>
+          </div>
+
+          <div style={{ textAlign: "right" }}>
+            <p style={{ margin: 0, fontWeight: "bold", color: "#166534" }}>
+              GPCB • CPCB • COMPLIANCE
+            </p>
+            <p style={{ marginTop: "8px", color: "#64748b" }}>
+              Smart Compliance Management System
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Bar */}
+      <div
+        style={{
+          background: "#0b4f84",
+          padding: "0",
+        }}
+      >
+        <div
           style={{
-            textAlign: "center",
-            color: "#64748b",
+            maxWidth: "1400px",
+            margin: "0 auto",
+            display: "flex",
+            flexWrap: "wrap",
+          }}
+        >
+          {[
+            ["Home", "/"],
+            ["Client Login", "/login"],
+            ["Admin Login", "/admin-login"],
+            ["Client Dashboard", "/dashboard"],
+            ["Admin Panel", "/admin"],
+            ["Services", "#services"],
+            ["Contact", "#contact"],
+          ].map((item, index) => (
+            <a
+              key={index}
+              href={item[1]}
+              style={{
+                color: "#ffffff",
+                padding: "18px 24px",
+                textDecoration: "none",
+                borderRight: "1px solid rgba(255,255,255,0.15)",
+                fontWeight: "500",
+              }}
+            >
+              {item[0]}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div
+        style={{
+          maxWidth: "1400px",
+          margin: "30px auto",
+          padding: "0 20px",
+        }}
+      >
+        {/* Notice + Advertisement */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "2fr 1fr",
+            gap: "30px",
             marginBottom: "30px",
           }}
         >
-          Welcome to GreenEnvis Client Portal
-        </p>
-
-        <div style={{ display: "grid", gap: "20px" }}>
-          <input
-            type="email"
-            placeholder="Enter Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={inputStyle}
-          />
-
-          <input
-            type="password"
-            placeholder="Enter Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={inputStyle}
-          />
-
-          <button
-            onClick={handleLogin}
+          {/* Notice Board */}
+          <div
             style={{
-              background: "#16a34a",
-              color: "#ffffff",
-              border: "none",
-              padding: "16px",
+              background: "#ffffff",
               borderRadius: "10px",
-              fontWeight: "bold",
-              fontSize: "16px",
-              cursor: "pointer",
+              overflow: "hidden",
+              border: "1px solid #dbe4ee",
             }}
           >
-            Login
-          </button>
+            <div
+              style={{
+                background: "#0b4f84",
+                color: "#ffffff",
+                padding: "16px 20px",
+                fontWeight: "bold",
+                fontSize: "20px",
+              }}
+            >
+              Notice Board
+            </div>
 
-          <p
+            <div style={{ padding: "25px" }}>
+              {notices.map((notice, index) => (
+                <p
+                  key={index}
+                  style={{
+                    marginBottom: "18px",
+                    color: "#1e3a8a",
+                    lineHeight: "1.6",
+                  }}
+                >
+                  ▸ {notice}
+                </p>
+              ))}
+            </div>
+          </div>
+
+          {/* Current Advertisement */}
+          <div
             style={{
-              textAlign: "center",
-              color: "#64748b",
-              fontSize: "14px",
+              background: "#ffffff",
+              borderRadius: "10px",
+              overflow: "hidden",
+              border: "1px solid #dbe4ee",
             }}
           >
-            Demo Login: client@greenenvis.com / 123456
-          </p>
+            <div
+              style={{
+                background: "#0b4f84",
+                color: "#ffffff",
+                padding: "16px 20px",
+                fontWeight: "bold",
+                fontSize: "20px",
+              }}
+            >
+              Current Advertisement
+            </div>
+
+            <div style={{ padding: "25px" }}>
+              {advertisements.map((item, index) => (
+                <p
+                  key={index}
+                  style={{
+                    marginBottom: "18px",
+                    color: "#1e3a8a",
+                    lineHeight: "1.6",
+                  }}
+                >
+                  ▸ {item}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Services Section */}
+        <div
+          id="services"
+          style={{
+            background: "#ffffff",
+            borderRadius: "10px",
+            padding: "30px",
+            marginBottom: "30px",
+            border: "1px solid #dbe4ee",
+          }}
+        >
+          <h2 style={{ marginTop: 0, color: "#0b2a6f" }}>
+            Our Services
+          </h2>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "18px",
+            }}
+          >
+            {services.map((service, index) => (
+              <div
+                key={index}
+                style={{
+                  border: "1px solid #cbd5e1",
+                  padding: "18px",
+                  borderRadius: "8px",
+                  background: "#f8fafc",
+                }}
+              >
+                {service}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Contact Section */}
+        <div
+          id="contact"
+          style={{
+            background: "#ffffff",
+            borderRadius: "10px",
+            padding: "30px",
+            border: "1px solid #dbe4ee",
+          }}
+        >
+          <h2 style={{ marginTop: 0, color: "#0b2a6f" }}>
+            Quick Contact
+          </h2>
+
+          <p><strong>Mobile:</strong> 8780723063</p>
+          <p><strong>Email:</strong> info@greenenvis.com</p>
+          <p><strong>Service Area:</strong> All Gujarat</p>
+          <p><strong>Support:</strong> GPCB / CPCB / EPR Consultancy</p>
         </div>
       </div>
     </div>
   );
 }
-
-const inputStyle = {
-  width: "100%",
-  padding: "16px",
-  borderRadius: "10px",
-  border: "1px solid #cbd5e1",
-  fontSize: "16px",
-  outline: "none",
-};
