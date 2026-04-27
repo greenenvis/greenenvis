@@ -14,10 +14,22 @@ export default function ApplicationDetailsPage() {
     paymentStatus: "Paid",
     adminRemarks: "Documents verified. Awaiting final GPCB approval.",
     uploadedDocuments: [
-      "CCA Certificate.pdf",
-      "Previous Consent Copy.pdf",
-      "Annual Return 2025.pdf",
-      "Water Analysis Report.pdf",
+      {
+        name: "CCA Certificate.pdf",
+        file: "/documents/cca-certificate.pdf",
+      },
+      {
+        name: "Previous Consent Copy.pdf",
+        file: "/documents/previous-consent-copy.pdf",
+      },
+      {
+        name: "Annual Return 2025.pdf",
+        file: "/documents/annual-return-2025.pdf",
+      },
+      {
+        name: "Water Analysis Report.pdf",
+        file: "/documents/water-analysis-report.pdf",
+      },
     ],
   };
 
@@ -48,7 +60,7 @@ export default function ApplicationDetailsPage() {
           </p>
         </div>
 
-        {/* Main Details */}
+        {/* Application Information */}
         <div
           style={{
             background: "#ffffff",
@@ -88,7 +100,7 @@ export default function ApplicationDetailsPage() {
           </p>
         </div>
 
-        {/* Uploaded Documents */}
+        {/* Real Document Download System */}
         <div
           style={{
             background: "#ffffff",
@@ -112,21 +124,23 @@ export default function ApplicationDetailsPage() {
                   alignItems: "center",
                 }}
               >
-                <span>{doc}</span>
+                <span>{doc.name}</span>
 
-                <button
+                <a
+                  href={doc.file}
+                  download
+                  target="_blank"
                   style={{
                     background: "#16a34a",
                     color: "#ffffff",
-                    border: "none",
+                    textDecoration: "none",
                     padding: "10px 16px",
                     borderRadius: "8px",
-                    cursor: "pointer",
                     fontWeight: "bold",
                   }}
                 >
                   Download
-                </button>
+                </a>
               </div>
             ))}
           </div>
