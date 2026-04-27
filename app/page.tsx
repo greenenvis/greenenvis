@@ -23,13 +23,24 @@ export default function HomePage() {
   };
 
   const handleSubmit = async () => {
+    console.log("Submit Clicked");
+
     const { error } = await supabase
       .from("inquiries")
-      .insert([form]);
+      .insert([
+        {
+          industry_name: form.industry_name,
+          contact_person: form.contact_person,
+          mobile: form.mobile,
+          email: form.email,
+          service: form.service,
+          details: form.details,
+        },
+      ]);
 
     if (error) {
-      alert("Error saving inquiry");
       console.log(error);
+      alert("Error saving inquiry");
     } else {
       alert("Inquiry Submitted Successfully!");
 
@@ -47,10 +58,10 @@ export default function HomePage() {
   return (
     <div
       style={{
-        padding: "40px",
         background: "#f1f5f9",
         minHeight: "100vh",
-        fontFamily: "Arial",
+        padding: "40px",
+        fontFamily: "Arial, sans-serif",
       }}
     >
       <div
@@ -117,23 +128,20 @@ export default function HomePage() {
           }}
         />
 
-<button
-  type="button"
-  onClick={() => {
-    console.log("Button Clicked");
-    handleSubmit();
-  }}
-  style={{
-    width: "100%",
-    background: "#16a34a",
-    color: "#ffffff",
-    border: "none",
-    padding: "16px",
-    borderRadius: "10px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    fontSize: "16px",
-  }}
+        <button
+          type="button"
+          onClick={handleSubmit}
+          style={{
+            width: "100%",
+            background: "#16a34a",
+            color: "#ffffff",
+            border: "none",
+            padding: "16px",
+            borderRadius: "10px",
+            fontWeight: "bold",
+            cursor: "pointer",
+            fontSize: "16px",
+          }}
         >
           Submit Inquiry
         </button>
