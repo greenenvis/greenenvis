@@ -16,22 +16,23 @@ export default function HomePage() {
 
   const [loading, setLoading] = useState(false);
 
-  const notices = [
+  const noticeItems = [
     "New CTE / CCA Applications Open",
     "BMW Authorization Fresh Applications Started",
     "Used Oil EPR Annual Return Submission Live",
     "Hazardous Waste Authorization Updates",
     "CGWA Clearance Compliance Window Open",
     "Environmental Audit Renewal Started",
+    "Plastic Waste EPR Registration Open",
   ];
 
-  const advertisements = [
+  const advertisementItems = [
     "Free Consultation For New Industries",
     "Stack Monitoring Schedule Live",
     "Water & Air Analysis Support Available",
     "CPCB Annual Compliance Filing Started",
-    "Plastic Waste EPR Registration Open",
     "Ground Water NOC Support Available",
+    "Consent Renewal Support Started",
   ];
 
   const services = [
@@ -52,6 +53,8 @@ export default function HomePage() {
     "Plastic Waste Management",
     "Construction & Demolition Management",
     "Municipal Solid Waste Management",
+    "Stack Monitoring",
+    "Water & Air Analysis",
   ];
 
   const handleChange = (
@@ -69,13 +72,14 @@ export default function HomePage() {
       service: service,
     }));
 
-    setTimeout(() => {
-      const formSection = document.getElementById("inquiry-form");
-      formSection?.scrollIntoView({
+    const formSection = document.getElementById("inquiry-form");
+
+    if (formSection) {
+      formSection.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
-    }, 100);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,8 +101,8 @@ export default function HomePage() {
     setLoading(false);
 
     if (error) {
-      alert("Error saving inquiry");
       console.log(error);
+      alert("Error saving inquiry");
       return;
     }
 
@@ -117,25 +121,25 @@ export default function HomePage() {
   return (
     <div
       style={{
-        background: "#eef2f7",
+        background: "#edf2f7",
         minHeight: "100vh",
-        fontFamily: "Segoe UI, Arial, sans-serif",
+        fontFamily: "Arial, sans-serif",
       }}
     >
-      {/* TOP HEADER */}
+      {/* TOP BAR */}
       <div
         style={{
           background: "#083b84",
           color: "white",
           padding: "8px 30px",
-          fontSize: "14px",
+          fontSize: "13px",
           fontWeight: "600",
         }}
       >
-        Gujarat Pollution Control Board Style Portal
+        Gujarat Pollution Control Board Style Professional Portal
       </div>
 
-      {/* MAIN HEADER */}
+      {/* HEADER */}
       <div
         style={{
           background: "#ffffff",
@@ -162,7 +166,7 @@ export default function HomePage() {
           >
             <Image
               src="/logo.png"
-              alt="Logo"
+              alt="GreenEnvis Logo"
               width={85}
               height={85}
             />
@@ -182,11 +186,11 @@ export default function HomePage() {
               <p
                 style={{
                   marginTop: "6px",
-                  color: "#475569",
                   fontSize: "14px",
+                  color: "#64748b",
                 }}
               >
-                Smart Environmental Compliance Portal
+                Smart Environmental Compliance Management Portal
               </p>
             </div>
           </div>
@@ -195,9 +199,9 @@ export default function HomePage() {
             <p
               style={{
                 margin: 0,
+                fontSize: "15px",
                 fontWeight: "700",
                 color: "#166534",
-                fontSize: "15px",
               }}
             >
               GPCB • CPCB • COMPLIANCE
@@ -210,7 +214,7 @@ export default function HomePage() {
                 color: "#64748b",
               }}
             >
-              Apply for Various Permissions
+              Apply for Various Permissions of the Board
             </p>
           </div>
         </div>
@@ -243,11 +247,11 @@ export default function HomePage() {
               key={i}
               href={link}
               style={{
-                color: "#ffffff",
+                color: "white",
                 textDecoration: "none",
                 padding: "16px 22px",
-                fontWeight: "700",
                 fontSize: "14px",
+                fontWeight: "700",
               }}
             >
               {name}
@@ -256,6 +260,7 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* MAIN */}
       <div
         style={{
           maxWidth: "1400px",
@@ -263,7 +268,7 @@ export default function HomePage() {
           padding: "0 20px",
         }}
       >
-        {/* LIVE NOTICE + ADVERTISEMENT */}
+        {/* NOTICE + ADVERTISEMENT */}
         <div
           style={{
             display: "grid",
@@ -272,14 +277,14 @@ export default function HomePage() {
             marginBottom: "30px",
           }}
         >
-          <LiveMovingCard
+          <MovingCard
             title="Notice Board"
-            items={notices}
+            items={noticeItems}
           />
 
-          <LiveMovingCard
+          <MovingCard
             title="Current Advertisement"
-            items={advertisements}
+            items={advertisementItems}
           />
         </div>
 
@@ -298,13 +303,13 @@ export default function HomePage() {
                 onClick={() => handleServiceClick(service)}
                 style={{
                   padding: "16px",
+                  background: "#ffffff",
                   border: "1px solid #cbd5e1",
                   borderRadius: "8px",
-                  background: "#ffffff",
-                  cursor: "pointer",
                   textAlign: "left",
-                  fontSize: "14px",
+                  cursor: "pointer",
                   fontWeight: "600",
+                  fontSize: "14px",
                 }}
               >
                 {service}
@@ -313,7 +318,7 @@ export default function HomePage() {
           </div>
         </Section>
 
-        {/* FORM */}
+        {/* INQUIRY FORM */}
         <Section title="Industry Inquiry Form" id="inquiry-form">
           <form onSubmit={handleSubmit}>
             <input
@@ -377,8 +382,8 @@ export default function HomePage() {
                 border: "none",
                 padding: "16px",
                 borderRadius: "8px",
-                fontWeight: "700",
                 fontSize: "16px",
+                fontWeight: "700",
                 cursor: "pointer",
               }}
             >
@@ -389,7 +394,12 @@ export default function HomePage() {
 
         {/* CONTACT */}
         <Section title="Quick Contact" id="contact">
-          <div style={{ lineHeight: "2.2", fontSize: "16px" }}>
+          <div
+            style={{
+              lineHeight: "2.2",
+              fontSize: "16px",
+            }}
+          >
             <p>📞 Mobile: 8780723063</p>
             <p>📧 Email: info@greenenvis.com</p>
             <p>🌍 Service Area: All India</p>
@@ -402,7 +412,7 @@ export default function HomePage() {
   );
 }
 
-function LiveMovingCard({
+function MovingCard({
   title,
   items,
 }: {
@@ -412,9 +422,9 @@ function LiveMovingCard({
   return (
     <div
       style={{
-        background: "white",
-        borderRadius: "10px",
+        background: "#ffffff",
         border: "1px solid #dbe3ea",
+        borderRadius: "10px",
         overflow: "hidden",
       }}
     >
@@ -432,24 +442,33 @@ function LiveMovingCard({
 
       <div
         style={{
-          height: "220px",
+          height: "250px",
           overflow: "hidden",
           padding: "20px",
         }}
       >
-        <marquee
-          direction="up"
-          scrollAmount="2"
+        <div
           style={{
-            height: "180px",
-            fontSize: "15px",
-            fontWeight: "500",
+            animation: "scrollUp 18s linear infinite",
           }}
         >
           {items.map((item, i) => (
-            <p key={i}>• {item}</p>
+            <div
+              key={i}
+              style={{
+                marginBottom: "18px",
+                padding: "12px",
+                border: "1px solid #e2e8f0",
+                borderRadius: "6px",
+                background: "#f8fafc",
+                fontSize: "14px",
+                fontWeight: "500",
+              }}
+            >
+              • {item}
+            </div>
           ))}
-        </marquee>
+        </div>
       </div>
     </div>
   );
@@ -468,7 +487,7 @@ function Section({
     <div
       id={id}
       style={{
-        background: "white",
+        background: "#ffffff",
         border: "1px solid #dbe3ea",
         borderRadius: "10px",
         padding: "25px",
