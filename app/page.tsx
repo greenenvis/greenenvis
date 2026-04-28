@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { supabase } from "./supabase";
 
@@ -15,6 +15,61 @@ export default function HomePage() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [noticeIndex, setNoticeIndex] = useState(0);
+  const [adIndex, setAdIndex] = useState(0);
+
+  const notices = [
+    "New CTE / CCA Applications Open",
+    "BMW Authorization Fresh Applications Started",
+    "Used Oil EPR Annual Return Submission Live",
+    "Hazardous Waste Authorization Updates",
+    "CGWA Clearance Compliance Window Open",
+    "Environmental Audit Renewal Started",
+  ];
+
+  const advertisements = [
+    "Free Consultation For New Industries",
+    "Stack Monitoring Schedule Live",
+    "Water & Air Analysis Support Available",
+    "CPCB Annual Compliance Filing Started",
+    "Plastic Waste EPR Registration Open",
+    "Ground Water NOC Support Available",
+  ];
+
+  const services = [
+    "Consent to Establish (CTE)",
+    "Consent to Operate (CTO)",
+    "Environmental Clearance (EC)",
+    "Pollution Compliance",
+    "Ground Water NOC",
+    "Annual Returns",
+    "AMC - XGN Portal Service",
+    "Environmental Statements",
+    "Closure Revocation Application",
+    "Hazardous Waste Management",
+    "Biomedical Waste Management",
+    "Waste Import Export License",
+    "E-Waste & Battery Waste Management",
+    "EPR Compliance",
+    "Plastic Waste Management",
+    "Construction & Demolition Management",
+    "Municipal Solid Waste Management",
+  ];
+
+  useEffect(() => {
+    const noticeTimer = setInterval(() => {
+      setNoticeIndex((prev) => (prev + 1) % notices.length);
+    }, 2500);
+
+    const adTimer = setInterval(() => {
+      setAdIndex((prev) => (prev + 1) % advertisements.length);
+    }, 3000);
+
+    return () => {
+      clearInterval(noticeTimer);
+      clearInterval(adTimer);
+    };
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -23,6 +78,15 @@ export default function HomePage() {
       ...form,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleServiceClick = (service: string) => {
+    setForm({
+      ...form,
+      service: service,
+    });
+
+    window.location.href = "#inquiry-form";
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -64,9 +128,9 @@ export default function HomePage() {
   return (
     <div
       style={{
-        background: "#edf2f7",
+        background: "#eef3f8",
         minHeight: "100vh",
-        fontFamily: "Arial, sans-serif",
+        fontFamily: "Segoe UI, Arial, sans-serif",
       }}
     >
       {/* HEADER */}
@@ -74,12 +138,12 @@ export default function HomePage() {
         style={{
           background: "#ffffff",
           padding: "20px 40px",
-          borderBottom: "1px solid #dbe3ea",
+          borderBottom: "1px solid #d9e2ec",
         }}
       >
         <div
           style={{
-            maxWidth: "1300px",
+            maxWidth: "1400px",
             margin: "0 auto",
             display: "flex",
             justifyContent: "space-between",
@@ -88,28 +152,27 @@ export default function HomePage() {
             gap: "20px",
           }}
         >
-          {/* LEFT LOGO */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "16px",
+              gap: "18px",
             }}
           >
             <Image
               src="/logo.png"
               alt="GreenEnvis Logo"
-              width={80}
-              height={80}
+              width={85}
+              height={85}
             />
 
             <div>
               <h1
                 style={{
                   margin: 0,
-                  fontSize: "34px",
-                  color: "#0b5c2f",
+                  fontSize: "40px",
                   fontWeight: "bold",
+                  color: "#0b5c2f",
                 }}
               >
                 GreenEnvis
@@ -119,7 +182,7 @@ export default function HomePage() {
                 style={{
                   marginTop: "6px",
                   color: "#64748b",
-                  fontSize: "14px",
+                  fontSize: "15px",
                 }}
               >
                 Simplifying Environmental Compliance
@@ -127,13 +190,13 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* RIGHT TEXT */}
           <div style={{ textAlign: "right" }}>
             <p
               style={{
                 margin: 0,
                 fontWeight: "bold",
                 color: "#166534",
+                fontSize: "16px",
               }}
             >
               GPCB • CPCB • COMPLIANCE
@@ -143,7 +206,7 @@ export default function HomePage() {
               style={{
                 marginTop: "6px",
                 color: "#64748b",
-                fontSize: "13px",
+                fontSize: "14px",
               }}
             >
               Smart Compliance Management System
@@ -160,7 +223,7 @@ export default function HomePage() {
       >
         <div
           style={{
-            maxWidth: "1300px",
+            maxWidth: "1400px",
             margin: "0 auto",
             display: "flex",
             flexWrap: "wrap",
@@ -174,14 +237,14 @@ export default function HomePage() {
             ["Admin Panel", "/admin"],
             ["Services", "#services"],
             ["Contact", "#contact"],
-          ].map(([name, link], index) => (
+          ].map(([name, link], i) => (
             <a
-              key={index}
+              key={i}
               href={link}
               style={{
                 color: "#ffffff",
                 textDecoration: "none",
-                padding: "16px 22px",
+                padding: "18px 22px",
                 fontWeight: "bold",
                 fontSize: "14px",
               }}
@@ -195,7 +258,7 @@ export default function HomePage() {
       {/* MAIN */}
       <div
         style={{
-          maxWidth: "1300px",
+          maxWidth: "1400px",
           margin: "30px auto",
           padding: "0 20px",
         }}
@@ -204,8 +267,8 @@ export default function HomePage() {
         <div
           style={{
             background: "#ffffff",
-            borderRadius: "12px",
             padding: "30px",
+            borderRadius: "12px",
             marginBottom: "25px",
             border: "1px solid #dbe3ea",
           }}
@@ -222,17 +285,17 @@ export default function HomePage() {
 
           <p
             style={{
-              color: "#475569",
               fontSize: "16px",
+              color: "#475569",
               lineHeight: "1.8",
             }}
           >
-            CTE, CCA, BMW Authorization, EPR, CGWA, Environmental Audit,
+            CTE, CTO, BMW Authorization, EPR, CGWA, Environmental Audit,
             Consent Renewals — All in One Professional Smart Portal.
           </p>
         </div>
 
-        {/* NOTICE + ADS */}
+        {/* NOTICE + ADVERTISEMENT */}
         <div
           style={{
             display: "grid",
@@ -241,21 +304,15 @@ export default function HomePage() {
             marginBottom: "25px",
           }}
         >
-          <Card title="Notice Board">
-            <p>• New CTE / CCA Applications Open</p>
-            <p>• BMW Authorization Fresh Applications</p>
-            <p>• Used Oil EPR Annual Return Submission</p>
-            <p>• Hazardous Waste Authorization Updates</p>
-            <p>• CGWA Clearance Compliance Window Open</p>
-          </Card>
+          <LiveCard
+            title="Notice Board"
+            text={notices[noticeIndex]}
+          />
 
-          <Card title="Current Advertisement">
-            <p>• Environmental Audit Renewal Live</p>
-            <p>• CPCB Filing Started</p>
-            <p>• Free Industry Consultation</p>
-            <p>• Stack Monitoring Schedule</p>
-            <p>• Water Analysis Support</p>
-          </Card>
+          <LiveCard
+            title="Current Advertisement"
+            text={advertisements[adIndex]}
+          />
         </div>
 
         {/* SERVICES */}
@@ -267,34 +324,29 @@ export default function HomePage() {
               gap: "15px",
             }}
           >
-            {[
-              "GPCB Consent (CTE / CCA)",
-              "BMW Authorization",
-              "EPR Registration",
-              "Used Oil EPR",
-              "Hazardous Waste Authorization",
-              "CGWA Clearance",
-              "Environmental Audit",
-              "Stack Monitoring",
-              "Water & Air Analysis",
-            ].map((item, i) => (
-              <div
+            {services.map((service, i) => (
+              <button
                 key={i}
+                onClick={() => handleServiceClick(service)}
                 style={{
-                  border: "1px solid #cbd5e1",
                   padding: "18px",
+                  border: "1px solid #cbd5e1",
                   borderRadius: "8px",
-                  background: "#f8fafc",
+                  background: "#ffffff",
+                  cursor: "pointer",
+                  fontWeight: "600",
+                  fontSize: "14px",
+                  textAlign: "left",
                 }}
               >
-                {item}
-              </div>
+                {service}
+              </button>
             ))}
           </div>
         </Section>
 
-        {/* FORM */}
-        <Section title="Industry Inquiry Form">
+        {/* INQUIRY FORM */}
+        <Section title="Industry Inquiry Form" id="inquiry-form">
           <form onSubmit={handleSubmit}>
             <input
               name="industry_name"
@@ -369,10 +421,15 @@ export default function HomePage() {
 
         {/* CONTACT */}
         <Section title="Quick Contact" id="contact">
-          <div style={{ lineHeight: "2" }}>
+          <div
+            style={{
+              lineHeight: "2.2",
+              fontSize: "16px",
+            }}
+          >
             <p>📞 Mobile: 8780723063</p>
             <p>📧 Email: info@greenenvis.com</p>
-            <p>📍 Service Area: All Gujarat</p>
+            <p>🌍 Service Area: All India</p>
             <p>🛠 Support: GPCB / CPCB / EPR Consultancy</p>
             <p>💬 Free Consultation Available</p>
           </div>
@@ -384,6 +441,7 @@ export default function HomePage() {
             textAlign: "center",
             padding: "30px 0",
             color: "#64748b",
+            fontSize: "14px",
           }}
         >
           © 2026 GreenEnvis — Professional Environmental Compliance Portal
@@ -393,12 +451,12 @@ export default function HomePage() {
   );
 }
 
-function Card({
+function LiveCard({
   title,
-  children,
+  text,
 }: {
   title: string;
-  children: React.ReactNode;
+  text: string;
 }) {
   return (
     <div
@@ -415,12 +473,24 @@ function Card({
           color: "#ffffff",
           padding: "14px 18px",
           fontWeight: "bold",
+          fontSize: "16px",
         }}
       >
         {title}
       </div>
 
-      <div style={{ padding: "20px" }}>{children}</div>
+      <div
+        style={{
+          padding: "24px",
+          fontSize: "15px",
+          minHeight: "120px",
+          display: "flex",
+          alignItems: "center",
+          fontWeight: "500",
+        }}
+      >
+        • {text}
+      </div>
     </div>
   );
 }
@@ -439,13 +509,22 @@ function Section({
       id={id}
       style={{
         background: "#ffffff",
-        borderRadius: "10px",
         border: "1px solid #dbe3ea",
+        borderRadius: "10px",
         padding: "25px",
         marginBottom: "25px",
       }}
     >
-      <h2 style={{ marginTop: 0 }}>{title}</h2>
+      <h2
+        style={{
+          marginTop: 0,
+          fontSize: "28px",
+          color: "#0f172a",
+        }}
+      >
+        {title}
+      </h2>
+
       {children}
     </div>
   );
