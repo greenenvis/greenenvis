@@ -39,22 +39,19 @@ export default function HomePage() {
   }, []);
 
   const fetchLiveNotices = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("notices")
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (error) {
-      console.log(error);
-      return;
-    }
+    if (!data) return;
 
     setNotices(
-      data?.filter((item) => item.notice_type === "notice") || []
+      data.filter((item) => item.notice_type === "notice")
     );
 
     setAdvertisements(
-      data?.filter((item) => item.notice_type === "advertisement") || []
+      data.filter((item) => item.notice_type === "advertisement")
     );
   };
 
@@ -117,7 +114,7 @@ export default function HomePage() {
         fontFamily: "Arial, sans-serif",
       }}
     >
-      {/* Header */}
+      {/* TOP BAR */}
       <div
         style={{
           background: "#083b84",
@@ -129,6 +126,7 @@ export default function HomePage() {
         GreenEnvis Professional Compliance Portal
       </div>
 
+      {/* HEADER */}
       <div
         style={{
           background: "#ffffff",
@@ -140,32 +138,60 @@ export default function HomePage() {
             maxWidth: "1400px",
             margin: "0 auto",
             display: "flex",
-            justifyContent: "space-between",
             alignItems: "center",
+            gap: "20px",
           }}
         >
-          <div style={{ display: "flex", gap: "18px", alignItems: "center" }}>
-            <Image
-              src="/logo.png"
-              alt="Logo"
-              width={80}
-              height={80}
-            />
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={80}
+            height={80}
+          />
 
-            <div>
-              <h1 style={{ margin: 0, color: "#0b5c2f" }}>
-                GreenEnvis
-              </h1>
+          <div>
+            <h1 style={{ margin: 0, color: "#0b5c2f" }}>
+              GreenEnvis
+            </h1>
 
-              <p style={{ marginTop: "6px", color: "#64748b" }}>
-                Smart Environmental Compliance Portal
-              </p>
-            </div>
+            <p style={{ marginTop: "6px", color: "#64748b" }}>
+              Smart Environmental Compliance Portal
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Running Notice */}
+      {/* ENVIRONMENT DAY BANNER */}
+      <div
+        style={{
+          maxWidth: "1400px",
+          margin: "20px auto",
+          padding: "0 20px",
+        }}
+      >
+        <div
+          style={{
+            background: "#ffffff",
+            borderRadius: "12px",
+            overflow: "hidden",
+            border: "1px solid #dbe3ea",
+          }}
+        >
+          <Image
+            src="/environment-day-banner.jpg"
+            alt="Environment Day Banner"
+            width={1400}
+            height={420}
+            style={{
+              width: "100%",
+              height: "auto",
+              display: "block",
+            }}
+          />
+        </div>
+      </div>
+
+      {/* LIVE NOTICE + ADVERTISEMENT */}
       <div
         style={{
           maxWidth: "1400px",
@@ -187,7 +213,7 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Services */}
+      {/* SERVICES */}
       <div
         style={{
           maxWidth: "1400px",
@@ -223,6 +249,7 @@ export default function HomePage() {
           </div>
         </Section>
 
+        {/* INQUIRY FORM */}
         <Section title="Industry Inquiry Form">
           <form onSubmit={handleSubmit}>
             <input
@@ -292,7 +319,35 @@ export default function HomePage() {
             </button>
           </form>
         </Section>
+
+        {/* CONTACT */}
+        <Section title="Quick Contact">
+          <p>📞 Mobile: 8780723063</p>
+          <p>📧 Email: info@greenenvis.com</p>
+          <p>🌍 Service Area: All India</p>
+          <p>🛠 Support: GPCB / CPCB / EPR Consultancy</p>
+        </Section>
       </div>
+
+      {/* WHATSAPP */}
+      <a
+        href="https://wa.me/918780723063"
+        target="_blank"
+        style={{
+          position: "fixed",
+          right: "30px",
+          bottom: "30px",
+          background: "#25D366",
+          color: "#ffffff",
+          padding: "14px 20px",
+          borderRadius: "50px",
+          textDecoration: "none",
+          fontWeight: "bold",
+          zIndex: 999,
+        }}
+      >
+        WhatsApp Us
+      </a>
     </div>
   );
 }
@@ -309,8 +364,8 @@ function LiveRunningCard({
       style={{
         background: "#ffffff",
         borderRadius: "10px",
-        overflow: "hidden",
         border: "1px solid #dbe3ea",
+        overflow: "hidden",
       }}
     >
       <div
@@ -333,7 +388,7 @@ function LiveRunningCard({
       >
         <div
           style={{
-            animation: "scrollUp 18s linear infinite",
+            animation: "scrollUp 20s linear infinite",
           }}
         >
           {items.map((item, i) => (
@@ -347,7 +402,7 @@ function LiveRunningCard({
                 background: "#f8fafc",
               }}
             >
-              <p style={{ margin: 0, fontWeight: "bold", color: "#16a34a" }}>
+              <p style={{ margin: 0, color: "#16a34a", fontWeight: "bold" }}>
                 📅 {new Date(item.created_at).toLocaleDateString()}
               </p>
 
@@ -357,18 +412,18 @@ function LiveRunningCard({
             </div>
           ))}
         </div>
-      </div>
 
-      <style jsx>{`
-        @keyframes scrollUp {
-          0% {
-            transform: translateY(100%);
+        <style jsx>{`
+          @keyframes scrollUp {
+            0% {
+              transform: translateY(100%);
+            }
+            100% {
+              transform: translateY(-100%);
+            }
           }
-          100% {
-            transform: translateY(-100%);
-          }
-        }
-      `}</style>
+        `}</style>
+      </div>
     </div>
   );
 }
