@@ -25,71 +25,58 @@ export default function HomePage() {
   };
 
   const handleSubmit = async () => {
-    try {
-      setLoading(true);
+    setLoading(true);
 
-      console.log("Submit button clicked");
+    const { error } = await supabase.from("inquiries").insert([
+      {
+        industry_name: form.industry_name,
+        contact_person: form.contact_person,
+        mobile: form.mobile,
+        email: form.email,
+        service: form.service,
+        details: form.details,
+      },
+    ]);
 
-      const { data, error } = await supabase
-        .from("inquiries")
-        .insert([
-          {
-            industry_name: form.industry_name,
-            contact_person: form.contact_person,
-            mobile: form.mobile,
-            email: form.email,
-            service: form.service,
-            details: form.details,
-          },
-        ])
-        .select();
+    setLoading(false);
 
-      console.log("Response:", data, error);
-
-      if (error) {
-        alert("Error saving inquiry");
-        console.log(error);
-      } else {
-        alert("Inquiry Submitted Successfully!");
-
-        setForm({
-          industry_name: "",
-          contact_person: "",
-          mobile: "",
-          email: "",
-          service: "",
-          details: "",
-        });
-      }
-    } catch (err) {
-      console.log(err);
-      alert("Something went wrong");
-    } finally {
-      setLoading(false);
+    if (error) {
+      console.log(error);
+      alert("Error saving inquiry");
+      return;
     }
+
+    alert("Inquiry Submitted Successfully!");
+
+    setForm({
+      industry_name: "",
+      contact_person: "",
+      mobile: "",
+      email: "",
+      service: "",
+      details: "",
+    });
   };
 
   return (
     <div
       style={{
-        background: "#f1f5f9",
         minHeight: "100vh",
+        background: "#f1f5f9",
         padding: "40px",
-        fontFamily: "Arial, sans-serif",
+        fontFamily: "Arial",
       }}
     >
       <div
         style={{
-          maxWidth: "850px",
+          maxWidth: "900px",
           margin: "0 auto",
           background: "#ffffff",
           padding: "30px",
-          borderRadius: "16px",
+          borderRadius: "12px",
         }}
       >
-        <h1 style={{ marginBottom: "25px" }}>
-          Industry Inquiry Form
-        </h1>
+        <h1>Industry Inquiry Form</h1>
 
         <input
           name="industry_name"
@@ -148,13 +135,12 @@ export default function HomePage() {
           disabled={loading}
           style={{
             width: "100%",
-            backgroundColor: "#16a34a",
+            background: "#16a34a",
             color: "#ffffff",
             border: "none",
             padding: "16px",
             borderRadius: "10px",
             fontWeight: "bold",
-            fontSize: "16px",
             cursor: "pointer",
             marginTop: "10px",
           }}
