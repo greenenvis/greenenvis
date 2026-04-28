@@ -15,8 +15,6 @@ export default function HomePage() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [noticeIndex, setNoticeIndex] = useState(0);
-  const [adIndex, setAdIndex] = useState(0);
 
   const notices = [
     "New CTE / CCA Applications Open",
@@ -56,21 +54,6 @@ export default function HomePage() {
     "Municipal Solid Waste Management",
   ];
 
-  useEffect(() => {
-    const noticeTimer = setInterval(() => {
-      setNoticeIndex((prev) => (prev + 1) % notices.length);
-    }, 2500);
-
-    const adTimer = setInterval(() => {
-      setAdIndex((prev) => (prev + 1) % advertisements.length);
-    }, 3000);
-
-    return () => {
-      clearInterval(noticeTimer);
-      clearInterval(adTimer);
-    };
-  }, []);
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -81,12 +64,18 @@ export default function HomePage() {
   };
 
   const handleServiceClick = (service: string) => {
-    setForm({
-      ...form,
+    setForm((prev) => ({
+      ...prev,
       service: service,
-    });
+    }));
 
-    window.location.href = "#inquiry-form";
+    setTimeout(() => {
+      const formSection = document.getElementById("inquiry-form");
+      formSection?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -128,17 +117,30 @@ export default function HomePage() {
   return (
     <div
       style={{
-        background: "#eef3f8",
+        background: "#eef2f7",
         minHeight: "100vh",
         fontFamily: "Segoe UI, Arial, sans-serif",
       }}
     >
-      {/* HEADER */}
+      {/* TOP HEADER */}
+      <div
+        style={{
+          background: "#083b84",
+          color: "white",
+          padding: "8px 30px",
+          fontSize: "14px",
+          fontWeight: "600",
+        }}
+      >
+        Gujarat Pollution Control Board Style Portal
+      </div>
+
+      {/* MAIN HEADER */}
       <div
         style={{
           background: "#ffffff",
           padding: "20px 40px",
-          borderBottom: "1px solid #d9e2ec",
+          borderBottom: "1px solid #dbe3ea",
         }}
       >
         <div
@@ -149,7 +151,6 @@ export default function HomePage() {
             justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap",
-            gap: "20px",
           }}
         >
           <div
@@ -161,7 +162,7 @@ export default function HomePage() {
           >
             <Image
               src="/logo.png"
-              alt="GreenEnvis Logo"
+              alt="Logo"
               width={85}
               height={85}
             />
@@ -170,8 +171,8 @@ export default function HomePage() {
               <h1
                 style={{
                   margin: 0,
-                  fontSize: "40px",
-                  fontWeight: "bold",
+                  fontSize: "38px",
+                  fontWeight: "700",
                   color: "#0b5c2f",
                 }}
               >
@@ -181,11 +182,11 @@ export default function HomePage() {
               <p
                 style={{
                   marginTop: "6px",
-                  color: "#64748b",
-                  fontSize: "15px",
+                  color: "#475569",
+                  fontSize: "14px",
                 }}
               >
-                Simplifying Environmental Compliance
+                Smart Environmental Compliance Portal
               </p>
             </div>
           </div>
@@ -194,9 +195,9 @@ export default function HomePage() {
             <p
               style={{
                 margin: 0,
-                fontWeight: "bold",
+                fontWeight: "700",
                 color: "#166534",
-                fontSize: "16px",
+                fontSize: "15px",
               }}
             >
               GPCB • CPCB • COMPLIANCE
@@ -205,11 +206,11 @@ export default function HomePage() {
             <p
               style={{
                 marginTop: "6px",
+                fontSize: "13px",
                 color: "#64748b",
-                fontSize: "14px",
               }}
             >
-              Smart Compliance Management System
+              Apply for Various Permissions
             </p>
           </div>
         </div>
@@ -244,8 +245,8 @@ export default function HomePage() {
               style={{
                 color: "#ffffff",
                 textDecoration: "none",
-                padding: "18px 22px",
-                fontWeight: "bold",
+                padding: "16px 22px",
+                fontWeight: "700",
                 fontSize: "14px",
               }}
             >
@@ -255,7 +256,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* MAIN */}
       <div
         style={{
           maxWidth: "1400px",
@@ -263,55 +263,23 @@ export default function HomePage() {
           padding: "0 20px",
         }}
       >
-        {/* HERO */}
-        <div
-          style={{
-            background: "#ffffff",
-            padding: "30px",
-            borderRadius: "12px",
-            marginBottom: "25px",
-            border: "1px solid #dbe3ea",
-          }}
-        >
-          <h2
-            style={{
-              marginTop: 0,
-              fontSize: "34px",
-              color: "#0f172a",
-            }}
-          >
-            Environmental Compliance Made Simple
-          </h2>
-
-          <p
-            style={{
-              fontSize: "16px",
-              color: "#475569",
-              lineHeight: "1.8",
-            }}
-          >
-            CTE, CTO, BMW Authorization, EPR, CGWA, Environmental Audit,
-            Consent Renewals — All in One Professional Smart Portal.
-          </p>
-        </div>
-
-        {/* NOTICE + ADVERTISEMENT */}
+        {/* LIVE NOTICE + ADVERTISEMENT */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "2fr 1fr",
             gap: "20px",
-            marginBottom: "25px",
+            marginBottom: "30px",
           }}
         >
-          <LiveCard
+          <LiveMovingCard
             title="Notice Board"
-            text={notices[noticeIndex]}
+            items={notices}
           />
 
-          <LiveCard
+          <LiveMovingCard
             title="Current Advertisement"
-            text={advertisements[adIndex]}
+            items={advertisements}
           />
         </div>
 
@@ -321,7 +289,7 @@ export default function HomePage() {
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "15px",
+              gap: "14px",
             }}
           >
             {services.map((service, i) => (
@@ -329,14 +297,14 @@ export default function HomePage() {
                 key={i}
                 onClick={() => handleServiceClick(service)}
                 style={{
-                  padding: "18px",
+                  padding: "16px",
                   border: "1px solid #cbd5e1",
                   borderRadius: "8px",
                   background: "#ffffff",
                   cursor: "pointer",
-                  fontWeight: "600",
-                  fontSize: "14px",
                   textAlign: "left",
+                  fontSize: "14px",
+                  fontWeight: "600",
                 }}
               >
                 {service}
@@ -345,7 +313,7 @@ export default function HomePage() {
           </div>
         </Section>
 
-        {/* INQUIRY FORM */}
+        {/* FORM */}
         <Section title="Industry Inquiry Form" id="inquiry-form">
           <form onSubmit={handleSubmit}>
             <input
@@ -405,11 +373,11 @@ export default function HomePage() {
               style={{
                 width: "100%",
                 background: "#16a34a",
-                color: "#ffffff",
+                color: "white",
                 border: "none",
                 padding: "16px",
                 borderRadius: "8px",
-                fontWeight: "bold",
+                fontWeight: "700",
                 fontSize: "16px",
                 cursor: "pointer",
               }}
@@ -421,12 +389,7 @@ export default function HomePage() {
 
         {/* CONTACT */}
         <Section title="Quick Contact" id="contact">
-          <div
-            style={{
-              lineHeight: "2.2",
-              fontSize: "16px",
-            }}
-          >
+          <div style={{ lineHeight: "2.2", fontSize: "16px" }}>
             <p>📞 Mobile: 8780723063</p>
             <p>📧 Email: info@greenenvis.com</p>
             <p>🌍 Service Area: All India</p>
@@ -434,34 +397,22 @@ export default function HomePage() {
             <p>💬 Free Consultation Available</p>
           </div>
         </Section>
-
-        {/* FOOTER */}
-        <div
-          style={{
-            textAlign: "center",
-            padding: "30px 0",
-            color: "#64748b",
-            fontSize: "14px",
-          }}
-        >
-          © 2026 GreenEnvis — Professional Environmental Compliance Portal
-        </div>
       </div>
     </div>
   );
 }
 
-function LiveCard({
+function LiveMovingCard({
   title,
-  text,
+  items,
 }: {
   title: string;
-  text: string;
+  items: string[];
 }) {
   return (
     <div
       style={{
-        background: "#ffffff",
+        background: "white",
         borderRadius: "10px",
         border: "1px solid #dbe3ea",
         overflow: "hidden",
@@ -470,9 +421,9 @@ function LiveCard({
       <div
         style={{
           background: "#0b5a8a",
-          color: "#ffffff",
+          color: "white",
           padding: "14px 18px",
-          fontWeight: "bold",
+          fontWeight: "700",
           fontSize: "16px",
         }}
       >
@@ -481,15 +432,24 @@ function LiveCard({
 
       <div
         style={{
-          padding: "24px",
-          fontSize: "15px",
-          minHeight: "120px",
-          display: "flex",
-          alignItems: "center",
-          fontWeight: "500",
+          height: "220px",
+          overflow: "hidden",
+          padding: "20px",
         }}
       >
-        • {text}
+        <marquee
+          direction="up"
+          scrollAmount="2"
+          style={{
+            height: "180px",
+            fontSize: "15px",
+            fontWeight: "500",
+          }}
+        >
+          {items.map((item, i) => (
+            <p key={i}>• {item}</p>
+          ))}
+        </marquee>
       </div>
     </div>
   );
@@ -508,7 +468,7 @@ function Section({
     <div
       id={id}
       style={{
-        background: "#ffffff",
+        background: "white",
         border: "1px solid #dbe3ea",
         borderRadius: "10px",
         padding: "25px",
