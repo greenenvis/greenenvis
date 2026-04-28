@@ -84,20 +84,57 @@ export default function HomePage() {
             marginBottom: "20px",
           }}
         >
-          <h1 style={{ color: "#166534", marginBottom: "8px" }}>
-            GreenEnvis Portal
-          </h1>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "20px",
+            }}
+          >
+            <div>
+              <h1
+                style={{
+                  color: "#166534",
+                  marginBottom: "8px",
+                }}
+              >
+                GreenEnvis Portal
+              </h1>
 
-          <p style={{ color: "#475569" }}>
-            Professional Environmental Compliance Management System
-          </p>
+              <p style={{ color: "#475569" }}>
+                Professional Environmental Compliance Management System
+              </p>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                flexWrap: "wrap",
+              }}
+            >
+              <a href="/dashboard" style={navButton}>
+                Client Dashboard
+              </a>
+
+              <a href="/admin" style={navButton}>
+                Admin Panel
+              </a>
+
+              <a href="/login" style={navButton}>
+                Client Login
+              </a>
+            </div>
+          </div>
         </div>
 
-        {/* Top Actions */}
+        {/* Top Cards */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
+            gridTemplateColumns: "repeat(3, 1fr)",
             gap: "15px",
             marginBottom: "20px",
           }}
@@ -112,10 +149,6 @@ export default function HomePage() {
 
           <a href="/application-details" style={cardStyle}>
             Application Details
-          </a>
-
-          <a href="/login" style={cardStyle}>
-            Client Login
           </a>
         </div>
 
@@ -281,4 +314,14 @@ const serviceBox = {
   border: "1px solid #cbd5e1",
   padding: "18px",
   borderRadius: "10px",
+};
+
+const navButton = {
+  background: "#0f172a",
+  color: "#ffffff",
+  padding: "12px 18px",
+  borderRadius: "10px",
+  textDecoration: "none",
+  fontWeight: "bold",
+  fontSize: "14px",
 };
