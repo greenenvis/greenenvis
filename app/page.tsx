@@ -63,105 +63,215 @@ export default function HomePage() {
   return (
     <div
       style={{
-        background: "#f1f5f9",
+        background: "#eef2f7",
         minHeight: "100vh",
-        fontFamily: "Arial",
-        padding: "20px",
+        fontFamily: "Arial, sans-serif",
       }}
     >
+      {/* TOP HEADER */}
       <div
         style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
+          background: "#ffffff",
+          borderBottom: "2px solid #dbe3ea",
+          padding: "25px 40px",
         }}
       >
-        {/* Header */}
         <div
           style={{
-            background: "#ffffff",
-            padding: "25px",
-            borderRadius: "14px",
-            marginBottom: "20px",
+            maxWidth: "1300px",
+            margin: "0 auto",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "20px",
+          }}
+        >
+          <div>
+            <h1
+              style={{
+                margin: 0,
+                fontSize: "40px",
+                color: "#0b5c2f",
+                fontWeight: "bold",
+              }}
+            >
+              GreenEnvis
+            </h1>
+
+            <p
+              style={{
+                marginTop: "8px",
+                color: "#475569",
+                fontSize: "15px",
+              }}
+            >
+              Smart Environmental Compliance Management Portal
+            </p>
+          </div>
+
+          <div
+            style={{
+              textAlign: "right",
+            }}
+          >
+            <p
+              style={{
+                margin: 0,
+                fontWeight: "bold",
+                color: "#0f172a",
+              }}
+            >
+              GPCB • CPCB • Compliance
+            </p>
+
+            <p
+              style={{
+                marginTop: "6px",
+                color: "#64748b",
+                fontSize: "14px",
+              }}
+            >
+              Gujarat Environmental Consultancy System
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* NAVBAR */}
+      <div
+        style={{
+          background: "#0b4f7d",
+          padding: "0",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1300px",
+            margin: "0 auto",
+            display: "flex",
+            flexWrap: "wrap",
+          }}
+        >
+          {[
+            ["Home", "/"],
+            ["Client Login", "/login"],
+            ["Client Dashboard", "/dashboard"],
+            ["Admin Panel", "/admin"],
+            ["Application Details", "/application-details"],
+            ["Services", "#services"],
+            ["Contact", "#contact"],
+          ].map(([label, link], index) => (
+            <a
+              key={index}
+              href={link}
+              style={{
+                color: "#ffffff",
+                textDecoration: "none",
+                padding: "18px 24px",
+                fontWeight: "bold",
+                borderRight: "1px solid rgba(255,255,255,0.15)",
+                fontSize: "14px",
+              }}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* MAIN CONTENT */}
+      <div
+        style={{
+          maxWidth: "1300px",
+          margin: "30px auto",
+          padding: "0 20px",
+        }}
+      >
+        {/* NOTICE SECTION */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "2fr 1fr",
+            gap: "20px",
+            marginBottom: "25px",
           }}
         >
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              flexWrap: "wrap",
-              gap: "20px",
+              background: "#ffffff",
+              borderRadius: "10px",
+              overflow: "hidden",
+              border: "1px solid #dbe3ea",
             }}
           >
-            <div>
-              <h1
-                style={{
-                  color: "#166534",
-                  marginBottom: "8px",
-                }}
-              >
-                GreenEnvis Portal
-              </h1>
-
-              <p style={{ color: "#475569" }}>
-                Professional Environmental Compliance Management System
-              </p>
-            </div>
-
             <div
               style={{
-                display: "flex",
-                gap: "12px",
-                flexWrap: "wrap",
+                background: "#0b4f7d",
+                color: "#ffffff",
+                padding: "14px 20px",
+                fontWeight: "bold",
               }}
             >
-              <a href="/dashboard" style={navButton}>
-                Client Dashboard
-              </a>
+              Notice Board
+            </div>
 
-              <a href="/admin" style={navButton}>
-                Admin Panel
-              </a>
+            <div style={{ padding: "20px" }}>
+              {[
+                "New GPCB CTE / CCA Applications Open",
+                "BMW Authorization Fresh Submission Notice",
+                "Used Oil EPR Annual Return Update",
+                "Hazardous Waste Compliance Circular",
+                "Environmental Audit Renewal Schedule",
+              ].map((item, index) => (
+                <p key={index} style={{ marginBottom: "14px" }}>
+                  ▸ {item}
+                </p>
+              ))}
+            </div>
+          </div>
 
-              <a href="/login" style={navButton}>
-                Client Login
-              </a>
+          <div
+            style={{
+              background: "#ffffff",
+              borderRadius: "10px",
+              overflow: "hidden",
+              border: "1px solid #dbe3ea",
+            }}
+          >
+            <div
+              style={{
+                background: "#0b4f7d",
+                color: "#ffffff",
+                padding: "14px 20px",
+                fontWeight: "bold",
+              }}
+            >
+              Current Updates
+            </div>
+
+            <div style={{ padding: "20px" }}>
+              <p>CTE Applications Active</p>
+              <p>CCA Renewals Running</p>
+              <p>BMW Annual Compliance</p>
+              <p>CGWA Submission Window</p>
+              <p>EPR Portal Live</p>
             </div>
           </div>
         </div>
 
-        {/* Top Cards */}
+        {/* SERVICES */}
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "15px",
-            marginBottom: "20px",
-          }}
-        >
-          <a href="/dashboard" style={cardStyle}>
-            Client Dashboard
-          </a>
-
-          <a href="/admin" style={cardStyle}>
-            Admin Panel
-          </a>
-
-          <a href="/application-details" style={cardStyle}>
-            Application Details
-          </a>
-        </div>
-
-        {/* Services */}
-        <div
+          id="services"
           style={{
             background: "#ffffff",
+            borderRadius: "10px",
             padding: "25px",
-            borderRadius: "14px",
-            marginBottom: "20px",
+            border: "1px solid #dbe3ea",
+            marginBottom: "25px",
           }}
         >
-          <h2 style={{ marginBottom: "20px" }}>
+          <h2 style={{ marginTop: 0 }}>
             Our Services
           </h2>
 
@@ -170,6 +280,7 @@ export default function HomePage() {
               display: "grid",
               gridTemplateColumns: "repeat(3, 1fr)",
               gap: "15px",
+              marginTop: "20px",
             }}
           >
             {[
@@ -179,24 +290,36 @@ export default function HomePage() {
               "Hazardous Waste Authorization",
               "CGWA Clearance",
               "Environmental Audit",
+              "Stack Monitoring",
+              "Water & Air Analysis",
+              "Compliance Renewals",
             ].map((item, index) => (
-              <div key={index} style={serviceBox}>
+              <div
+                key={index}
+                style={{
+                  border: "1px solid #cbd5e1",
+                  padding: "18px",
+                  borderRadius: "8px",
+                  background: "#f8fafc",
+                }}
+              >
                 {item}
               </div>
             ))}
           </div>
         </div>
 
-        {/* Inquiry Form */}
+        {/* INQUIRY FORM */}
         <div
           style={{
             background: "#ffffff",
+            borderRadius: "10px",
             padding: "25px",
-            borderRadius: "14px",
-            marginBottom: "20px",
+            border: "1px solid #dbe3ea",
+            marginBottom: "25px",
           }}
         >
-          <h2 style={{ marginBottom: "20px" }}>
+          <h2 style={{ marginTop: 0 }}>
             Industry Inquiry Form
           </h2>
 
@@ -261,9 +384,10 @@ export default function HomePage() {
                 color: "#ffffff",
                 border: "none",
                 padding: "16px",
-                borderRadius: "10px",
+                borderRadius: "8px",
                 fontWeight: "bold",
                 cursor: "pointer",
+                fontSize: "16px",
               }}
             >
               {loading ? "Submitting..." : "Submit Inquiry"}
@@ -271,15 +395,20 @@ export default function HomePage() {
           </form>
         </div>
 
-        {/* Contact */}
+        {/* CONTACT */}
         <div
+          id="contact"
           style={{
             background: "#ffffff",
+            borderRadius: "10px",
             padding: "25px",
-            borderRadius: "14px",
+            border: "1px solid #dbe3ea",
+            marginBottom: "40px",
           }}
         >
-          <h2>Quick Contact</h2>
+          <h2 style={{ marginTop: 0 }}>
+            Quick Contact
+          </h2>
 
           <p>📞 Mobile: 8780723063</p>
           <p>📧 Email: info@greenenvis.com</p>
@@ -298,30 +427,4 @@ const inputStyle = {
   border: "1px solid #cbd5e1",
   borderRadius: "8px",
   fontSize: "15px",
-};
-
-const cardStyle = {
-  background: "#16a34a",
-  color: "#ffffff",
-  padding: "18px",
-  borderRadius: "12px",
-  textAlign: "center" as const,
-  textDecoration: "none",
-  fontWeight: "bold",
-};
-
-const serviceBox = {
-  border: "1px solid #cbd5e1",
-  padding: "18px",
-  borderRadius: "10px",
-};
-
-const navButton = {
-  background: "#0f172a",
-  color: "#ffffff",
-  padding: "12px 18px",
-  borderRadius: "10px",
-  textDecoration: "none",
-  fontWeight: "bold",
-  fontSize: "14px",
 };
