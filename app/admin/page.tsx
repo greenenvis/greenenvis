@@ -4,28 +4,65 @@ import { useEffect, useState } from "react";
 import { supabase } from "../supabase";
 
 export default function AdminPage() {
-  const [inquiries, setInquiries] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [title, setTitle] = useState("");
+  const [noticeType, setNoticeType] = useState("notice");
+  const [notices, setNotices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const fetchInquiries = async () => {
+  const fetchNotices = async () => {
     const { data, error } = await supabase
-      .from("inquiries")
+      .from("notices")
       .select("*")
-      .order("id", { ascending: false });
+      .order("created_at", { ascending: false });
 
-    if (error) {
-      console.log(error);
-      alert("Error loading inquiries");
-    } else {
-      setInquiries(data || []);
+    if (!error) {
+      setNotices(data || []);
     }
-
-    setLoading(false);
   };
 
   useEffect(() => {
-    fetchInquiries();
+    fetchNotices();
   }, []);
+
+  const handleAddNotice = async () => {
+    if (!title) {
+      alert("Please enter notice title");
+      return;
+    }
+
+    setLoading(true);
+
+    const { error } = await supabase.from("notices").insert([
+      {
+        title,
+        notice_type: noticeType,
+      },
+    ]);
+
+    setLoading(false);
+
+    if (error) {
+      alert("Error adding notice");
+      console.log(error);
+      return;
+    }
+
+    alert("Notice Added Successfully");
+
+    setTitle("");
+    fetchNotices();
+  };
+
+  const handleDelete = async (id: number) => {
+    const { error } = await supabase
+      .from("notices")
+      .delete()
+      .eq("id", id);
+
+    if (!error) {
+      fetchNotices();
+    }
+  };
 
   return (
     <div
@@ -42,85 +79,105 @@ export default function AdminPage() {
           margin: "0 auto",
         }}
       >
-        <h1
-          style={{
-            color: "#166534",
-            marginBottom: "10px",
-          }}
-        >
-          Admin Real Inquiry List
+        <h1 style={{ color: "#166534" }}>
+          Admin Notice Management Panel
         </h1>
-
-        <p
-          style={{
-            marginBottom: "25px",
-            color: "#475569",
-          }}
-        >
-          Live inquiries submitted from website
-        </p>
 
         <div
           style={{
             background: "#ffffff",
+            padding: "25px",
             borderRadius: "12px",
-            padding: "20px",
-            overflowX: "auto",
+            marginTop: "20px",
+            marginBottom: "30px",
           }}
         >
-          {loading ? (
-            <h3>Loading inquiries...</h3>
-          ) : (
-            <table
+          <h2>Add New Notice</h2>
+
+          <input
+            placeholder="Enter Notice Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            style={inputStyle}
+          />
+
+          <select
+            value={noticeType}
+            onChange={(e) => setNoticeType(e.target.value)}
+            style={inputStyle}
+          >
+            <option value="notice">Notice Board</option>
+            <option value="advertisement">Current Advertisement</option>
+          </select>
+
+          <button
+            onClick={handleAddNotice}
+            disabled={loading}
+            style={buttonStyle}
+          >
+            {loading ? "Adding..." : "Add Notice"}
+          </button>
+        </div>
+
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "25px",
+            borderRadius: "12px",
+          }}
+        >
+          <h2>All Notices</h2>
+
+          {notices.map((item) => (
+            <div
+              key={item.id}
               style={{
-                width: "100%",
-                borderCollapse: "collapse",
+                border: "1px solid #dbe3ea",
+                padding: "16px",
+                borderRadius: "8px",
+                marginBottom: "14px",
               }}
             >
-              <thead>
-                <tr
-                  style={{
-                    background: "#0f172a",
-                    color: "#ffffff",
-                  }}
-                >
-                  <th style={thStyle}>Industry</th>
-                  <th style={thStyle}>Contact Person</th>
-                  <th style={thStyle}>Mobile</th>
-                  <th style={thStyle}>Email</th>
-                  <th style={thStyle}>Service</th>
-                  <th style={thStyle}>Details</th>
-                </tr>
-              </thead>
+              <p><b>Title:</b> {item.title}</p>
+              <p><b>Type:</b> {item.notice_type}</p>
+              <p><b>Date:</b> {new Date(item.created_at).toLocaleDateString()}</p>
 
-              <tbody>
-                {inquiries.map((item) => (
-                  <tr key={item.id}>
-                    <td style={tdStyle}>{item.industry_name}</td>
-                    <td style={tdStyle}>{item.contact_person}</td>
-                    <td style={tdStyle}>{item.mobile}</td>
-                    <td style={tdStyle}>{item.email}</td>
-                    <td style={tdStyle}>{item.service}</td>
-                    <td style={tdStyle}>{item.details}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+              <button
+                onClick={() => handleDelete(item.id)}
+                style={{
+                  background: "#dc2626",
+                  color: "#ffffff",
+                  border: "none",
+                  padding: "10px 18px",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </div>
   );
 }
 
-const thStyle = {
+const inputStyle = {
+  width: "100%",
   padding: "14px",
-  textAlign: "left" as const,
-  fontSize: "14px",
+  marginBottom: "16px",
+  border: "1px solid #cbd5e1",
+  borderRadius: "8px",
+  fontSize: "15px",
 };
 
-const tdStyle = {
-  padding: "14px",
-  borderBottom: "1px solid #e2e8f0",
-  fontSize: "14px",
+const buttonStyle = {
+  background: "#16a34a",
+  color: "#ffffff",
+  border: "none",
+  padding: "14px 22px",
+  borderRadius: "8px",
+  fontWeight: "bold",
+  cursor: "pointer",
 };
