@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { supabase } from "./supabase";
 
@@ -16,21 +16,8 @@ export default function HomePage() {
 
   const [loading, setLoading] = useState(false);
 
-  const noticeItems = [
-    { date: "08/04/2026", text: "New CTE / CCA Applications Open" },
-    { date: "18/03/2026", text: "BMW Authorization Fresh Applications Started" },
-    { date: "17/03/2026", text: "Used Oil EPR Annual Return Submission Live" },
-    { date: "13/02/2026", text: "Hazardous Waste Authorization Updates" },
-    { date: "04/02/2026", text: "CGWA Clearance Compliance Window Open" },
-  ];
-
-  const advertisementItems = [
-    { date: "08/04/2026", text: "Free Consultation For New Industries" },
-    { date: "18/03/2026", text: "Stack Monitoring Schedule Live" },
-    { date: "17/03/2026", text: "Water & Air Analysis Support Available" },
-    { date: "13/02/2026", text: "Plastic Waste EPR Registration Open" },
-    { date: "04/02/2026", text: "Ground Water NOC Support Available" },
-  ];
+  const [notices, setNotices] = useState<any[]>([]);
+  const [advertisements, setAdvertisements] = useState<any[]>([]);
 
   const services = [
     "Consent to Establish (CTE)",
@@ -54,6 +41,31 @@ export default function HomePage() {
     "Water & Air Analysis",
   ];
 
+  useEffect(() => {
+    fetchLiveNotices();
+  }, []);
+
+  const fetchLiveNotices = async () => {
+    const { data, error } = await supabase
+      .from("notices")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    const noticeData =
+      data?.filter((item) => item.notice_type === "notice") || [];
+
+    const advertisementData =
+      data?.filter((item) => item.notice_type === "advertisement") || [];
+
+    setNotices(noticeData);
+    setAdvertisements(advertisementData);
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -66,7 +78,7 @@ export default function HomePage() {
   const handleServiceClick = (service: string) => {
     setForm((prev) => ({
       ...prev,
-      service: service,
+      service,
     }));
   };
 
@@ -89,8 +101,8 @@ export default function HomePage() {
     setLoading(false);
 
     if (error) {
-      console.log(error);
       alert("Error saving inquiry");
+      console.log(error);
       return;
     }
 
@@ -114,7 +126,6 @@ export default function HomePage() {
         fontFamily: "Arial, sans-serif",
       }}
     >
-      {/* TOP BAR */}
       <div
         style={{
           background: "#083b84",
@@ -124,10 +135,9 @@ export default function HomePage() {
           fontWeight: "600",
         }}
       >
-        Gujarat Pollution Control Board Style Professional Portal
+        GreenEnvis Professional Compliance Portal
       </div>
 
-      {/* HEADER */}
       <div
         style={{
           background: "#ffffff",
@@ -155,16 +165,15 @@ export default function HomePage() {
             <Image
               src="/logo.png"
               alt="GreenEnvis Logo"
-              width={85}
-              height={85}
+              width={80}
+              height={80}
             />
 
             <div>
               <h1
                 style={{
                   margin: 0,
-                  fontSize: "38px",
-                  fontWeight: "700",
+                  fontSize: "34px",
                   color: "#0b5c2f",
                 }}
               >
@@ -178,37 +187,13 @@ export default function HomePage() {
                   color: "#64748b",
                 }}
               >
-                Smart Environmental Compliance Management Portal
+                Smart Environmental Compliance Management System
               </p>
             </div>
-          </div>
-
-          <div style={{ textAlign: "right" }}>
-            <p
-              style={{
-                margin: 0,
-                fontSize: "15px",
-                fontWeight: "700",
-                color: "#166534",
-              }}
-            >
-              GPCB • CPCB • COMPLIANCE
-            </p>
-
-            <p
-              style={{
-                marginTop: "6px",
-                fontSize: "13px",
-                color: "#64748b",
-              }}
-            >
-              Apply for Various Permissions of the Board
-            </p>
           </div>
         </div>
       </div>
 
-      {/* NAVBAR */}
       <div style={{ background: "#0b5a8a" }}>
         <div
           style={{
@@ -249,7 +234,6 @@ export default function HomePage() {
           padding: "0 20px",
         }}
       >
-        {/* NOTICE + ADVERTISEMENT */}
         <div
           style={{
             display: "grid",
@@ -258,11 +242,10 @@ export default function HomePage() {
             marginBottom: "30px",
           }}
         >
-          <MovingCard title="Notice Board" items={noticeItems} />
-          <MovingCard title="Current Advertisement" items={advertisementItems} />
+          <MovingCard title="Notice Board" items={notices} />
+          <MovingCard title="Current Advertisement" items={advertisements} />
         </div>
 
-        {/* SERVICES */}
         <Section title="Our Services">
           <div
             style={{
@@ -276,14 +259,13 @@ export default function HomePage() {
                 key={i}
                 onClick={() => handleServiceClick(service)}
                 style={{
-                  padding: "16px",
-                  background: "#ffffff",
+                  padding: "14px",
                   border: "1px solid #cbd5e1",
                   borderRadius: "8px",
-                  textAlign: "left",
+                  background: "#ffffff",
                   cursor: "pointer",
+                  textAlign: "left",
                   fontWeight: "600",
-                  fontSize: "14px",
                 }}
               >
                 {service}
@@ -292,7 +274,6 @@ export default function HomePage() {
           </div>
         </Section>
 
-        {/* FORM */}
         <Section title="Industry Inquiry Form">
           <form onSubmit={handleSubmit}>
             <input
@@ -357,7 +338,6 @@ export default function HomePage() {
                 padding: "16px",
                 borderRadius: "8px",
                 fontWeight: "700",
-                fontSize: "16px",
                 cursor: "pointer",
               }}
             >
@@ -366,7 +346,6 @@ export default function HomePage() {
           </form>
         </Section>
 
-        {/* CONTACT */}
         <Section title="Quick Contact">
           <p>📞 Mobile: 8780723063</p>
           <p>📧 Email: info@greenenvis.com</p>
@@ -375,7 +354,6 @@ export default function HomePage() {
         </Section>
       </div>
 
-      {/* WHATSAPP BUTTON */}
       <a
         href="https://wa.me/918780723063"
         target="_blank"
@@ -389,7 +367,6 @@ export default function HomePage() {
           borderRadius: "50px",
           textDecoration: "none",
           fontWeight: "700",
-          zIndex: 999,
         }}
       >
         WhatsApp Us
@@ -403,7 +380,7 @@ function MovingCard({
   items,
 }: {
   title: string;
-  items: { date: string; text: string }[];
+  items: any[];
 }) {
   return (
     <div
@@ -411,67 +388,28 @@ function MovingCard({
         background: "#ffffff",
         border: "1px solid #dbe3ea",
         borderRadius: "10px",
-        overflow: "hidden",
+        padding: "20px",
       }}
     >
-      <div
-        style={{
-          background: "#0b5a8a",
-          color: "white",
-          padding: "14px 18px",
-          fontWeight: "700",
-          fontSize: "16px",
-        }}
-      >
-        {title}
-      </div>
+      <h2>{title}</h2>
 
-      <div
-        style={{
-          height: "340px",
-          overflowY: "auto",
-          padding: "14px",
-          background: "#f8fafc",
-        }}
-      >
-        {items.map((item, i) => (
-          <div
-            key={i}
-            style={{
-              background: "#ffffff",
-              border: "1px solid #dbe3ea",
-              marginBottom: "14px",
-              padding: "14px",
-              borderRadius: "6px",
-            }}
-          >
-            <div
-              style={{
-                display: "inline-block",
-                background: "#2ca02c",
-                color: "white",
-                padding: "6px 12px",
-                borderRadius: "6px",
-                fontWeight: "700",
-                fontSize: "13px",
-                marginBottom: "10px",
-              }}
-            >
-              📅 {item.date}
-            </div>
+      {items.map((item, i) => (
+        <div
+          key={i}
+          style={{
+            border: "1px solid #dbe3ea",
+            padding: "14px",
+            marginBottom: "12px",
+            borderRadius: "8px",
+          }}
+        >
+          <p>
+            📅 {new Date(item.created_at).toLocaleDateString()}
+          </p>
 
-            <div
-              style={{
-                fontSize: "14px",
-                color: "#334155",
-                fontWeight: "500",
-              }}
-            >
-              {item.text}
-            </div>
-          </div>
-        ))}
-      </div>
+          <p>{item.title}</p>
+        </div>
+      ))}
     </div>
   );
 }
@@ -487,21 +425,12 @@ function Section({
     <div
       style={{
         background: "#ffffff",
-        border: "1px solid #dbe3ea",
+        padding: "24px",
         borderRadius: "10px",
-        padding: "25px",
-        marginBottom: "25px",
+        marginBottom: "24px",
       }}
     >
-      <h2
-        style={{
-          marginTop: 0,
-          fontSize: "28px",
-          color: "#0f172a",
-        }}
-      >
-        {title}
-      </h2>
+      <h2>{title}</h2>
       {children}
     </div>
   );
