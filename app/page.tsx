@@ -24,10 +24,10 @@ export default function HomePage() {
     });
   };
 
-  const handleSubmit = async () => {
-    console.log("BUTTON CLICKED");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    alert("Button Click Working");
+    alert("Form Submit Triggered");
 
     setLoading(true);
 
@@ -45,7 +45,7 @@ export default function HomePage() {
     setLoading(false);
 
     if (error) {
-      console.log("SUPABASE ERROR:", error);
+      console.log(error);
       alert("Error saving inquiry");
       return;
     }
@@ -82,75 +82,76 @@ export default function HomePage() {
       >
         <h1>Industry Inquiry Form</h1>
 
-        <input
-          name="industry_name"
-          placeholder="Industry Name"
-          value={form.industry_name}
-          onChange={handleChange}
-          style={inputStyle}
-        />
+        <form onSubmit={handleSubmit}>
+          <input
+            name="industry_name"
+            placeholder="Industry Name"
+            value={form.industry_name}
+            onChange={handleChange}
+            style={inputStyle}
+          />
 
-        <input
-          name="contact_person"
-          placeholder="Contact Person Name"
-          value={form.contact_person}
-          onChange={handleChange}
-          style={inputStyle}
-        />
+          <input
+            name="contact_person"
+            placeholder="Contact Person Name"
+            value={form.contact_person}
+            onChange={handleChange}
+            style={inputStyle}
+          />
 
-        <input
-          name="mobile"
-          placeholder="Mobile Number"
-          value={form.mobile}
-          onChange={handleChange}
-          style={inputStyle}
-        />
+          <input
+            name="mobile"
+            placeholder="Mobile Number"
+            value={form.mobile}
+            onChange={handleChange}
+            style={inputStyle}
+          />
 
-        <input
-          name="email"
-          placeholder="Email Address"
-          value={form.email}
-          onChange={handleChange}
-          style={inputStyle}
-        />
+          <input
+            name="email"
+            placeholder="Email Address"
+            value={form.email}
+            onChange={handleChange}
+            style={inputStyle}
+          />
 
-        <input
-          name="service"
-          placeholder="Required Service"
-          value={form.service}
-          onChange={handleChange}
-          style={inputStyle}
-        />
+          <input
+            name="service"
+            placeholder="Required Service"
+            value={form.service}
+            onChange={handleChange}
+            style={inputStyle}
+          />
 
-        <textarea
-          name="details"
-          placeholder="Requirement Details"
-          value={form.details}
-          onChange={handleChange}
-          style={{
-            ...inputStyle,
-            height: "150px",
-          }}
-        />
+          <textarea
+            name="details"
+            placeholder="Requirement Details"
+            value={form.details}
+            onChange={handleChange}
+            style={{
+              ...inputStyle,
+              height: "150px",
+            }}
+          />
 
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={loading}
-          style={{
-            width: "100%",
-            background: "#16a34a",
-            color: "#ffffff",
-            border: "none",
-            padding: "16px",
-            borderRadius: "10px",
-            fontWeight: "bold",
-            cursor: "pointer",
-            marginTop: "10px",
-          }}
-        >
-          {loading ? "Submitting..." : "Submit Inquiry"}
-        </button>
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              width: "100%",
+              background: "#16a34a",
+              color: "#ffffff",
+              border: "none",
+              padding: "16px",
+              borderRadius: "10px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              marginTop: "10px",
+            }}
+          >
+            {loading ? "Submitting..." : "Submit Inquiry"}
+          </button>
+        </form>
       </div>
     </div>
   );
