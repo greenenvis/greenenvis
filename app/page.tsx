@@ -15,7 +15,6 @@ export default function HomePage() {
   });
 
   const [loading, setLoading] = useState(false);
-
   const [notices, setNotices] = useState<any[]>([]);
   const [advertisements, setAdvertisements] = useState<any[]>([]);
 
@@ -28,16 +27,10 @@ export default function HomePage() {
     "Annual Returns",
     "AMC - XGN Portal Service",
     "Environmental Statements",
-    "Closure Revocation Application",
     "Hazardous Waste Management",
     "Biomedical Waste Management",
-    "Waste Import Export License",
-    "E-Waste & Battery Waste Management",
     "EPR Compliance",
     "Plastic Waste Management",
-    "Construction & Demolition Management",
-    "Municipal Solid Waste Management",
-    "Stack Monitoring",
     "Water & Air Analysis",
   ];
 
@@ -56,14 +49,13 @@ export default function HomePage() {
       return;
     }
 
-    const noticeData =
-      data?.filter((item) => item.notice_type === "notice") || [];
+    setNotices(
+      data?.filter((item) => item.notice_type === "notice") || []
+    );
 
-    const advertisementData =
-      data?.filter((item) => item.notice_type === "advertisement") || [];
-
-    setNotices(noticeData);
-    setAdvertisements(advertisementData);
+    setAdvertisements(
+      data?.filter((item) => item.notice_type === "advertisement") || []
+    );
   };
 
   const handleChange = (
@@ -102,7 +94,6 @@ export default function HomePage() {
 
     if (error) {
       alert("Error saving inquiry");
-      console.log(error);
       return;
     }
 
@@ -126,13 +117,13 @@ export default function HomePage() {
         fontFamily: "Arial, sans-serif",
       }}
     >
+      {/* Header */}
       <div
         style={{
           background: "#083b84",
-          color: "white",
-          padding: "8px 30px",
-          fontSize: "13px",
-          fontWeight: "600",
+          color: "#ffffff",
+          padding: "10px 30px",
+          fontWeight: "bold",
         }}
       >
         GreenEnvis Professional Compliance Portal
@@ -142,7 +133,6 @@ export default function HomePage() {
         style={{
           background: "#ffffff",
           padding: "20px 40px",
-          borderBottom: "1px solid #dbe3ea",
         }}
       >
         <div
@@ -152,100 +142,59 @@ export default function HomePage() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            flexWrap: "wrap",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "18px",
-            }}
-          >
+          <div style={{ display: "flex", gap: "18px", alignItems: "center" }}>
             <Image
               src="/logo.png"
-              alt="GreenEnvis Logo"
+              alt="Logo"
               width={80}
               height={80}
             />
 
             <div>
-              <h1
-                style={{
-                  margin: 0,
-                  fontSize: "34px",
-                  color: "#0b5c2f",
-                }}
-              >
+              <h1 style={{ margin: 0, color: "#0b5c2f" }}>
                 GreenEnvis
               </h1>
 
-              <p
-                style={{
-                  marginTop: "6px",
-                  fontSize: "14px",
-                  color: "#64748b",
-                }}
-              >
-                Smart Environmental Compliance Management System
+              <p style={{ marginTop: "6px", color: "#64748b" }}>
+                Smart Environmental Compliance Portal
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      <div style={{ background: "#0b5a8a" }}>
-        <div
-          style={{
-            maxWidth: "1400px",
-            margin: "0 auto",
-            display: "flex",
-            flexWrap: "wrap",
-          }}
-        >
-          {[
-            "Home",
-            "Client Login",
-            "Admin Login",
-            "Client Dashboard",
-            "Admin Panel",
-            "Services",
-            "Contact",
-          ].map((item, i) => (
-            <div
-              key={i}
-              style={{
-                color: "white",
-                padding: "16px 22px",
-                fontSize: "14px",
-                fontWeight: "700",
-              }}
-            >
-              {item}
-            </div>
-          ))}
-        </div>
-      </div>
-
+      {/* Running Notice */}
       <div
         style={{
           maxWidth: "1400px",
           margin: "30px auto",
           padding: "0 20px",
+          display: "grid",
+          gridTemplateColumns: "2fr 1fr",
+          gap: "20px",
         }}
       >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "2fr 1fr",
-            gap: "20px",
-            marginBottom: "30px",
-          }}
-        >
-          <MovingCard title="Notice Board" items={notices} />
-          <MovingCard title="Current Advertisement" items={advertisements} />
-        </div>
+        <LiveRunningCard
+          title="Notice Board"
+          items={notices}
+        />
 
+        <LiveRunningCard
+          title="Current Advertisement"
+          items={advertisements}
+        />
+      </div>
+
+      {/* Services */}
+      <div
+        style={{
+          maxWidth: "1400px",
+          margin: "20px auto",
+          padding: "0 20px",
+        }}
+      >
         <Section title="Our Services">
           <div
             style={{
@@ -260,12 +209,12 @@ export default function HomePage() {
                 onClick={() => handleServiceClick(service)}
                 style={{
                   padding: "14px",
+                  background: "#ffffff",
                   border: "1px solid #cbd5e1",
                   borderRadius: "8px",
-                  background: "#ffffff",
-                  cursor: "pointer",
                   textAlign: "left",
                   fontWeight: "600",
+                  cursor: "pointer",
                 }}
               >
                 {service}
@@ -329,53 +278,26 @@ export default function HomePage() {
 
             <button
               type="submit"
-              disabled={loading}
               style={{
                 width: "100%",
                 background: "#16a34a",
-                color: "white",
-                border: "none",
+                color: "#ffffff",
                 padding: "16px",
+                border: "none",
                 borderRadius: "8px",
-                fontWeight: "700",
-                cursor: "pointer",
+                fontWeight: "bold",
               }}
             >
               {loading ? "Submitting..." : "Submit Inquiry"}
             </button>
           </form>
         </Section>
-
-        <Section title="Quick Contact">
-          <p>📞 Mobile: 8780723063</p>
-          <p>📧 Email: info@greenenvis.com</p>
-          <p>🌍 Service Area: All India</p>
-          <p>🛠 Support: GPCB / CPCB / EPR Consultancy</p>
-        </Section>
       </div>
-
-      <a
-        href="https://wa.me/918780723063"
-        target="_blank"
-        style={{
-          position: "fixed",
-          right: "30px",
-          bottom: "30px",
-          background: "#25D366",
-          color: "white",
-          padding: "14px 20px",
-          borderRadius: "50px",
-          textDecoration: "none",
-          fontWeight: "700",
-        }}
-      >
-        WhatsApp Us
-      </a>
     </div>
   );
 }
 
-function MovingCard({
+function LiveRunningCard({
   title,
   items,
 }: {
@@ -386,30 +308,67 @@ function MovingCard({
     <div
       style={{
         background: "#ffffff",
-        border: "1px solid #dbe3ea",
         borderRadius: "10px",
-        padding: "20px",
+        overflow: "hidden",
+        border: "1px solid #dbe3ea",
       }}
     >
-      <h2>{title}</h2>
+      <div
+        style={{
+          background: "#0b5a8a",
+          color: "#ffffff",
+          padding: "14px 18px",
+          fontWeight: "bold",
+        }}
+      >
+        {title}
+      </div>
 
-      {items.map((item, i) => (
+      <div
+        style={{
+          height: "350px",
+          overflow: "hidden",
+          padding: "14px",
+        }}
+      >
         <div
-          key={i}
           style={{
-            border: "1px solid #dbe3ea",
-            padding: "14px",
-            marginBottom: "12px",
-            borderRadius: "8px",
+            animation: "scrollUp 18s linear infinite",
           }}
         >
-          <p>
-            📅 {new Date(item.created_at).toLocaleDateString()}
-          </p>
+          {items.map((item, i) => (
+            <div
+              key={i}
+              style={{
+                marginBottom: "14px",
+                padding: "14px",
+                border: "1px solid #dbe3ea",
+                borderRadius: "8px",
+                background: "#f8fafc",
+              }}
+            >
+              <p style={{ margin: 0, fontWeight: "bold", color: "#16a34a" }}>
+                📅 {new Date(item.created_at).toLocaleDateString()}
+              </p>
 
-          <p>{item.title}</p>
+              <p style={{ marginTop: "10px" }}>
+                {item.title}
+              </p>
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
+
+      <style jsx>{`
+        @keyframes scrollUp {
+          0% {
+            transform: translateY(100%);
+          }
+          100% {
+            transform: translateY(-100%);
+          }
+        }
+      `}</style>
     </div>
   );
 }
@@ -442,5 +401,4 @@ const inputStyle = {
   marginBottom: "16px",
   border: "1px solid #cbd5e1",
   borderRadius: "8px",
-  fontSize: "15px",
 };
