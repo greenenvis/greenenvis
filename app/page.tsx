@@ -27,8 +27,6 @@ export default function HomePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    alert("Form Submit Triggered");
-
     setLoading(true);
 
     const { error } = await supabase.from("inquiries").insert([
@@ -45,8 +43,8 @@ export default function HomePage() {
     setLoading(false);
 
     if (error) {
-      console.log(error);
       alert("Error saving inquiry");
+      console.log(error);
       return;
     }
 
@@ -65,93 +63,196 @@ export default function HomePage() {
   return (
     <div
       style={{
-        minHeight: "100vh",
         background: "#f1f5f9",
-        padding: "40px",
+        minHeight: "100vh",
         fontFamily: "Arial",
+        padding: "20px",
       }}
     >
       <div
         style={{
-          maxWidth: "900px",
+          maxWidth: "1200px",
           margin: "0 auto",
-          background: "#ffffff",
-          padding: "30px",
-          borderRadius: "12px",
         }}
       >
-        <h1>Industry Inquiry Form</h1>
+        {/* Header */}
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "25px",
+            borderRadius: "14px",
+            marginBottom: "20px",
+          }}
+        >
+          <h1 style={{ color: "#166534", marginBottom: "8px" }}>
+            GreenEnvis Portal
+          </h1>
 
-        <form onSubmit={handleSubmit}>
-          <input
-            name="industry_name"
-            placeholder="Industry Name"
-            value={form.industry_name}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+          <p style={{ color: "#475569" }}>
+            Professional Environmental Compliance Management System
+          </p>
+        </div>
 
-          <input
-            name="contact_person"
-            placeholder="Contact Person Name"
-            value={form.contact_person}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+        {/* Top Actions */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: "15px",
+            marginBottom: "20px",
+          }}
+        >
+          <a href="/dashboard" style={cardStyle}>
+            Client Dashboard
+          </a>
 
-          <input
-            name="mobile"
-            placeholder="Mobile Number"
-            value={form.mobile}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+          <a href="/admin" style={cardStyle}>
+            Admin Panel
+          </a>
 
-          <input
-            name="email"
-            placeholder="Email Address"
-            value={form.email}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+          <a href="/application-details" style={cardStyle}>
+            Application Details
+          </a>
 
-          <input
-            name="service"
-            placeholder="Required Service"
-            value={form.service}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+          <a href="/login" style={cardStyle}>
+            Client Login
+          </a>
+        </div>
 
-          <textarea
-            name="details"
-            placeholder="Requirement Details"
-            value={form.details}
-            onChange={handleChange}
+        {/* Services */}
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "25px",
+            borderRadius: "14px",
+            marginBottom: "20px",
+          }}
+        >
+          <h2 style={{ marginBottom: "20px" }}>
+            Our Services
+          </h2>
+
+          <div
             style={{
-              ...inputStyle,
-              height: "150px",
-            }}
-          />
-
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: "100%",
-              background: "#16a34a",
-              color: "#ffffff",
-              border: "none",
-              padding: "16px",
-              borderRadius: "10px",
-              fontWeight: "bold",
-              cursor: "pointer",
-              marginTop: "10px",
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "15px",
             }}
           >
-            {loading ? "Submitting..." : "Submit Inquiry"}
-          </button>
-        </form>
+            {[
+              "GPCB Consent (CTE / CCA)",
+              "BMW Authorization",
+              "Used Oil EPR",
+              "Hazardous Waste Authorization",
+              "CGWA Clearance",
+              "Environmental Audit",
+            ].map((item, index) => (
+              <div key={index} style={serviceBox}>
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Inquiry Form */}
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "25px",
+            borderRadius: "14px",
+            marginBottom: "20px",
+          }}
+        >
+          <h2 style={{ marginBottom: "20px" }}>
+            Industry Inquiry Form
+          </h2>
+
+          <form onSubmit={handleSubmit}>
+            <input
+              name="industry_name"
+              placeholder="Industry Name"
+              value={form.industry_name}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+
+            <input
+              name="contact_person"
+              placeholder="Contact Person Name"
+              value={form.contact_person}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+
+            <input
+              name="mobile"
+              placeholder="Mobile Number"
+              value={form.mobile}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+
+            <input
+              name="email"
+              placeholder="Email Address"
+              value={form.email}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+
+            <input
+              name="service"
+              placeholder="Required Service"
+              value={form.service}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+
+            <textarea
+              name="details"
+              placeholder="Requirement Details"
+              value={form.details}
+              onChange={handleChange}
+              style={{
+                ...inputStyle,
+                height: "150px",
+              }}
+            />
+
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                width: "100%",
+                background: "#16a34a",
+                color: "#ffffff",
+                border: "none",
+                padding: "16px",
+                borderRadius: "10px",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              {loading ? "Submitting..." : "Submit Inquiry"}
+            </button>
+          </form>
+        </div>
+
+        {/* Contact */}
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "25px",
+            borderRadius: "14px",
+          }}
+        >
+          <h2>Quick Contact</h2>
+
+          <p>📞 Mobile: 8780723063</p>
+          <p>📧 Email: info@greenenvis.com</p>
+          <p>📍 Service Area: All Gujarat</p>
+          <p>🛠 Support: GPCB / CPCB / EPR Consultancy</p>
+        </div>
       </div>
     </div>
   );
@@ -164,4 +265,20 @@ const inputStyle = {
   border: "1px solid #cbd5e1",
   borderRadius: "8px",
   fontSize: "15px",
+};
+
+const cardStyle = {
+  background: "#16a34a",
+  color: "#ffffff",
+  padding: "18px",
+  borderRadius: "12px",
+  textAlign: "center" as const,
+  textDecoration: "none",
+  fontWeight: "bold",
+};
+
+const serviceBox = {
+  border: "1px solid #cbd5e1",
+  padding: "18px",
+  borderRadius: "10px",
 };
