@@ -25,6 +25,10 @@ export default function HomePage() {
   };
 
   const handleSubmit = async () => {
+    console.log("BUTTON CLICKED");
+
+    alert("Button Click Working");
+
     setLoading(true);
 
     const { error } = await supabase.from("inquiries").insert([
@@ -41,7 +45,7 @@ export default function HomePage() {
     setLoading(false);
 
     if (error) {
-      console.log(error);
+      console.log("SUPABASE ERROR:", error);
       alert("Error saving inquiry");
       return;
     }
