@@ -15,6 +15,34 @@ export default function HomePage() {
 
   const [loading, setLoading] = useState(false);
 
+  const notices = [
+    "New CTE / CCA Applications Open",
+    "BMW Authorization Fresh Applications",
+    "Used Oil EPR Annual Return Submission",
+    "Hazardous Waste Authorization Updates",
+    "CGWA Clearance Compliance Window Open",
+  ];
+
+  const advertisements = [
+    "Environmental Audit Renewal Started",
+    "CPCB Annual Compliance Filing Live",
+    "Stack Monitoring Schedule Updated",
+    "Water & Air Analysis Special Support",
+    "Free Consultation for New Industries",
+  ];
+
+  const services = [
+    "GPCB Consent (CTE / CCA)",
+    "BMW Authorization",
+    "EPR Registration",
+    "Used Oil EPR",
+    "Hazardous Waste Authorization",
+    "CGWA Clearance",
+    "Environmental Audit",
+    "Stack Monitoring",
+    "Water & Air Analysis",
+  ];
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -63,17 +91,17 @@ export default function HomePage() {
   return (
     <div
       style={{
-        background: "#eef2f7",
+        background: "#edf2f7",
         minHeight: "100vh",
-        fontFamily: "Arial, sans-serif",
+        fontFamily: "Arial",
       }}
     >
-      {/* TOP HEADER */}
+      {/* HEADER */}
       <div
         style={{
           background: "#ffffff",
-          borderBottom: "2px solid #dbe3ea",
-          padding: "25px 40px",
+          borderBottom: "1px solid #dbe3ea",
+          padding: "20px 40px",
         }}
       >
         <div
@@ -84,15 +112,14 @@ export default function HomePage() {
             justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap",
-            gap: "20px",
           }}
         >
           <div>
             <h1
               style={{
                 margin: 0,
-                fontSize: "40px",
                 color: "#0b5c2f",
+                fontSize: "38px",
                 fontWeight: "bold",
               }}
             >
@@ -102,37 +129,33 @@ export default function HomePage() {
             <p
               style={{
                 marginTop: "8px",
-                color: "#475569",
-                fontSize: "15px",
+                color: "#64748b",
+                fontSize: "14px",
               }}
             >
-              Smart Environmental Compliance Management Portal
+              Smart Environmental Compliance Portal
             </p>
           </div>
 
-          <div
-            style={{
-              textAlign: "right",
-            }}
-          >
+          <div style={{ textAlign: "right" }}>
             <p
               style={{
                 margin: 0,
+                color: "#166534",
                 fontWeight: "bold",
-                color: "#0f172a",
               }}
             >
-              GPCB • CPCB • Compliance
+              GPCB • CPCB • COMPLIANCE
             </p>
 
             <p
               style={{
                 marginTop: "6px",
+                fontSize: "13px",
                 color: "#64748b",
-                fontSize: "14px",
               }}
             >
-              Gujarat Environmental Consultancy System
+              Smart Compliance Management System
             </p>
           </div>
         </div>
@@ -141,8 +164,7 @@ export default function HomePage() {
       {/* NAVBAR */}
       <div
         style={{
-          background: "#0b4f7d",
-          padding: "0",
+          background: "#0b5a8a",
         }}
       >
         <div
@@ -156,31 +178,29 @@ export default function HomePage() {
           {[
             ["Home", "/"],
             ["Client Login", "/login"],
+            ["Admin Login", "/admin-login"],
             ["Client Dashboard", "/dashboard"],
             ["Admin Panel", "/admin"],
-            ["Application Details", "/application-details"],
             ["Services", "#services"],
             ["Contact", "#contact"],
-          ].map(([label, link], index) => (
+          ].map(([name, link], i) => (
             <a
-              key={index}
+              key={i}
               href={link}
               style={{
                 color: "#ffffff",
                 textDecoration: "none",
-                padding: "18px 24px",
+                padding: "16px 22px",
                 fontWeight: "bold",
-                borderRight: "1px solid rgba(255,255,255,0.15)",
                 fontSize: "14px",
               }}
             >
-              {label}
+              {name}
             </a>
           ))}
         </div>
       </div>
 
-      {/* MAIN CONTENT */}
       <div
         style={{
           maxWidth: "1300px",
@@ -188,7 +208,7 @@ export default function HomePage() {
           padding: "0 20px",
         }}
       >
-        {/* NOTICE SECTION */}
+        {/* NOTICE + ADS */}
         <div
           style={{
             display: "grid",
@@ -197,132 +217,48 @@ export default function HomePage() {
             marginBottom: "25px",
           }}
         >
-          <div
-            style={{
-              background: "#ffffff",
-              borderRadius: "10px",
-              overflow: "hidden",
-              border: "1px solid #dbe3ea",
-            }}
-          >
-            <div
-              style={{
-                background: "#0b4f7d",
-                color: "#ffffff",
-                padding: "14px 20px",
-                fontWeight: "bold",
-              }}
-            >
-              Notice Board
-            </div>
+          <SectionCard title="Notice Board">
+            {notices.map((item, i) => (
+              <p key={i}>• {item}</p>
+            ))}
+          </SectionCard>
 
-            <div style={{ padding: "20px" }}>
-              {[
-                "New GPCB CTE / CCA Applications Open",
-                "BMW Authorization Fresh Submission Notice",
-                "Used Oil EPR Annual Return Update",
-                "Hazardous Waste Compliance Circular",
-                "Environmental Audit Renewal Schedule",
-              ].map((item, index) => (
-                <p key={index} style={{ marginBottom: "14px" }}>
-                  ▸ {item}
-                </p>
-              ))}
-            </div>
-          </div>
-
-          <div
-            style={{
-              background: "#ffffff",
-              borderRadius: "10px",
-              overflow: "hidden",
-              border: "1px solid #dbe3ea",
-            }}
-          >
-            <div
-              style={{
-                background: "#0b4f7d",
-                color: "#ffffff",
-                padding: "14px 20px",
-                fontWeight: "bold",
-              }}
-            >
-              Current Updates
-            </div>
-
-            <div style={{ padding: "20px" }}>
-              <p>CTE Applications Active</p>
-              <p>CCA Renewals Running</p>
-              <p>BMW Annual Compliance</p>
-              <p>CGWA Submission Window</p>
-              <p>EPR Portal Live</p>
-            </div>
-          </div>
+          <SectionCard title="Current Advertisement">
+            {advertisements.map((item, i) => (
+              <p key={i}>• {item}</p>
+            ))}
+          </SectionCard>
         </div>
 
         {/* SERVICES */}
-        <div
-          id="services"
-          style={{
-            background: "#ffffff",
-            borderRadius: "10px",
-            padding: "25px",
-            border: "1px solid #dbe3ea",
-            marginBottom: "25px",
-          }}
-        >
-          <h2 style={{ marginTop: 0 }}>
-            Our Services
-          </h2>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "15px",
-              marginTop: "20px",
-            }}
-          >
-            {[
-              "GPCB Consent (CTE / CCA)",
-              "BMW Authorization",
-              "Used Oil EPR",
-              "Hazardous Waste Authorization",
-              "CGWA Clearance",
-              "Environmental Audit",
-              "Stack Monitoring",
-              "Water & Air Analysis",
-              "Compliance Renewals",
-            ].map((item, index) => (
-              <div
-                key={index}
-                style={{
-                  border: "1px solid #cbd5e1",
-                  padding: "18px",
-                  borderRadius: "8px",
-                  background: "#f8fafc",
-                }}
-              >
-                {item}
-              </div>
-            ))}
-          </div>
+        <div id="services">
+          <SectionBox title="Our Services">
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: "15px",
+              }}
+            >
+              {services.map((item, i) => (
+                <div
+                  key={i}
+                  style={{
+                    border: "1px solid #cbd5e1",
+                    padding: "16px",
+                    borderRadius: "8px",
+                    background: "#f8fafc",
+                  }}
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
+          </SectionBox>
         </div>
 
-        {/* INQUIRY FORM */}
-        <div
-          style={{
-            background: "#ffffff",
-            borderRadius: "10px",
-            padding: "25px",
-            border: "1px solid #dbe3ea",
-            marginBottom: "25px",
-          }}
-        >
-          <h2 style={{ marginTop: 0 }}>
-            Industry Inquiry Form
-          </h2>
-
+        {/* FORM */}
+        <SectionBox title="Industry Inquiry Form">
           <form onSubmit={handleSubmit}>
             <input
               name="industry_name"
@@ -371,7 +307,7 @@ export default function HomePage() {
               onChange={handleChange}
               style={{
                 ...inputStyle,
-                height: "150px",
+                height: "140px",
               }}
             />
 
@@ -386,36 +322,95 @@ export default function HomePage() {
                 padding: "16px",
                 borderRadius: "8px",
                 fontWeight: "bold",
-                cursor: "pointer",
                 fontSize: "16px",
+                cursor: "pointer",
               }}
             >
               {loading ? "Submitting..." : "Submit Inquiry"}
             </button>
           </form>
-        </div>
+        </SectionBox>
 
         {/* CONTACT */}
+        <div id="contact">
+          <SectionBox title="Quick Contact">
+            <div style={{ lineHeight: "2" }}>
+              <p>📞 Mobile: 8780723063</p>
+              <p>📧 Email: info@greenenvis.com</p>
+              <p>📍 Service Area: All Gujarat</p>
+              <p>🛠 Support: GPCB / CPCB / EPR Consultancy</p>
+              <p>💬 Free Consultation Available</p>
+            </div>
+          </SectionBox>
+        </div>
+
+        {/* FOOTER */}
         <div
-          id="contact"
           style={{
-            background: "#ffffff",
-            borderRadius: "10px",
-            padding: "25px",
-            border: "1px solid #dbe3ea",
-            marginBottom: "40px",
+            textAlign: "center",
+            padding: "30px 0",
+            color: "#64748b",
+            fontSize: "14px",
           }}
         >
-          <h2 style={{ marginTop: 0 }}>
-            Quick Contact
-          </h2>
-
-          <p>📞 Mobile: 8780723063</p>
-          <p>📧 Email: info@greenenvis.com</p>
-          <p>📍 Service Area: All Gujarat</p>
-          <p>🛠 Support: GPCB / CPCB / EPR Consultancy</p>
+          © 2026 GreenEnvis — Professional Environmental Compliance Portal
         </div>
       </div>
+    </div>
+  );
+}
+
+function SectionCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      style={{
+        background: "#ffffff",
+        borderRadius: "10px",
+        border: "1px solid #dbe3ea",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          background: "#0b5a8a",
+          color: "#ffffff",
+          padding: "14px 18px",
+          fontWeight: "bold",
+        }}
+      >
+        {title}
+      </div>
+
+      <div style={{ padding: "20px" }}>{children}</div>
+    </div>
+  );
+}
+
+function SectionBox({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      style={{
+        background: "#ffffff",
+        borderRadius: "10px",
+        border: "1px solid #dbe3ea",
+        padding: "25px",
+        marginBottom: "25px",
+      }}
+    >
+      <h2 style={{ marginTop: 0 }}>{title}</h2>
+      {children}
     </div>
   );
 }
