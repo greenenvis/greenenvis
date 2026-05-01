@@ -5,6 +5,7 @@ import Image from "next/image";
 import { supabase } from "./supabase";
 
 export default function HomePage() {
+
   const [form, setForm] = useState({
     industry_name: "",
     contact_person: "",
@@ -18,14 +19,16 @@ export default function HomePage() {
   const [ads, setAds] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // 🔥 Banner Slider
+  // ✅ SLIDER IMAGES
   const banners = [
     "/environment-day-banner.jpg",
     "/earth-day.jpg",
     "/water-day.jpg",
   ];
+
   const [currentBanner, setCurrentBanner] = useState(0);
 
+  // ✅ AUTO CHANGE SLIDER
   useEffect(() => {
     fetchNotices();
 
@@ -36,6 +39,7 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
+  // ✅ FETCH NOTICE
   const fetchNotices = async () => {
     const { data } = await supabase
       .from("notices")
@@ -81,6 +85,7 @@ export default function HomePage() {
     });
   };
 
+  // ✅ SERVICES
   const services = [
     "CTE / CCA",
     "BMW Authorization",
@@ -95,21 +100,15 @@ export default function HomePage() {
 
   return (
     <div style={{ background: "#edf2f7", minHeight: "100vh" }}>
+
       {/* HEADER */}
-      <div style={{ background: "#083b84", color: "#fff", padding: "10px 20px" }}>
+      <div style={{ background: "#083b84", color: "#fff", padding: "12px 20px", fontWeight: "bold" }}>
         GreenEnvis Compliance Portal
       </div>
 
       {/* SLIDER */}
-      <div style={{ maxWidth: "1200px", margin: "20px auto" }}>
-        <div
-          style={{
-            height: "260px",
-            position: "relative",
-            borderRadius: "10px",
-            overflow: "hidden",
-          }}
-        >
+      <div style={{ maxWidth: "1100px", margin: "20px auto" }}>
+        <div style={{ height: "250px", position: "relative", borderRadius: "10px", overflow: "hidden" }}>
           <Image
             src={banners[currentBanner]}
             alt="banner"
@@ -120,23 +119,26 @@ export default function HomePage() {
       </div>
 
       {/* NOTICE + ADS */}
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "20px auto",
-          display: "grid",
-          gridTemplateColumns: "2fr 1fr",
-          gap: "20px",
-        }}
-      >
+      <div style={{
+        maxWidth: "1100px",
+        margin: "20px auto",
+        display: "grid",
+        gridTemplateColumns: "2fr 1fr",
+        gap: "20px"
+      }}>
         <LiveBox title="Notice Board" data={notices} />
         <LiveBox title="Current Advertisement" data={ads} />
       </div>
 
       {/* SERVICES */}
-      <div style={{ maxWidth: "1200px", margin: "20px auto" }}>
+      <div style={{ maxWidth: "1100px", margin: "20px auto" }}>
         <h3>Our Services</h3>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "10px" }}>
+
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3,1fr)",
+          gap: "10px"
+        }}>
           {services.map((s, i) => (
             <button key={i} onClick={() => handleServiceClick(s)} style={btn}>
               {s}
@@ -146,7 +148,7 @@ export default function HomePage() {
       </div>
 
       {/* FORM */}
-      <div style={{ maxWidth: "1200px", margin: "20px auto" }}>
+      <div style={{ maxWidth: "1100px", margin: "20px auto" }}>
         <h3>Inquiry Form</h3>
 
         <form onSubmit={handleSubmit}>
@@ -167,16 +169,19 @@ export default function HomePage() {
       <a href="https://wa.me/918780723063" target="_blank" style={wa}>
         WhatsApp
       </a>
+
     </div>
   );
 }
 
+// 🔥 LIVE SCROLL
 function LiveBox({ title, data }: any) {
   return (
     <div style={{ background: "#fff", borderRadius: "10px", padding: "10px" }}>
       <h4>{title}</h4>
+
       <div style={{ height: "250px", overflow: "hidden" }}>
-        <div style={{ animation: "scroll 15s linear infinite" }}>
+        <div style={{ animation: "scroll 12s linear infinite" }}>
           {data.map((item: any, i: number) => (
             <div key={i} style={{ marginBottom: "10px" }}>
               <b>📅 {new Date(item.created_at).toLocaleDateString()}</b>
@@ -204,8 +209,8 @@ const input = {
 
 const btn = {
   padding: "10px",
-  background: "#fff",
   border: "1px solid #ccc",
+  background: "#fff",
   cursor: "pointer",
 };
 
