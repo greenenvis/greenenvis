@@ -14,31 +14,29 @@ export default function HomePage() {
     details: "",
   });
 
-  const [loading, setLoading] = useState(false);
   const [notices, setNotices] = useState<any[]>([]);
-  const [advertisements, setAdvertisements] = useState<any[]>([]);
+  const [ads, setAds] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const services = [
-    "Consent to Establish (CTE)",
-    "Consent to Operate (CTO)",
-    "Environmental Clearance (EC)",
-    "Pollution Compliance",
-    "Ground Water NOC",
-    "Annual Returns",
-    "AMC - XGN Portal Service",
-    "Environmental Statements",
-    "Hazardous Waste Management",
-    "Biomedical Waste Management",
-    "EPR Compliance",
-    "Plastic Waste Management",
-    "Water & Air Analysis",
+  // 🔥 Banner Slider
+  const banners = [
+    "/environment-day-banner.jpg",
+    "/earth-day.jpg",
+    "/water-day.jpg",
   ];
+  const [currentBanner, setCurrentBanner] = useState(0);
 
   useEffect(() => {
-    fetchLiveNotices();
+    fetchNotices();
+
+    const interval = setInterval(() => {
+      setCurrentBanner((prev) => (prev + 1) % banners.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
   }, []);
 
-  const fetchLiveNotices = async () => {
+  const fetchNotices = async () => {
     const { data } = await supabase
       .from("notices")
       .select("*")
@@ -46,46 +44,23 @@ export default function HomePage() {
 
     if (!data) return;
 
-    setNotices(
-      data.filter((item) => item.notice_type === "notice")
-    );
-
-    setAdvertisements(
-      data.filter((item) => item.notice_type === "advertisement")
-    );
+    setNotices(data.filter((i) => i.notice_type === "notice"));
+    setAds(data.filter((i) => i.notice_type === "advertisement"));
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+  const handleChange = (e: any) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleServiceClick = (service: string) => {
-    setForm((prev) => ({
-      ...prev,
-      service,
-    }));
+    setForm({ ...form, service });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-
     setLoading(true);
 
-    const { error } = await supabase.from("inquiries").insert([
-      {
-        industry_name: form.industry_name,
-        contact_person: form.contact_person,
-        mobile: form.mobile,
-        email: form.email,
-        service: form.service,
-        details: form.details,
-      },
-    ]);
+    const { error } = await supabase.from("inquiries").insert([form]);
 
     setLoading(false);
 
@@ -106,354 +81,147 @@ export default function HomePage() {
     });
   };
 
+  const services = [
+    "CTE / CCA",
+    "BMW Authorization",
+    "EPR Registration",
+    "Used Oil EPR",
+    "Hazardous Waste",
+    "CGWA Clearance",
+    "Environmental Audit",
+    "Stack Monitoring",
+    "Water & Air Analysis",
+  ];
+
   return (
-    <div
-      style={{
-        background: "#edf2f7",
-        minHeight: "100vh",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
-      {/* TOP BAR */}
-      <div
-        style={{
-          background: "#083b84",
-          color: "#ffffff",
-          padding: "10px 30px",
-          fontWeight: "bold",
-        }}
-      >
-        GreenEnvis Professional Compliance Portal
-      </div>
-
+    <div style={{ background: "#edf2f7", minHeight: "100vh" }}>
       {/* HEADER */}
-      <div
-        style={{
-          background: "#ffffff",
-          padding: "20px 40px",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "1400px",
-            margin: "0 auto",
-            display: "flex",
-            alignItems: "center",
-            gap: "20px",
-          }}
-        >
-          <Image
-            src="/logo.png"
-            alt="Logo"
-            width={80}
-            height={80}
-          />
-
-          <div>
-            <h1 style={{ margin: 0, color: "#0b5c2f" }}>
-              GreenEnvis
-            </h1>
-
-            <p style={{ marginTop: "6px", color: "#64748b" }}>
-              Smart Environmental Compliance Portal
-            </p>
-          </div>
-        </div>
+      <div style={{ background: "#083b84", color: "#fff", padding: "10px 20px" }}>
+        GreenEnvis Compliance Portal
       </div>
 
-      {/* ENVIRONMENT DAY BANNER */}
-      <div
-        style={{
-          maxWidth: "1400px",
-          margin: "20px auto",
-          padding: "0 20px",
-        }}
-      >
+      {/* SLIDER */}
+      <div style={{ maxWidth: "1200px", margin: "20px auto" }}>
         <div
           style={{
-            background: "#ffffff",
-            borderRadius: "12px",
+            height: "260px",
+            position: "relative",
+            borderRadius: "10px",
             overflow: "hidden",
-            border: "1px solid #dbe3ea",
           }}
         >
           <Image
-            src="/environment-day-banner.jpg"
-            alt="Environment Day Banner"
-            width={1400}
-            height={420}
-            style={{
-              width: "100%",
-              height: "auto",
-              display: "block",
-            }}
+            src={banners[currentBanner]}
+            alt="banner"
+            fill
+            style={{ objectFit: "cover" }}
           />
         </div>
       </div>
 
-      {/* LIVE NOTICE + ADVERTISEMENT */}
+      {/* NOTICE + ADS */}
       <div
         style={{
-          maxWidth: "1400px",
-          margin: "30px auto",
-          padding: "0 20px",
+          maxWidth: "1200px",
+          margin: "20px auto",
           display: "grid",
           gridTemplateColumns: "2fr 1fr",
           gap: "20px",
         }}
       >
-        <LiveRunningCard
-          title="Notice Board"
-          items={notices}
-        />
-
-        <LiveRunningCard
-          title="Current Advertisement"
-          items={advertisements}
-        />
+        <LiveBox title="Notice Board" data={notices} />
+        <LiveBox title="Current Advertisement" data={ads} />
       </div>
 
       {/* SERVICES */}
-      <div
-        style={{
-          maxWidth: "1400px",
-          margin: "20px auto",
-          padding: "0 20px",
-        }}
-      >
-        <Section title="Our Services">
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "14px",
-            }}
-          >
-            {services.map((service, i) => (
-              <button
-                key={i}
-                onClick={() => handleServiceClick(service)}
-                style={{
-                  padding: "14px",
-                  background: "#ffffff",
-                  border: "1px solid #cbd5e1",
-                  borderRadius: "8px",
-                  textAlign: "left",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                }}
-              >
-                {service}
-              </button>
-            ))}
-          </div>
-        </Section>
-
-        {/* INQUIRY FORM */}
-        <Section title="Industry Inquiry Form">
-          <form onSubmit={handleSubmit}>
-            <input
-              name="industry_name"
-              placeholder="Industry Name"
-              value={form.industry_name}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-
-            <input
-              name="contact_person"
-              placeholder="Contact Person Name"
-              value={form.contact_person}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-
-            <input
-              name="mobile"
-              placeholder="Mobile Number"
-              value={form.mobile}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-
-            <input
-              name="email"
-              placeholder="Email Address"
-              value={form.email}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-
-            <input
-              name="service"
-              placeholder="Required Service"
-              value={form.service}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-
-            <textarea
-              name="details"
-              placeholder="Requirement Details"
-              value={form.details}
-              onChange={handleChange}
-              style={{
-                ...inputStyle,
-                height: "150px",
-              }}
-            />
-
-            <button
-              type="submit"
-              style={{
-                width: "100%",
-                background: "#16a34a",
-                color: "#ffffff",
-                padding: "16px",
-                border: "none",
-                borderRadius: "8px",
-                fontWeight: "bold",
-              }}
-            >
-              {loading ? "Submitting..." : "Submit Inquiry"}
+      <div style={{ maxWidth: "1200px", margin: "20px auto" }}>
+        <h3>Our Services</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "10px" }}>
+          {services.map((s, i) => (
+            <button key={i} onClick={() => handleServiceClick(s)} style={btn}>
+              {s}
             </button>
-          </form>
-        </Section>
+          ))}
+        </div>
+      </div>
 
-        {/* CONTACT */}
-        <Section title="Quick Contact">
-          <p>📞 Mobile: 8780723063</p>
-          <p>📧 Email: info@greenenvis.com</p>
-          <p>🌍 Service Area: All India</p>
-          <p>🛠 Support: GPCB / CPCB / EPR Consultancy</p>
-        </Section>
+      {/* FORM */}
+      <div style={{ maxWidth: "1200px", margin: "20px auto" }}>
+        <h3>Inquiry Form</h3>
+
+        <form onSubmit={handleSubmit}>
+          <input name="industry_name" placeholder="Industry Name" value={form.industry_name} onChange={handleChange} style={input} />
+          <input name="contact_person" placeholder="Contact Person" value={form.contact_person} onChange={handleChange} style={input} />
+          <input name="mobile" placeholder="Mobile" value={form.mobile} onChange={handleChange} style={input} />
+          <input name="email" placeholder="Email" value={form.email} onChange={handleChange} style={input} />
+          <input name="service" placeholder="Service" value={form.service} onChange={handleChange} style={input} />
+          <textarea name="details" placeholder="Details" value={form.details} onChange={handleChange} style={input} />
+
+          <button style={submit}>
+            {loading ? "Submitting..." : "Submit Inquiry"}
+          </button>
+        </form>
       </div>
 
       {/* WHATSAPP */}
-      <a
-        href="https://wa.me/918780723063"
-        target="_blank"
-        style={{
-          position: "fixed",
-          right: "30px",
-          bottom: "30px",
-          background: "#25D366",
-          color: "#ffffff",
-          padding: "14px 20px",
-          borderRadius: "50px",
-          textDecoration: "none",
-          fontWeight: "bold",
-          zIndex: 999,
-        }}
-      >
-        WhatsApp Us
+      <a href="https://wa.me/918780723063" target="_blank" style={wa}>
+        WhatsApp
       </a>
     </div>
   );
 }
 
-function LiveRunningCard({
-  title,
-  items,
-}: {
-  title: string;
-  items: any[];
-}) {
+function LiveBox({ title, data }: any) {
   return (
-    <div
-      style={{
-        background: "#ffffff",
-        borderRadius: "10px",
-        border: "1px solid #dbe3ea",
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          background: "#0b5a8a",
-          color: "#ffffff",
-          padding: "14px 18px",
-          fontWeight: "bold",
-        }}
-      >
-        {title}
-      </div>
-
-      <div
-        style={{
-          height: "350px",
-          overflow: "hidden",
-          padding: "14px",
-        }}
-      >
-        <div
-          style={{
-            animation: "scrollUp 20s linear infinite",
-          }}
-        >
-          {items.map((item, i) => (
-            <div
-              key={i}
-              style={{
-                marginBottom: "14px",
-                padding: "14px",
-                border: "1px solid #dbe3ea",
-                borderRadius: "8px",
-                background: "#f8fafc",
-              }}
-            >
-              <p style={{ margin: 0, color: "#16a34a", fontWeight: "bold" }}>
-                📅 {new Date(item.created_at).toLocaleDateString()}
-              </p>
-
-              <p style={{ marginTop: "10px" }}>
-                {item.title}
-              </p>
+    <div style={{ background: "#fff", borderRadius: "10px", padding: "10px" }}>
+      <h4>{title}</h4>
+      <div style={{ height: "250px", overflow: "hidden" }}>
+        <div style={{ animation: "scroll 15s linear infinite" }}>
+          {data.map((item: any, i: number) => (
+            <div key={i} style={{ marginBottom: "10px" }}>
+              <b>📅 {new Date(item.created_at).toLocaleDateString()}</b>
+              <p>{item.title}</p>
             </div>
           ))}
         </div>
-
-        <style jsx>{`
-          @keyframes scrollUp {
-            0% {
-              transform: translateY(100%);
-            }
-            100% {
-              transform: translateY(-100%);
-            }
-          }
-        `}</style>
       </div>
+
+      <style jsx>{`
+        @keyframes scroll {
+          0% { transform: translateY(100%); }
+          100% { transform: translateY(-100%); }
+        }
+      `}</style>
     </div>
   );
 }
 
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      style={{
-        background: "#ffffff",
-        padding: "24px",
-        borderRadius: "10px",
-        marginBottom: "24px",
-      }}
-    >
-      <h2>{title}</h2>
-      {children}
-    </div>
-  );
-}
-
-const inputStyle = {
+const input = {
   width: "100%",
-  padding: "14px",
-  marginBottom: "16px",
-  border: "1px solid #cbd5e1",
-  borderRadius: "8px",
+  padding: "10px",
+  marginBottom: "10px",
+};
+
+const btn = {
+  padding: "10px",
+  background: "#fff",
+  border: "1px solid #ccc",
+  cursor: "pointer",
+};
+
+const submit = {
+  width: "100%",
+  padding: "12px",
+  background: "green",
+  color: "#fff",
+};
+
+const wa = {
+  position: "fixed",
+  bottom: "20px",
+  right: "20px",
+  background: "#25D366",
+  color: "#fff",
+  padding: "10px 15px",
+  borderRadius: "50px",
 };
