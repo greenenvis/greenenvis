@@ -2,36 +2,19 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { supabase } from "./supabase";
+import { CSSProperties } from "react";
 
 export default function HomePage() {
 
-  const [form, setForm] = useState({
-    industry_name: "",
-    contact_person: "",
-    mobile: "",
-    email: "",
-    service: "",
-    details: "",
-  });
+  const [currentBanner, setCurrentBanner] = useState(0);
 
-  const [notices, setNotices] = useState<any[]>([]);
-  const [ads, setAds] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  // ✅ SLIDER IMAGES
   const banners = [
     "/environment-day-banner.jpg",
     "/earth-day.jpg",
     "/water-day.jpg",
   ];
 
-  const [currentBanner, setCurrentBanner] = useState(0);
-
-  // ✅ AUTO CHANGE SLIDER
   useEffect(() => {
-    fetchNotices();
-
     const interval = setInterval(() => {
       setCurrentBanner((prev) => (prev + 1) % banners.length);
     }, 3000);
@@ -39,76 +22,39 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
-  // ✅ FETCH NOTICE
-  const fetchNotices = async () => {
-    const { data } = await supabase
-      .from("notices")
-      .select("*")
-      .order("created_at", { ascending: false });
+  const notices = [
+    { title: "New CTE / CCA Applications Open" },
+    { title: "BMW Authorization Updates" },
+    { title: "Used Oil EPR Filing Deadline" },
+  ];
 
-    if (!data) return;
-
-    setNotices(data.filter((i) => i.notice_type === "notice"));
-    setAds(data.filter((i) => i.notice_type === "advertisement"));
-  };
-
-  const handleChange = (e: any) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleServiceClick = (service: string) => {
-    setForm({ ...form, service });
-  };
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const { error } = await supabase.from("inquiries").insert([form]);
-
-    setLoading(false);
-
-    if (error) {
-      alert("Error saving inquiry");
-      return;
-    }
-
-    alert("Inquiry Submitted Successfully!");
-
-    setForm({
-      industry_name: "",
-      contact_person: "",
-      mobile: "",
-      email: "",
-      service: "",
-      details: "",
-    });
-  };
-
-  // ✅ SERVICES
-  const services = [
-    "CTE / CCA",
-    "BMW Authorization",
-    "EPR Registration",
-    "Used Oil EPR",
-    "Hazardous Waste",
-    "CGWA Clearance",
-    "Environmental Audit",
-    "Stack Monitoring",
-    "Water & Air Analysis",
+  const ads = [
+    { title: "Environmental Audit Notice" },
+    { title: "Hazardous Waste Compliance" },
   ];
 
   return (
     <div style={{ background: "#edf2f7", minHeight: "100vh" }}>
 
       {/* HEADER */}
-      <div style={{ background: "#083b84", color: "#fff", padding: "12px 20px", fontWeight: "bold" }}>
+      <div style={{
+        background: "#083b84",
+        color: "#fff",
+        padding: "12px 20px",
+        fontWeight: "bold",
+        fontSize: "18px"
+      }}>
         GreenEnvis Compliance Portal
       </div>
 
       {/* SLIDER */}
       <div style={{ maxWidth: "1100px", margin: "20px auto" }}>
-        <div style={{ height: "250px", position: "relative", borderRadius: "10px", overflow: "hidden" }}>
+        <div style={{
+          height: "250px",
+          position: "relative",
+          borderRadius: "10px",
+          overflow: "hidden"
+        }}>
           <Image
             src={banners[currentBanner]}
             alt="banner"
@@ -132,40 +78,43 @@ export default function HomePage() {
 
       {/* SERVICES */}
       <div style={{ maxWidth: "1100px", margin: "20px auto" }}>
-        <h3>Our Services</h3>
+        <h3 style={{ marginBottom: "10px" }}>Our Services</h3>
 
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(3,1fr)",
           gap: "10px"
         }}>
-          {services.map((s, i) => (
-            <button key={i} onClick={() => handleServiceClick(s)} style={btn}>
+          {[
+            "CTE / CCA",
+            "BMW Authorization",
+            "EPR Registration",
+            "Hazardous Waste",
+            "CGWA Clearance",
+            "Environmental Audit"
+          ].map((s, i) => (
+            <button key={i} style={btn}>
               {s}
             </button>
           ))}
         </div>
       </div>
 
-      {/* FORM */}
+      {/* INQUIRY FORM */}
       <div style={{ maxWidth: "1100px", margin: "20px auto" }}>
-        <h3>Inquiry Form</h3>
+        <h3>Industry Inquiry Form</h3>
 
-        <form onSubmit={handleSubmit}>
-          <input name="industry_name" placeholder="Industry Name" value={form.industry_name} onChange={handleChange} style={input} />
-          <input name="contact_person" placeholder="Contact Person" value={form.contact_person} onChange={handleChange} style={input} />
-          <input name="mobile" placeholder="Mobile" value={form.mobile} onChange={handleChange} style={input} />
-          <input name="email" placeholder="Email" value={form.email} onChange={handleChange} style={input} />
-          <input name="service" placeholder="Service" value={form.service} onChange={handleChange} style={input} />
-          <textarea name="details" placeholder="Details" value={form.details} onChange={handleChange} style={input} />
+        <input placeholder="Industry Name" style={input} />
+        <input placeholder="Contact Person Name" style={input} />
+        <input placeholder="Mobile Number" style={input} />
+        <input placeholder="Email Address" style={input} />
+        <input placeholder="Required Service" style={input} />
+        <textarea placeholder="Requirement Details" style={input} />
 
-          <button style={submit}>
-            {loading ? "Submitting..." : "Submit Inquiry"}
-          </button>
-        </form>
+        <button style={submit}>Submit Inquiry</button>
       </div>
 
-      {/* WHATSAPP */}
+      {/* WHATSAPP BUTTON */}
       <a href="https://wa.me/918780723063" target="_blank" style={wa}>
         WhatsApp
       </a>
@@ -174,25 +123,39 @@ export default function HomePage() {
   );
 }
 
-// 🔥 LIVE SCROLL
+/* 🔥 LIVE SCROLL COMPONENT */
 function LiveBox({ title, data }: any) {
   return (
-    <div style={{ background: "#fff", borderRadius: "10px", padding: "10px" }}>
-      <h4>{title}</h4>
+    <div style={{
+      background: "#fff",
+      borderRadius: "10px",
+      padding: "10px"
+    }}>
+      <h4 style={{ marginBottom: "10px" }}>{title}</h4>
 
-      <div style={{ height: "250px", overflow: "hidden" }}>
-        <div style={{ animation: "scroll 12s linear infinite" }}>
+      <div style={{
+        height: "250px",
+        overflow: "hidden",
+        position: "relative"
+      }}>
+        <div style={{
+          position: "absolute",
+          width: "100%",
+          animation: "scrollUp 10s linear infinite"
+        }}>
           {data.map((item: any, i: number) => (
-            <div key={i} style={{ marginBottom: "10px" }}>
-              <b>📅 {new Date(item.created_at).toLocaleDateString()}</b>
-              <p>{item.title}</p>
+            <div key={i} style={{ marginBottom: "12px" }}>
+              <b style={{ color: "green" }}>
+                📅 {new Date().toLocaleDateString()}
+              </b>
+              <p style={{ fontSize: "14px" }}>{item.title}</p>
             </div>
           ))}
         </div>
       </div>
 
       <style jsx>{`
-        @keyframes scroll {
+        @keyframes scrollUp {
           0% { transform: translateY(100%); }
           100% { transform: translateY(-100%); }
         }
@@ -201,27 +164,35 @@ function LiveBox({ title, data }: any) {
   );
 }
 
-const input = {
+/* 🔥 STYLES */
+
+const input: CSSProperties = {
   width: "100%",
   padding: "10px",
   marginBottom: "10px",
+  border: "1px solid #ccc",
+  borderRadius: "5px"
 };
 
-const btn = {
+const btn: CSSProperties = {
   padding: "10px",
   border: "1px solid #ccc",
   background: "#fff",
   cursor: "pointer",
+  borderRadius: "5px"
 };
 
-const submit = {
+const submit: CSSProperties = {
   width: "100%",
   padding: "12px",
-  background: "green",
+  background: "#16a34a",
   color: "#fff",
+  border: "none",
+  borderRadius: "5px",
+  fontWeight: "bold"
 };
 
-const wa = {
+const wa: CSSProperties = {
   position: "fixed",
   bottom: "20px",
   right: "20px",
@@ -229,4 +200,5 @@ const wa = {
   color: "#fff",
   padding: "10px 15px",
   borderRadius: "50px",
+  textDecoration: "none"
 };
