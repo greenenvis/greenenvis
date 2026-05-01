@@ -6,7 +6,7 @@ import { CSSProperties } from "react";
 
 export default function HomePage() {
 
-  const [currentBanner, setCurrentBanner] = useState(0);
+  const [banner, setBanner] = useState(0);
 
   const banners = [
     "/environment-day-banner.jpg",
@@ -15,106 +15,96 @@ export default function HomePage() {
   ];
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentBanner((prev) => (prev + 1) % banners.length);
+    const i = setInterval(() => {
+      setBanner((prev) => (prev + 1) % banners.length);
     }, 3000);
-
-    return () => clearInterval(interval);
+    return () => clearInterval(i);
   }, []);
 
   const notices = [
-    { title: "New CTE / CCA Applications Open" },
-    { title: "BMW Authorization Updates" },
-    { title: "Used Oil EPR Filing Deadline" },
+    "Used Oil EPR Filing Deadline",
+    "BMW Authorization Update",
+    "Environmental Audit Notice"
   ];
 
   const ads = [
-    { title: "Environmental Audit Notice" },
-    { title: "Hazardous Waste Compliance" },
+    "Hazardous Waste Compliance",
+    "CGWA Clearance Window Open"
   ];
 
   return (
-    <div style={{ background: "#edf2f7", minHeight: "100vh" }}>
+    <div style={{ background: "#f1f5f9" }}>
 
       {/* HEADER */}
-      <div style={{
-        background: "#083b84",
-        color: "#fff",
-        padding: "12px 20px",
-        fontWeight: "bold",
-        fontSize: "18px"
-      }}>
-        GreenEnvis Compliance Portal
+      <div style={header}>
+        <div style={{ fontSize: "22px", fontWeight: "bold" }}>
+          GREENENVIS
+        </div>
+        <div style={{ fontSize: "12px" }}>
+          Smart Compliance Management System
+        </div>
       </div>
 
-      {/* SLIDER */}
-      <div style={{ maxWidth: "1100px", margin: "20px auto" }}>
-        <div style={{
-          height: "250px",
-          position: "relative",
-          borderRadius: "10px",
-          overflow: "hidden"
-        }}>
+      {/* NAVBAR */}
+      <div style={nav}>
+        {["Home", "Client Login", "Admin Panel", "Services", "Contact"].map((n,i)=>(
+          <span key={i} style={navItem}>{n}</span>
+        ))}
+      </div>
+
+      {/* CONTAINER */}
+      <div style={container}>
+
+        {/* SLIDER */}
+        <div style={slider}>
           <Image
-            src={banners[currentBanner]}
+            src={banners[banner]}
             alt="banner"
             fill
             style={{ objectFit: "cover" }}
           />
         </div>
-      </div>
 
-      {/* NOTICE + ADS */}
-      <div style={{
-        maxWidth: "1100px",
-        margin: "20px auto",
-        display: "grid",
-        gridTemplateColumns: "2fr 1fr",
-        gap: "20px"
-      }}>
-        <LiveBox title="Notice Board" data={notices} />
-        <LiveBox title="Current Advertisement" data={ads} />
-      </div>
-
-      {/* SERVICES */}
-      <div style={{ maxWidth: "1100px", margin: "20px auto" }}>
-        <h3 style={{ marginBottom: "10px" }}>Our Services</h3>
-
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3,1fr)",
-          gap: "10px"
-        }}>
-          {[
-            "CTE / CCA",
-            "BMW Authorization",
-            "EPR Registration",
-            "Hazardous Waste",
-            "CGWA Clearance",
-            "Environmental Audit"
-          ].map((s, i) => (
-            <button key={i} style={btn}>
-              {s}
-            </button>
-          ))}
+        {/* NOTICE SECTION */}
+        <div style={grid}>
+          <ScrollBox title="Notice Board" items={notices} />
+          <ScrollBox title="Current Advertisement" items={ads} />
         </div>
+
+        {/* SERVICES */}
+        <div style={card}>
+          <h3>Our Services</h3>
+          <div style={serviceGrid}>
+            {[
+              "CTE / CCA",
+              "BMW Authorization",
+              "EPR Registration",
+              "Hazardous Waste",
+              "CGWA Clearance",
+              "Environmental Audit"
+            ].map((s,i)=>(
+              <button key={i} style={serviceBtn}>{s}</button>
+            ))}
+          </div>
+        </div>
+
+        {/* FORM */}
+        <div style={card}>
+          <h3>Industry Inquiry Form</h3>
+
+          <input placeholder="Industry Name" style={input}/>
+          <input placeholder="Contact Person Name" style={input}/>
+          <input placeholder="Mobile Number" style={input}/>
+          <input placeholder="Email Address" style={input}/>
+          <input placeholder="Required Service" style={input}/>
+          <textarea placeholder="Requirement Details" style={input}/>
+
+          <button style={submit}>Submit Inquiry</button>
+        </div>
+
       </div>
 
-      {/* INQUIRY FORM */}
-      <div style={{ maxWidth: "1100px", margin: "20px auto" }}>
-        <h3>Industry Inquiry Form</h3>
-
-        <input placeholder="Industry Name" style={input} />
-        <input placeholder="Contact Person Name" style={input} />
-        <input placeholder="Mobile Number" style={input} />
-        <input placeholder="Email Address" style={input} />
-        <input placeholder="Required Service" style={input} />
-        <textarea placeholder="Requirement Details" style={input} />
-
-        <button style={submit}>Submit Inquiry</button>
-      </div>
-
-      {/* WHATSAPP BUTTON */}
+      {/* WHATSAPP */}
       <a href="https://wa.me/918780723063" target="_blank" style={wa}>
         WhatsApp
       </a>
@@ -123,48 +113,99 @@ export default function HomePage() {
   );
 }
 
-/* 🔥 LIVE SCROLL COMPONENT */
-function LiveBox({ title, data }: any) {
+/* 🔥 SCROLL BOX */
+function ScrollBox({ title, items }: any) {
   return (
-    <div style={{
-      background: "#fff",
-      borderRadius: "10px",
-      padding: "10px"
-    }}>
+    <div style={box}>
       <h4 style={{ marginBottom: "10px" }}>{title}</h4>
 
-      <div style={{
-        height: "250px",
-        overflow: "hidden",
-        position: "relative"
-      }}>
-        <div style={{
-          position: "absolute",
-          width: "100%",
-          animation: "scrollUp 10s linear infinite"
-        }}>
-          {data.map((item: any, i: number) => (
-            <div key={i} style={{ marginBottom: "12px" }}>
-              <b style={{ color: "green" }}>
+      <div style={{ height: "200px", overflow: "hidden" }}>
+        <div style={scroll}>
+          {items.map((t:any,i:number)=>(
+            <div key={i} style={{ marginBottom: "10px" }}>
+              <b style={{ color:"green" }}>
                 📅 {new Date().toLocaleDateString()}
               </b>
-              <p style={{ fontSize: "14px" }}>{item.title}</p>
+              <div>{t}</div>
             </div>
           ))}
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes scrollUp {
-          0% { transform: translateY(100%); }
-          100% { transform: translateY(-100%); }
-        }
-      `}</style>
     </div>
   );
 }
 
 /* 🔥 STYLES */
+
+const container: CSSProperties = {
+  maxWidth: "1100px",
+  margin: "auto",
+  padding: "20px"
+};
+
+const header: CSSProperties = {
+  background: "#0f4c81",
+  color: "#fff",
+  padding: "12px 20px"
+};
+
+const nav: CSSProperties = {
+  background: "#1e73be",
+  color: "#fff",
+  padding: "10px 20px",
+  display: "flex",
+  gap: "20px"
+};
+
+const navItem: CSSProperties = {
+  cursor: "pointer",
+  fontSize: "14px"
+};
+
+const slider: CSSProperties = {
+  height: "260px",
+  borderRadius: "10px",
+  overflow: "hidden",
+  position: "relative",
+  marginBottom: "20px"
+};
+
+const grid: CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "2fr 1fr",
+  gap: "20px",
+  marginBottom: "20px"
+};
+
+const box: CSSProperties = {
+  background: "#fff",
+  padding: "15px",
+  borderRadius: "10px"
+};
+
+const scroll: CSSProperties = {
+  animation: "scroll 12s linear infinite"
+};
+
+const card: CSSProperties = {
+  background: "#fff",
+  padding: "20px",
+  borderRadius: "10px",
+  marginBottom: "20px"
+};
+
+const serviceGrid: CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "repeat(3,1fr)",
+  gap: "10px"
+};
+
+const serviceBtn: CSSProperties = {
+  padding: "10px",
+  border: "1px solid #ccc",
+  background: "#f8fafc",
+  borderRadius: "5px"
+};
 
 const input: CSSProperties = {
   width: "100%",
@@ -174,22 +215,13 @@ const input: CSSProperties = {
   borderRadius: "5px"
 };
 
-const btn: CSSProperties = {
-  padding: "10px",
-  border: "1px solid #ccc",
-  background: "#fff",
-  cursor: "pointer",
-  borderRadius: "5px"
-};
-
 const submit: CSSProperties = {
   width: "100%",
   padding: "12px",
   background: "#16a34a",
   color: "#fff",
   border: "none",
-  borderRadius: "5px",
-  fontWeight: "bold"
+  borderRadius: "5px"
 };
 
 const wa: CSSProperties = {
@@ -199,6 +231,5 @@ const wa: CSSProperties = {
   background: "#25D366",
   color: "#fff",
   padding: "10px 15px",
-  borderRadius: "50px",
-  textDecoration: "none"
+  borderRadius: "50px"
 };
