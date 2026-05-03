@@ -1,231 +1,176 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
-
-export default function HomePage() {
-
-  const [form, setForm] = useState({
-    industry: "",
-    person: "",
-    mobile: "",
-    email: "",
-    service: "",
-    details: "",
-  });
-
-  const [banner, setBanner] = useState("");
-
-  // 🔥 DATE BASED ENVIRONMENT DAY
-  useEffect(() => {
-    const today = new Date();
-
-    const key = `${today.getDate()}-${today.getMonth() + 1}`;
-
-    const dayMap: any = {
-      "5-6": "/environment-day-banner.jpg",
-      "22-4": "/earth-day.jpg",
-      "22-3": "/water-day.jpg",
-    };
-
-    if (dayMap[key]) {
-      setBanner(dayMap[key]);
-    } else {
-      setBanner("/environment-day-banner.jpg");
-    }
-  }, []);
-
-  // 🔥 SERVICE AUTO FILL + SCROLL
-  const selectService = (s: string) => {
-    setForm((prev) => ({ ...prev, service: s }));
-
-    setTimeout(() => {
-      document.getElementById("formSection")?.scrollIntoView({
-        behavior: "smooth",
-      });
-    }, 200);
-  };
-
-  // 🔥 WHATSAPP LEAD
-  const sendWhatsApp = () => {
-    const message = `
-New Inquiry
-
-Industry: ${form.industry}
-Person: ${form.person}
-Mobile: ${form.mobile}
-Email: ${form.email}
-Service: ${form.service}
-Details: ${form.details}
-`;
-
-    window.open(
-      `https://wa.me/918780723063?text=${encodeURIComponent(message)}`
-    );
-  };
-
+export default function Dashboard() {
   return (
-    <div style={{ background: "#eef2f6", minHeight: "100vh" }}>
+    <div style={{ display: "flex", fontFamily: "Arial", background: "#f5f7fb" }}>
 
-      {/* HEADER */}
+      {/* SIDEBAR */}
       <div style={{
-        background: "#0f4c81",
+        width: "250px",
+        background: "#1e7c3f",
         color: "#fff",
-        padding: "15px 25px",
-        fontSize: "20px",
-        fontWeight: "bold"
+        minHeight: "100vh",
+        padding: "20px"
       }}>
-        GREENENVIS PORTAL
+        <h2>GreenEnvis</h2>
+        <p style={{ fontSize: "12px", marginBottom: "20px" }}>Compliance Simplified</p>
+
+        {[
+          "Dashboard",
+          "Clients",
+          "Compliance",
+          "Applications",
+          "Documents",
+          "Tasks",
+          "Reminders",
+          "Quotations",
+          "Checklists",
+          "Reports",
+        ].map((item, i) => (
+          <div key={i} style={{
+            padding: "10px",
+            marginBottom: "8px",
+            borderRadius: "6px",
+            cursor: "pointer",
+            background: i === 0 ? "#145c2d" : "transparent"
+          }}>
+            {item}
+          </div>
+        ))}
       </div>
 
-      <div style={{ maxWidth: "1100px", margin: "auto", padding: "20px" }}>
+      {/* MAIN CONTENT */}
+      <div style={{ flex: 1, padding: "20px" }}>
 
-        {/* 🔥 FULL BANNER */}
+        {/* HEADER */}
         <div style={{
-          height: "260px",
-          borderRadius: "12px",
-          overflow: "hidden",
-          position: "relative",
+          display: "flex",
+          justifyContent: "space-between",
           marginBottom: "20px"
         }}>
-          {banner && (
-            <Image
-              src={banner}
-              alt="banner"
-              fill
-              style={{ objectFit: "cover" }}
-            />
-          )}
+          <h2>Simplify Compliance. Save Time.</h2>
+          <div>👤 GreenEnvis</div>
         </div>
 
-        {/* 🔥 SERVICES */}
+        {/* STATS */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(5,1fr)",
+          gap: "15px",
+          marginBottom: "20px"
+        }}>
+          {[
+            { title: "Total Clients", val: 24 },
+            { title: "Pending Work", val: 17 },
+            { title: "Complete Work", val: 32 },
+            { title: "File Closed", val: 14 },
+            { title: "Reminder Work", val: 9 },
+          ].map((s, i) => (
+            <div key={i} style={{
+              background: "#fff",
+              padding: "15px",
+              borderRadius: "10px",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.05)"
+            }}>
+              <h2>{s.val}</h2>
+              <p>{s.title}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* TOOLS */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4,1fr)",
+          gap: "15px",
+          marginBottom: "20px"
+        }}>
+          {[
+            "Share Checklist",
+            "Auto Quotation",
+            "Siting Criteria",
+            "Acts & Rules"
+          ].map((t, i) => (
+            <div key={i} style={{
+              background: "#fff",
+              padding: "20px",
+              borderRadius: "10px",
+              textAlign: "center"
+            }}>
+              <h4>{t}</h4>
+              <p style={{ fontSize: "12px" }}>Click to open</p>
+            </div>
+          ))}
+        </div>
+
+        {/* COMPLIANCE TRACKER */}
         <div style={{
           background: "#fff",
           padding: "20px",
           borderRadius: "10px",
           marginBottom: "20px"
         }}>
-          <h3 style={{ marginBottom: "15px" }}>Our Services</h3>
+          <h3>Compliance Tracker</h3>
 
           <div style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3,1fr)",
-            gap: "12px"
+            gridTemplateColumns: "repeat(6,1fr)",
+            gap: "10px"
           }}>
             {[
-              "CTE / CCA",
-              "BMW Authorization",
-              "EPR Registration",
-              "Hazardous Waste",
-              "CGWA Clearance",
-              "Environmental Audit",
-            ].map((s, i) => (
-              <button
-                key={i}
-                onClick={() => selectService(s)}
-                style={{
-                  padding: "10px",
-                  border: "1px solid #ccc",
-                  borderRadius: "6px",
-                  background: "#f8fafc",
-                  cursor: "pointer",
-                  fontWeight: "500"
-                }}
-              >
-                {s}
-              </button>
+              "CTE",
+              "CCA",
+              "EC",
+              "HW",
+              "Form 4 & 5",
+              "Other"
+            ].map((c, i) => (
+              <div key={i} style={{
+                padding: "10px",
+                background: "#f1f5f9",
+                borderRadius: "6px",
+                textAlign: "center"
+              }}>
+                {c}
+                <br />
+                <b>{Math.floor(Math.random()*10)+1} Pending</b>
+              </div>
             ))}
           </div>
         </div>
 
-        {/* 🔥 FORM */}
-        <div
-          id="formSection"
-          style={{
+        {/* REMINDERS */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "2fr 1fr",
+          gap: "20px"
+        }}>
+
+          <div style={{
             background: "#fff",
             padding: "20px",
-            borderRadius: "10px",
-          }}
-        >
-          <h3>Industry Inquiry Form</h3>
+            borderRadius: "10px"
+          }}>
+            <h3>Recent Activities</h3>
+            <p>Client A - CTE Submitted</p>
+            <p>Client B - CCA Approved</p>
+            <p>Client C - Document Uploaded</p>
+          </div>
 
-          <input
-            placeholder="Industry Name"
-            value={form.industry}
-            onChange={(e) =>
-              setForm({ ...form, industry: e.target.value })
-            }
-            style={input}
-          />
+          <div style={{
+            background: "#fff",
+            padding: "20px",
+            borderRadius: "10px"
+          }}>
+            <h3>Upcoming Reminders</h3>
+            <p>CTE Renewal - 15 Days</p>
+            <p>CCA Renewal - 22 Days</p>
+            <p>HW Return - 30 Days</p>
+          </div>
 
-          <input
-            placeholder="Contact Person"
-            value={form.person}
-            onChange={(e) =>
-              setForm({ ...form, person: e.target.value })
-            }
-            style={input}
-          />
-
-          <input
-            placeholder="Mobile"
-            value={form.mobile}
-            onChange={(e) =>
-              setForm({ ...form, mobile: e.target.value })
-            }
-            style={input}
-          />
-
-          <input
-            placeholder="Email"
-            value={form.email}
-            onChange={(e) =>
-              setForm({ ...form, email: e.target.value })
-            }
-            style={input}
-          />
-
-          <input
-            placeholder="Required Service"
-            value={form.service}
-            style={input}
-            readOnly
-          />
-
-          <textarea
-            placeholder="Requirement Details"
-            onChange={(e) =>
-              setForm({ ...form, details: e.target.value })
-            }
-            style={input}
-          />
-
-          <button
-            onClick={sendWhatsApp}
-            style={{
-              width: "100%",
-              padding: "12px",
-              background: "#16a34a",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              fontWeight: "bold",
-              cursor: "pointer"
-            }}
-          >
-            Send via WhatsApp
-          </button>
         </div>
 
       </div>
     </div>
   );
 }
-
-const input = {
-  width: "100%",
-  padding: "10px",
-  marginBottom: "10px",
-  border: "1px solid #ccc",
-  borderRadius: "5px"
-};
