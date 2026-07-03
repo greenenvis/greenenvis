@@ -1,9 +1,29 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { supabase } from "../supabase";
 
 export default function ClientDashboard() {
   const router = useRouter();
+  const [documents, setDocuments] = useState<any[]>([]);
+
+const fetchDocuments = async () => {
+  const { data, error } = await supabase
+    .from("industry_documents")
+    .select("*");
+
+  if (!error) {
+    setDocuments(data || []);
+  }
+};
+
+useEffect(() => {
+  fetchDocuments();
+}, []);
+  const goToDocuments = () => {
+  router.push("/dashboard/document-center");
+};
 
   const sidebarMenu = [
     "Dashboard",
@@ -19,33 +39,58 @@ export default function ClientDashboard() {
     "Support",
   ];
 
-  const summaryCards = [
-    { title: "Drafts", value: "04", color: "#7c3aed" },
-    { title: "Submitted", value: "12", color: "#16a34a" },
-    { title: "Pending Action", value: "03", color: "#dc2626" },
-    { title: "Completed", value: "18", color: "#059669" },
-  ];
+const summaryCards = [
+  {
+    title: "Total Documents",
+    value: documents.length.toString(),
+    color: "#2563eb",
+  },
+  {
+    title: "Completed",
+    value: documents
+      .filter((d) => d.ai_status === "Completed")
+      .length.toString(),
+    color: "#16a34a",
+  },
+  {
+    title: "Processing",
+    value: documents
+      .filter((d) => d.ai_status === "Processing")
+      .length.toString(),
+    color: "#f59e0b",
+  },
+  {
+    title: "Expired",
+    value: documents
+      .filter((d) => {
+        if (!d.valid_upto) return false;
+        return new Date(d.valid_upto) < new Date();
+      })
+      .length.toString(),
+    color: "#dc2626",
+  },
+];
 
   const applications = [
-    {
-      appNo: "GE-2026-001",
-      project: "ABC Industries Pvt Ltd",
-      type: "CCA Renewal",
-      status: "Pending",
-    },
-    {
-      appNo: "GE-2026-002",
-      project: "XYZ Chemicals",
-      type: "BMW Authorization",
-      status: "Approved",
-    },
-    {
-      appNo: "GE-2026-003",
-      project: "Sun Pharma Unit",
-      type: "Used Oil EPR",
-      status: "In Review",
-    },
-  ];
+  {
+    appNo: "GE-2026-001",
+    project: "ABC Industries Pvt Ltd",
+    type: "CCA Renewal",
+    status: "Pending",
+  },
+  {
+    appNo: "GE-2026-002",
+    project: "XYZ Chemicals",
+    type: "BMW Authorization",
+    status: "Approved",
+  },
+  {
+    appNo: "GE-2026-003",
+    project: "Sun Pharma Unit",
+    type: "Used Oil EPR",
+    status: "In Review",
+  },
+];
 
   return (
     <div
@@ -155,6 +200,24 @@ export default function ClientDashboard() {
             >
               <h3 style={{ margin: 0 }}>{card.title}</h3>
               <h1 style={{ marginTop: "10px" }}>{card.value}</h1>
+              {card.title === "Completed" && (
+  <button
+    onClick={goToDocuments}
+    style={{
+      marginTop: "12px",
+      width: "100%",
+      background: "#ffffff",
+      color: card.color,
+      border: "none",
+      padding: "8px",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    Open
+  </button>
+)}
             </div>
           ))}
         </div>
@@ -168,7 +231,7 @@ export default function ClientDashboard() {
           }}
         >
           <h2 style={{ marginTop: 0 }}>
-            Applications for Compliance Management
+            Recent Documents
           </h2>
 
           <div style={{ overflowX: "auto" }}>
@@ -181,10 +244,10 @@ export default function ClientDashboard() {
             >
               <thead>
                 <tr style={{ background: "#0b4f84", color: "#ffffff" }}>
-                  <th style={thStyle}>Application No</th>
-                  <th style={thStyle}>Project Name</th>
-                  <th style={thStyle}>Application Type</th>
-                  <th style={thStyle}>Status</th>
+                  <th style={thStyle}>Consent No.</th>
+                  <th style={thStyle}>Document</th>
+                  <th style={thStyle}>Document Type</th>
+                  <th style={thStyle}>AI Status</th>
                   <th style={thStyle}>Action</th>
                 </tr>
               </thead>
