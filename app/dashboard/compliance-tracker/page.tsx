@@ -1,10 +1,11 @@
 "use client";
 
+import { Suspense } from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../supabase";
 
-export default function ComplianceTrackerPage() {
+function DocumentCenterContent() {
   const router = useRouter();
 
   const [profile, setProfile] = useState<any>(null);
@@ -339,5 +340,12 @@ export default function ComplianceTrackerPage() {
     </table>
   </div>
 </div>
+  );
+}
+export default function DocumentCenterPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: 20 }}>Loading...</div>}>
+      <DocumentCenterContent />
+    </Suspense>
   );
 }

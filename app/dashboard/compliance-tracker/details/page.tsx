@@ -1,665 +1,519 @@
 "use client";
-import { validateDocument } from "@/lib/document-validator";
-import { useSearchParams, useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+
+import { Suspense } from "react";
+
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "../../../supabase";
+import { validateDocument } from "@/lib/document-validator";
 
-export default function ComplianceDetailsPage() {
-const router = useRouter();
-const searchParams = useSearchParams();
+function ComplianceDetailsContent() {
+  const router = useRouter();
+  const [complianceId, setComplianceId] = useState<string | null>(null);
+  console.log("Compliance ID:", complianceId);
 
-const complianceId = searchParams.get("id");
+  const [compliance, setCompliance] = useState<any>(null);
+  const [document, setDocument] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [progressText, setProgressText] = useState("");
+  const [openApplicable, setOpenApplicable] = useState(false);
+  const [openPriority, setOpenPriority] = useState(false);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-const [compliance, setCompliance] = useState<any>(null);
-const [document, setDocument] = useState<any>(null);
-const [isProcessing, setIsProcessing] = useState(false);
-const getCurrentStatus = () => {
-  if (!document) {
-    return {
-      status: "Missing",
-      color: "#6b7280",
-    };
-  }
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      setComplianceId(params.get("id"));
+    }
+  }, []);
 
-  if (!document.valid_upto) {
-    return {
-      status: "Pending",
-      color: "#f59e0b",
-    };
-  }
+  useEffect(() => {
+    if (complianceId) {
+      loadCompliance();
+    }
+  }, [complianceId]);
 
-  const expiry = new Date(document.valid_upto);
-  const today = new Date();
+  async function loadCompliance() {
+    if (!complianceId) return;
 
-  const diffDays = Math.ceil(
-    (expiry.getTime() - today.getTime()) /
-      (1000 * 60 * 60 * 24)
-  );
+    setLoading(true);
 
-  if (diffDays < 0) {
-    return {
-      status: "Overdue",
-      color: "#dc2626",
-    };
-  }
+    const { data: complianceData } = await supabase
+      .from("compliance_master")
+      .select("*")
+      .eq("id", complianceId)
+      .single();
 
-  if (diffDays <= (compliance?.reminder_days || 30)) {
-    return {
-      status: "Upcoming",
-      color: "#d97706",
-    };
-  }
+    setCompliance(complianceData);
 
-  return {
-    status: "Active",
-    color: "#16a34a",
-  };
-};
-const fileInputRef = useRef<HTMLInputElement>(null);
-useEffect(() => {
-  if (complianceId) {
-    loadCompliance();
-  }
-}, [complianceId]);
+    if (complianceData) {
+      const { data: documentData } = await supabase
+        .from("industry_documents")
+        .select("*")
+        .eq("document_key", complianceData.document_key)
+.order("uploaded_at", { ascending: false })
+.limit(1)
+.single();
 
-const loadCompliance = async () => {
-  if (!complianceId) return;
-
-  const { data } = await supabase
-    .from("compliance_master")
-    .select("*")
-    .eq("id", complianceId)
-    .single();
-
-  setCompliance(data);
-  console.log(data);
-  if (data?.document_required) {
-  const { data: doc } = await supabase
-    .from("industry_documents")
-    .select("*")
-    .eq("document_key", data.document_key)
-    .maybeSingle();
-
-  setDocument(doc);
-  if (doc) {
-  setDocument(doc);
-}
-}
-};
-  return (
-    <div
-      style={{
-        padding: "30px",
-        background: "#f4f7fb",
-        minHeight: "100vh",
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: "12px",
-          padding: "25px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-        }}
-      >
-        <h1 style={{ color: "#166534", marginTop: 0 }}>
-  {compliance?.compliance_name || "Compliance Details"}
-</h1>
-
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            marginTop: "20px",
-          }}
-        >
-          <tbody>
-            <tr>
-              <td style={{ padding: "12px", fontWeight: "bold", width: "250px" }}>
-                Compliance Name
-              </td>
-              <td>{compliance?.compliance_name || "-"}</td>
-            </tr>
-
-            <tr>
-              <td style={{ padding: "12px", fontWeight: "bold" }}>
-                Required Document
-              </td>
-              <td>{compliance?.document_required || "-"}</td>
-            </tr>
-
-            <tr>
-              <td style={{ padding: "12px", fontWeight: "bold" }}>
-                Current Status
-              </td>
-              <td>
-                {(() => {
-  const status = getCurrentStatus();
-
-  return (
-    <span
-      style={{
-        background: status.color + "20",
-        color: status.color,
-        padding: "6px 12px",
-        borderRadius: "20px",
-        fontWeight: "bold",
-      }}
-    >
-      {status.status}
-    </span>
-  );
-})()}
-              </td>
-            </tr>
-
-            <tr>
-              <td style={{ padding: "12px", fontWeight: "bold" }}>
-                Due Date
-              </td>
- <td>
-  {compliance?.is_renewal
-    ? (
-        document?.valid_upto
-          ? new Date(
-              document.valid_upto
-            ).toLocaleDateString("en-GB")
-          : "-"
-      )
-    : (
-        compliance?.due_month || "-"
-      )}
-</td>
-            </tr>
-
-            <tr>
-              <td style={{ padding: "12px", fontWeight: "bold" }}>
-                Reminder
-              </td>
- <td>
-  {compliance?.is_renewal
-    ? (
-        document?.valid_upto
-          ? (() => {
-              const reminderDate = new Date(
-                document.valid_upto
-              );
-
-              reminderDate.setDate(
-                reminderDate.getDate() -
-                  (compliance?.reminder_days || 30)
-              );
-
-              return reminderDate.toLocaleDateString(
-                "en-GB"
-              );
-            })()
-          : "-"
-      )
-    : `${compliance?.reminder_days} Days Before`}
-</td>
-            </tr>
-
-            <tr>
-              <td style={{ padding: "12px", fontWeight: "bold" }}>
-                Description
-
-              </td>
-              <td>
-                Renew Consent to Operate before expiry to maintain statutory compliance.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div
-          style={{
-            marginTop: "30px",
-            display: "flex",
-            gap: "15px",
-          }}
-        >
-          {document?.compliance_report && (
-  <div
-    style={{
-      marginTop: "30px",
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))",
-      gap: "20px",
-    }}
-  >
-    {/* Applicable Compliances */}
-    <div
-      style={{
-        background: "#ecfdf5",
-        border: "1px solid #86efac",
-        borderRadius: "10px",
-        padding: "18px",
-      }}
-    >
-      <h3 style={{ marginTop: 0 }}>
-       {document?.compliance_report && (
-  <div
-    style={{
-      marginTop: "30px",
-      display: "flex",
-      flexDirection: "column",
-      gap: "20px",
-    }}
-  >
-    {/* Header */}
-    <div
-      style={{
-        background: "#166534",
-        color: "#fff",
-        padding: "18px 24px",
-        borderRadius: "12px",
-      }}
-    >
-      <h2 style={{ margin: 0 }}>
-        📋 Your Compliance Report
-      </h2>
-
-      <p
-        style={{
-          marginTop: "8px",
-          marginBottom: 0,
-          opacity: 0.9,
-        }}
-      >
-        Based on your uploaded documents, below is your current compliance
-        status.
-      </p>
-    </div>
-
-    {/* Compliance Score */}
-    <div
-      style={{
-        background: "#ecfdf5",
-        border: "1px solid #86efac",
-        borderRadius: "10px",
-        padding: "20px",
-      }}
-    >
-      <h3 style={{ marginTop: 0 }}>
-        📊 Compliance Score
-      </h3>
-
-      <h1
-        style={{
-          color: "#15803d",
-          margin: 0,
-        }}
-      >
-        {document.compliance_report.compliance_score ?? 0}%
-      </h1>
-    </div>
-
-    {/* Applicable */}
-    <div
-      style={{
-        background: "#ffffff",
-        border: "1px solid #e5e7eb",
-        borderRadius: "10px",
-        padding: "20px",
-      }}
-    >
-      <h3>✅ Applicable to Your Industry</h3>
-
-      <ul>
-        {document.compliance_report.applicable_compliances?.map(
-          (item: string, i: number) => (
-            <li key={i}>{item}</li>
-          )
-        )}
-      </ul>
-    </div>
-
-    {/* Completed */}
-    <div
-      style={{
-        background: "#f0fdf4",
-        border: "1px solid #bbf7d0",
-        borderRadius: "10px",
-        padding: "20px",
-      }}
-    >
-      <h3>🟠 Action Required</h3>
-
-      <ul>
-        {document.compliance_report.pending_compliances?.map(
-          (item: string, i: number) => (
-            <li key={i}>{item}</li>
-          )
-        )}
-      </ul>
-    </div>
-
-    {/* Pending */}
-    <div
-      style={{
-        background: "#fff7ed",
-        border: "1px solid #fdba74",
-        borderRadius: "10px",
-        padding: "20px",
-      }}
-    >
-      <h3>🟠 Action Required</h3>
-
-      <ul>
-        {document.compliance_report.pending_compliances?.map(
-          (item: string, i: number) => (
-            <li key={i}>{item}</li>
-          )
-        )}
-      </ul>
-    </div>
-
-    {/* Priority */}
-    <div
-      style={{
-        background: "#fef2f2",
-        border: "1px solid #fca5a5",
-        borderRadius: "10px",
-        padding: "20px",
-      }}
-    >
-      <h3>🔴 Highest Priority</h3>
-
-      <strong>
-        {document.compliance_report.priority_action || "-"}
-      </strong>
-    </div>
-
-    {/* Recommendations */}
-    <div
-      style={{
-        background: "#eff6ff",
-        border: "1px solid #93c5fd",
-        borderRadius: "10px",
-        padding: "20px",
-      }}
-    >
-    </div>
-  </div>
-)}
-      </h3>
-
-      <ul>
-        {document.compliance_report.recommendations?.map(
-          (item: string, i: number) => (
-            <li key={i}>{item}</li>
-          )
-        )}
-      </ul>
-    </div>
-  </div>
-)}
-          <button
-  onClick={async () => {
-    if (!document) {
-      alert("Document not uploaded.");
-      return;
+      console.log(complianceData);
+      setDocument(documentData);
+      console.log("DOCUMENT DATA");
+      console.log(documentData);
+      console.log("REPORT");
+      console.log(documentData?.compliance_report);
+      console.log("AI STATUS", documentData?.ai_status);
     }
 
-    const { data } = await supabase.storage
-      .from("documents")
-      .createSignedUrl(document.file_path, 3600);
+    setLoading(false);
+  }
 
-    if (data?.signedUrl) {
-      window.open(data.signedUrl, "_blank");
-    }
-  }}
+  if (loading) {
+    return (
+      <div style={{ padding: 40 }}>
+        Loading...
+      </div>
+    );
+  }
+
+  return (
+    <div
   style={{
-    background: "#166534",
-    color: "#fff",
-    border: "none",
-    padding: "12px 20px",
-    borderRadius: "8px",
-    cursor: "pointer",
+    padding: "30px",
+    background: "#f4f7fb",
+    minHeight: "100vh",
   }}
 >
-  📄 Open Document
-</button>
+  {isProcessing && (
+    <div
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 999,
+        background: "#2563eb",
+        color: "#fff",
+        padding: "14px 20px",
+        borderRadius: "10px",
+        marginBottom: "20px",
+        fontWeight: 600,
+        textAlign: "center",
+      }}
+    >
+      {progressText}
+    </div>
+  )}
 
-          <>
-  <button
-    onClick={() => fileInputRef.current?.click()}
-
+  <div
     style={{
-      background: "#2563eb",
-      color: "#fff",
-      border: "none",
-      padding: "12px 20px",
-      borderRadius: "8px",
-      cursor: "pointer",
+      background: "#fff",
+      borderRadius: "12px",
+      padding: "24px",
+      boxShadow: "0 2px 8px rgba(0,0,0,.08)",
     }}
   >
-    ⬆ Upload New Version
-  </button>
+    <h1 style={{ marginTop: 0, color: "#166534" }}>
+      {compliance?.compliance_name}
+    </h1>
 
-<input
+    <p>
+      <b>Required Document :</b>{" "}
+      {compliance?.document_required}
+    </p>
+
+    <div
+      style={{
+        display: "flex",
+        gap: "12px",
+        flexWrap: "wrap",
+        marginTop: "25px",
+      }}
+    >
+      <button
+        onClick={() =>
+          router.push("/dashboard/compliance-tracker")
+        }
+        style={{
+          background: "#374151",
+          color: "#fff",
+          border: "none",
+          padding: "12px 18px",
+          borderRadius: "8px",
+          cursor: "pointer",
+        }}
+      >
+        ← Back
+      </button>
+
+      <button
+        onClick={() => fileInputRef.current?.click()}
+        style={{
+          background: "#2563eb",
+          color: "#fff",
+          border: "none",
+          padding: "12px 18px",
+          borderRadius: "8px",
+          cursor: "pointer",
+        }}
+      >
+        ⬆ Upload Document
+      </button>
+
+      <button
+        onClick={() =>
+          router.push(
+            `/dashboard/compliance-tracker/history?id=${document?.id}`
+          )
+        }
+        style={{
+          background: "#6b7280",
+          color: "#fff",
+          border: "none",
+          padding: "12px 18px",
+          borderRadius: "8px",
+          cursor: "pointer",
+        }}
+      >
+        📜 History
+      </button>
+    </div>
+
+   <input
   ref={fileInputRef}
   type="file"
   accept=".pdf"
   style={{ display: "none" }}
-  onChange={async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsProcessing(true);
-    console.log("STEP-1");
 
-    const file = e.target.files?.[0];
-    if (!file) return;
+  onChange={async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-    const fileName = `${Date.now()}_${file.name}`;
+  setIsProcessing(true);
+  setProgressText("📤 Uploading document...");
 
-    const { data: uploadData, error: uploadError } =
-      await supabase.storage
-        .from("documents")
-        .upload(`uploads/${fileName}`, file);
+  const fileName = `${Date.now()}_${file.name}`;
 
-    if (uploadError) {
-      alert(uploadError.message);
-      return;
-    }
+  const { data: uploadData, error } = await supabase.storage
+    .from("documents")
+    .upload(`uploads/${fileName}`, file);
 
-    let currentDocument = document;
+  if (error) {
+    setIsProcessing(false);
+    alert(error.message);
+    return;
+  }
+  setProgressText(" Please wait..Reading document...");
 
-    if (currentDocument) {
-      await supabase.storage
-        .from("documents")
-        .remove([currentDocument.file_path]);
+  const formData = new FormData();
+  formData.append("file", file);
 
-      await supabase
-        .from("industry_documents")
-        
-        .update({
-          file_name: file.name,
-          file_path: uploadData.path,
-          document_key: compliance.document_key,
-          ai_status: "Processing",
-          uploaded_at: new Date().toISOString(),
-        })
-        .eq("id", currentDocument.id);
-    } else {
-      const { data: createdDoc, error: createError } =
-        await supabase
-          .from("industry_documents")
-          .insert({
-            document_name: compliance.document_required,
-            document_key: compliance.document_key,
-            file_name: file.name,
-            file_path: uploadData.path,
-            ai_status: "Processing",
-            uploaded_at: new Date().toISOString(),
-          })
-          .select()
-          .single();
+  const response = await fetch("/api/read-document", {
+    method: "POST",
+    body: formData,
+  });
 
-      if (createError) {
-        alert(createError.message);
-        return;
-      }
+  if (!response.ok) {
+    setIsProcessing(false);
+    alert("AI Processing Failed");
+    return;
+  }
 
-      currentDocument = createdDoc;
-    }
+  setProgressText("✅ Document analyzed.");
+  const aiData = await response.json();
 
-    const formData = new FormData();
-    formData.append("file", file);
-    const response = await fetch("/api/read-document", {
-      method: "POST",
-      body: formData,
-    });
-if (!response.ok) {
-  await supabase
-    .from("industry_documents")
-    
-    .update({
-      ai_status: "Failed",
-    })
-    .eq("id", currentDocument.id);
+const ai = JSON.parse(
+  aiData.result
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+);
+console.log("AI RESPONSE");
+console.log(ai);
+console.log("Compliance Report");
+console.log(ai.compliance_report);
 
-  setIsProcessing(false);
-  alert("AI Processing Failed");
-  return;
-}
-
-    const aiData = await response.json();
-
-    const ai = JSON.parse(
-      aiData.result
-        .replace(/```json/g, "")
-        .replace(/```/g, "")
-    );
 const validation = validateDocument(
   compliance.document_key,
   ai
 );
 
 if (!validation.isValid) {
-  alert(
-    `Wrong document uploaded.
+  setIsProcessing(false);
+  setProgressText("");
+
+  alert(`Wrong Document
 
 Expected : ${compliance.document_key}
 
-Detected : ${validation.documentKey}`
-  );
+Detected : ${validation.documentKey}`);
 
   return;
 }
-   await supabase
-  .from("industry_documents")
-  
-  .update({
-    issue_date: ai.issue_date
-      ? ai.issue_date.split("/").reverse().join("-")
-      : null,
-    valid_upto: ai.valid_upto
-      ? ai.valid_upto.split("/").reverse().join("-")
-      : null,
-    consent_no: ai.consent_no,
-    document_type: ai.document_type,
-    ai_summary: ai.ai_summary,
-compliance_report: ai.compliance_report,
-    ai_status: "Completed",
-  })
-  .eq("id", currentDocument.id);
+
+setProgressText("💾 Saving document...");
+let currentDocument = document;
+
+if (currentDocument) {
+  const { error: updateError } = await supabase
+    .from("industry_documents")
+    .update({
+      document_name: compliance.document_required,
+      document_key: compliance.document_key,
+      file_name: file.name,
+      file_path: uploadData.path,
+      issue_date: validation.issueDate
+  ? validation.issueDate.split("/").reverse().join("-")
+  : null,
+
+valid_upto: validation.validUpto
+  ? validation.validUpto.split("/").reverse().join("-")
+  : null,
+      consent_no: validation.consentNo,
+      document_type: validation.documentName,
+      ai_status: "Completed",
+      compliance_report:
+  ai.compliance_report ??
+  {
+    applicable_compliances: [],
+    pending_compliances: [],
+    priority_action: "",
+  },
+      uploaded_at: new Date().toISOString(),
+    })
+    .eq("id", currentDocument.id);
+
+  if (updateError) {
+    setIsProcessing(false);
+    setProgressText("");
+    alert(updateError.message);
+    return;
+  }
+} else {
+  const { data: createdDoc, error: insertError } = await supabase
+    .from("industry_documents")
+    .insert({
+      document_name: compliance.document_required,
+      document_key: compliance.document_key,
+      file_name: file.name,
+      file_path: uploadData.path,
+      issue_date: validation.issueDate
+  ? validation.issueDate.split("/").reverse().join("-")
+  : null,
+
+valid_upto: validation.validUpto
+  ? validation.validUpto.split("/").reverse().join("-")
+  : null,
+      consent_no: validation.consentNo,
+      document_type: validation.documentName,
+      ai_status: "Completed",
+      compliance_report:
+  ai.compliance_report ??
+  {
+    applicable_compliances: [],
+    pending_compliances: [],
+    priority_action: "",
+  },
+      uploaded_at: new Date().toISOString(),
+    })
+    .select()
+    .single();
+
+  if (insertError) {
+    setIsProcessing(false);
+    setProgressText("");
+    alert(insertError.message);
+    return;
+  }
+
+  currentDocument = createdDoc;
+}
+
+setProgressText("📂 Saving history...");
 await supabase
   .from("document_versions")
   .insert({
     document_id: currentDocument.id,
     file_name: file.name,
     file_path: uploadData.path,
-    issue_date: ai.issue_date
-      ? ai.issue_date.split("/").reverse().join("-")
-      : null,
-    valid_upto: ai.valid_upto
-      ? ai.valid_upto.split("/").reverse().join("-")
-      : null,
-    consent_no: ai.consent_no,
-    document_type: ai.document_type,
+    issue_date: validation.issueDate
+  ? validation.issueDate.split("/").reverse().join("-")
+  : null,
+
+valid_upto: validation.validUpto
+  ? validation.validUpto.split("/").reverse().join("-")
+  : null,
+    consent_no: validation.consentNo,
+    document_type: validation.documentName,
     uploaded_at: new Date().toISOString(),
   });
-    await loadCompliance();
 
-    setIsProcessing(false);
-    alert("Document Uploaded Successfully");
+setProgressText("🔄 Refreshing...");
 
+console.log("Saved Successfully");
 await loadCompliance();
 
-setDocument((prev: any) => ({
-  ...prev,
-  issue_date: ai.issue_date
-    ? ai.issue_date.split("/").reverse().join("-")
-    : null,
-  valid_upto: ai.valid_upto
-    ? ai.valid_upto.split("/").reverse().join("-")
-    : null,
-  consent_no: ai.consent_no,
-  document_type: ai.document_type,
-  ai_status: "Completed",
-}));
-  }}
+setIsProcessing(false);
+setProgressText("");
+
+alert("✅ Document Uploaded Successfully");
+  console.log(uploadData);
+
+  setTimeout(() => {
+    setIsProcessing(false);
+    setProgressText("");
+  }, 1000);
+}}
+
 />
-</>
-{isProcessing && (
+{document?.compliance_report && (
   <div
     style={{
-      marginTop: "25px",
-      marginBottom: "25px",
-      padding: "20px",
-      background: "#eff6ff",
-      border: "1px solid #93c5fd",
-      borderRadius: "10px",
-      textAlign: "center",
+      marginTop: 30,
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
+      gap: 20,
     }}
   >
-    <h3 style={{ margin: 0, color: "#1d4ed8" }}>
-      ⏳ Analyzing your document...
-    </h3>
+    {/* Applicable Compliance */}
 
-    <p
+    <div
       style={{
-        marginTop: "10px",
-        color: "#475569",
+        background: "#fff",
+        borderRadius: 16,
+        padding: 24,
+        boxShadow: "0 8px 25px rgba(0,0,0,.08)",
+        borderLeft: "6px solid #16a34a",
       }}
     >
-      This usually takes less than a minute.
-    </p>
+      <h2
+        style={{
+          marginTop: 0,
+          color: "#166534",
+        }}
+      >
+        ✅ Applicable Compliance
+      </h2>
+
+      <p
+        style={{
+          color: "#6b7280",
+          fontSize: 14,
+          marginBottom: 25,
+        }}
+      >
+        Applicable statutory compliances identified from your uploaded document.
+      </p>
+
+      <button
+        onClick={() =>
+          setOpenApplicable(!openApplicable)
+        }
+        style={{
+          background: "#16a34a",
+          color: "#fff",
+          border: "none",
+          padding: "12px 18px",
+          borderRadius: 10,
+          cursor: "pointer",
+          fontWeight: 600,
+        }}
+      >
+        View Applicable Compliance (
+        {document.compliance_report.applicable_compliances?.length || 0}
+        )
+      </button>
+
+      {openApplicable && (
+        <ul
+          style={{
+            marginTop: 20,
+            lineHeight: "32px",
+            paddingLeft: 20,
+          }}
+        >
+          {(document.compliance_report.applicable_compliances || []).map(
+            (x: string, i: number) => (
+              <li key={i}>✅ {x}</li>
+            )
+          )}
+        </ul>
+      )}
+    </div>
+
+    {/* Priority */}
+
+    <div
+      style={{
+        background: "#fff",
+        borderRadius: 16,
+        padding: 24,
+        boxShadow: "0 8px 25px rgba(0,0,0,.08)",
+        borderLeft: "6px solid #ea580c",
+      }}
+    >
+      <h2
+        style={{
+          marginTop: 0,
+          color: "#c2410c",
+        }}
+      >
+        🟠 Priority Action Required
+      </h2>
+
+      <p
+        style={{
+          color: "#6b7280",
+          fontSize: 14,
+          marginBottom: 25,
+        }}
+      >
+        Immediate statutory actions requiring your attention.
+      </p>
+
+      <button
+        onClick={() =>
+          setOpenPriority(!openPriority)
+        }
+        style={{
+          background: "#ea580c",
+          color: "#fff",
+          border: "none",
+          padding: "12px 18px",
+          borderRadius: 10,
+          cursor: "pointer",
+          fontWeight: 600,
+        }}
+      >
+        View Priority Actions (
+        {document.compliance_report.pending_compliances?.length || 0}
+        )
+      </button>
+
+      {openPriority && (
+        <ul
+          style={{
+            marginTop: 20,
+            lineHeight: "32px",
+            paddingLeft: 20,
+          }}
+        >
+          {(document.compliance_report.pending_compliances || []).map(
+            (x: string, i: number) => (
+              <li key={i}>🟠 {x}</li>
+            )
+          )}
+        </ul>
+      )}
+    </div>
   </div>
 )}
-<button
-  onClick={() => router.back()}
-  style={{
-    background: "#374151",
-    color: "#fff",
-    border: "none",
-    padding: "12px 20px",
-    borderRadius: "8px",
-    cursor: "pointer",
-  }}
->
-  ← Back
-</button>
-
-  <button
-    onClick={() =>
-      router.push(
-        `/dashboard/compliance-tracker/history?id=${document?.id}`
-    )
-  }
-  style={{
-    background: "#6b7280",
-    color: "#fff",
-    border: "none",
-    padding: "12px 20px",
-    borderRadius: "8px",
-    cursor: "pointer",
-  }}
->
-  History
-</button>
-        </div>
-      </div>
+  </div>
     </div>
+  );
+}
+export default function ComplianceDetailsV2() {
+  return (
+    <Suspense fallback={<div style={{ padding: 20 }}>Loading...</div>}>
+      <ComplianceDetailsContent />
+    </Suspense>
   );
 }

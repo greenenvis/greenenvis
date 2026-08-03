@@ -1,3 +1,68 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ===========================
+   PRINT STYLES
+=========================== */
+
+@media print {
+
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    overflow: visible !important;
+  }
+
+  /* Hide everything */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Show only printable area */
+  #print-area,
+  #print-area * {
+    visibility: visible !important;
+  }
+
+  /* Position printable content */
+  #print-area {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Hide buttons */
+  button {
+    display: none !important;
+  }
+
+  /* Avoid page breaks inside cards */
+  .print-card,
+  .card,
+  section,
+  table {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
