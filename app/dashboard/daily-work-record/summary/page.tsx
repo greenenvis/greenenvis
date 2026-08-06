@@ -30,11 +30,17 @@ export default function DailyWorkSummaryPage() {
     });
 
     const fetchIndustry = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) return;
+
       const { data } = await supabase
         .from("industry_profile")
         .select("industry_name")
-        .limit(1)
-        .single();
+        .eq("user_id", user.id)
+        .maybeSingle();
 
       if (data?.industry_name) {
         setIndustryName(data.industry_name);

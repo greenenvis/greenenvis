@@ -310,7 +310,6 @@ plastic_waste_data:[],
 ewaste_data:[],
 used_oil_data:[],
 battery_waste_data:[],
-used_oil_recovery_data:[],
 biomedical_waste_data:[],
 disposal_facilities:[],
 
@@ -590,7 +589,6 @@ plastic_waste_data: [] as any[],
 ewaste_data: [] as any[],
 used_oil_data: [] as any[],
 battery_waste_data: [] as any[],
-used_oil_recovery_data: [] as any[],
 biomedical_waste_data: [] as any[],
 disposal_facilities: [] as any[],
 
@@ -772,14 +770,35 @@ const [editingPlasticWasteId, setEditingPlasticWasteId] =
   useState<number | null>(null);
   
 const fetchProfile = async () => {
-  const { data } = await supabase
-    .from("industry_profile")
-    .select("*")
-    .limit(1)
-    .single();
+
+const { data: authData, error: authError } = await supabase.auth.getUser();
+
+if (authError || !authData.user) {
+  alert("User session not found. Please login again.");
+  return;
+}
+
+const user = authData.user;
+
+alert(
+  "USER ID = " +
+  user.id +
+  "\nEMAIL = " +
+  user.email
+);
+
+const { data } = await supabase
+
+  .from("industry_profile")
+  .select("*")
+  .eq("user_id", user.id)
+  .maybeSingle();
 
   if (data) {
-    console.log("SUPABASE DATA", data);
+    console.log("SUPABASE DATA =", JSON.stringify(data, null, 2));
+
+console.log("IF(DATA) EXECUTED");
+console.log("PROFILE FROM DB =", data);
 
     setProfile({
   ...data,
@@ -794,6 +813,19 @@ const fetchProfile = async () => {
   hazardous_chemicals: data.hazardous_chemicals || [],
 });
 
+alert(
+  JSON.stringify(
+    {
+      user: user.id,
+      industry: data?.industry_name,
+    },
+    null,
+    2
+  )
+);
+
+console.log("FETCH DATA =", data);
+
     setIsEditing(false);
 
     setProducts(data.products || []);
@@ -802,29 +834,77 @@ const fetchProfile = async () => {
     setFuels(data.fuels || []);
 
   } else {
+    console.log("NO PROFILE FOUND");
     setIsEditing(true);
   }
 };
 
 useEffect(() => {
+  alert("fetchProfile called");
   fetchProfile();
 }, []);
 
 const saveProfile = async () => {
-  const { data: existing } = await supabase
-    .from("industry_profile")
-    .select("id")
-    .maybeSingle();
+alert("SAVE PROFILE FUNCTION CALLED");
 
-  const payload = {
-  ...profile,
+const { data: authData, error: authError } = await supabase.auth.getUser();
 
-  total_area:
-    Number(profile.open_area || 0) +
-    Number(profile.built_up_area || 0) +
-    Number(profile.greenbelt_area || 0),
+if (authError || !authData.user) {
+  alert("User session not found. Please login again.");
+  return;
+}
 
-    water_source: JSON.stringify(
+const user = authData.user;
+
+const { data: existing, error: existingError } = await supabase
+  .from("industry_profile")
+  .select("id,user_id")
+  .eq("user_id", user.id);
+
+console.log("CURRENT USER =", user.id);
+console.log("EXISTING ROWS =", existing);
+console.log("EXISTING ERROR =", existingError);
+
+  const normalizeDateValue = (value: any) =>
+    typeof value === "string" && value.trim() === "" ? null : value;
+
+const payload = {
+id: undefined,
+
+  user_id: user.id,
+...profile,
+
+open_area: profile.open_area === "" 
+? null 
+: Number(profile.open_area),
+
+total_area:
+  Number(profile.open_area || 0) +
+  Number(profile.built_up_area || 0) +
+  Number(profile.greenbelt_area || 0),
+
+cte_issue_date: normalizeDateValue(profile.cte_issue_date),
+cte_valid_upto: normalizeDateValue(profile.cte_valid_upto),
+
+cca_issue_date: normalizeDateValue(profile.cca_issue_date),
+cca_valid_upto: normalizeDateValue(profile.cca_valid_upto),
+
+ec_issue_date: normalizeDateValue(profile.ec_issue_date),
+ec_valid_upto: normalizeDateValue(profile.ec_valid_upto),
+
+cgwa_issue_date: normalizeDateValue(profile.cgwa_issue_date),
+cgwa_valid_upto: normalizeDateValue(profile.cgwa_valid_upto),
+
+factory_license_issue_date: normalizeDateValue(profile.factory_license_issue_date),
+factory_license_valid_upto: normalizeDateValue(profile.factory_license_valid_upto),
+
+fire_noc_issue_date: normalizeDateValue(profile.fire_noc_issue_date),
+fire_noc_valid_upto: normalizeDateValue(profile.fire_noc_valid_upto),
+
+peso_issue_date: normalizeDateValue(profile.peso_issue_date),
+peso_valid_upto: normalizeDateValue(profile.peso_valid_upto),
+
+  water_source: JSON.stringify(
   Array.isArray(profile.water_source)
     ? profile.water_source
     : []
@@ -838,17 +918,37 @@ const saveProfile = async () => {
 
   };
 
-  if (existing) {
-    const { error } = await supabase
-      .from("industry_profile")
-      .update(payload)
-      .eq("id", existing.id);
+delete (payload as any).id;
+
+alert("PAYLOAD ID = " + (payload as any).id);
+
+delete (payload as any).id;
+
+ if (existing && existing.length > 0) {
+
+  console.log("PROFILE ID =", (profile as any).id);
+
+  console.log("PAYLOAD =", payload);
+  console.log("PAYLOAD JSON =", JSON.stringify(payload, null, 2));
+  debugger;
+
+  console.log(
+  "PAYLOAD =",
+  JSON.stringify(payload, null, 2)
+);
+
+  const { error } = await supabase
+    .from("industry_profile")
+    .update(payload)
+    .eq("user_id", user.id);
 
     if (error) {
       alert(error.message);
       return;
     }
   } else {
+    console.log("PAYLOAD =", payload);
+
     const { error } = await supabase
       .from("industry_profile")
       .insert([payload]);
@@ -858,6 +958,16 @@ const saveProfile = async () => {
       return;
     }
   }
+
+const { data: rows } = await supabase
+  .from("industry_profile")
+  .select("id,user_id,industry_name");
+
+console.log("CURRENT USER =", user.id);
+console.log("EXISTING ROWS =", existing);
+console.log("EXISTING ERROR =", existingError);
+
+alert(JSON.stringify(rows, null, 2));
 
   await fetchProfile();
 

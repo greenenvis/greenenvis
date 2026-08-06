@@ -1662,10 +1662,20 @@ window.matchMedia("print").matches
     <button
       type="button"
       onClick={async () => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    alert("Please login again.");
+    return;
+  }
+
   const { data: profile } = await supabase
     .from("industry_profile")
     .select("industry_name")
-    .single();
+    .eq("user_id", user.id)
+    .maybeSingle();
 
   const pendingMessage = getPendingActionMessage(record.next_action);
 
@@ -1718,10 +1728,20 @@ ${profile?.industry_name || ""}`;
     <button
       type="button"
       onClick={async () => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    alert("Please login again.");
+    return;
+  }
+
   const { data: profile } = await supabase
     .from("industry_profile")
     .select("industry_name")
-    .single();
+    .eq("user_id", user.id)
+    .maybeSingle();
 
   const subject = `Reminder - ${record.scope_of_work}`;
 

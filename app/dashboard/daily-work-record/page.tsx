@@ -2051,17 +2051,27 @@ fetchWorkRecords();
 fetchFolders();
 
 const fetchCompanyProfile = async () => {
-    const { data, error } = await supabase
-  .from("industry_profile")
-  .select("industry_name, company_logo")
-  .limit(1);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-console.log("ERROR =", error);
-console.log("DATA =", data);
+  if (!user) {
+    setCompanyProfile(null);
+    return;
+  }
 
-setCompanyProfile(data?.[0] || null);
+  const { data, error } = await supabase
+    .from("industry_profile")
+    .select("industry_name, company_logo")
+    .eq("user_id", user.id)
+    .maybeSingle();
 
-console.log("Company Profile =", data);
+  console.log("ERROR =", error);
+  console.log("DATA =", data);
+
+  setCompanyProfile(data || null);
+
+  console.log("Company Profile =", data);
 };
 
 fetchCompanyProfile();
@@ -2157,12 +2167,20 @@ useEffect(() => {
         >
           <button
             onClick={async () => {
+                const {
+                  data: { user },
+                } = await supabase.auth.getUser();
+
+                if (!user) {
+                  alert("Please login again.");
+                  return;
+                }
 
                 const { data: profile, error } = await supabase
-  .from("industry_profile")
-  .select("industry_name")
-  .limit(1)
-  .single();
+                  .from("industry_profile")
+                  .select("industry_name")
+                  .eq("user_id", user.id)
+                  .maybeSingle();
 
 if (error) {
   console.error(error);
@@ -2196,10 +2214,6 @@ ${profile?.industry_name || ""}`;
 alert("Before History Insert");
 
 console.log("Before History Insert");
-
-const {
-  data: { user },
-} = await supabase.auth.getUser();
 
 if (!user) return;
 
@@ -2236,12 +2250,20 @@ window.open(
 
           <button
             onClick={async () => {
+                const {
+                  data: { user: currentUser },
+                } = await supabase.auth.getUser();
+
+                if (!currentUser) {
+                  alert("Please login again.");
+                  return;
+                }
 
                 const { data: profile, error } = await supabase
-  .from("industry_profile")
-  .select("industry_name")
-  .limit(1)
-  .single();
+                  .from("industry_profile")
+                  .select("industry_name")
+                  .eq("user_id", currentUser.id)
+                  .maybeSingle();
 
 if (error) {
   console.error(error);
@@ -2273,16 +2295,12 @@ Thank You,
 
 ${profile?.industry_name || ""}`;
 
-const {
-  data: { user },
-} = await supabase.auth.getUser();
-
-if (!user) return;
+if (!currentUser) return;
 
 await supabase
   .from("work_record_history")
   .insert({
-    user_id: user.id,
+    user_id: currentUser.id,
     work_record_id: item.id,
     activity_type: "email",
     activity_title: "Email Reminder Opened",

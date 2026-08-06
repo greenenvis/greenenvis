@@ -19,11 +19,20 @@ export default function ReminderPage() {
 
 setReminders(reminderData || []);
 
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+if (!user) {
+  setProfile(null);
+  return;
+}
+
 const { data: profileData } = await supabase
   .from("industry_profile")
   .select("*")
-  .limit(1)
-  .single();
+  .eq("user_id", user.id)
+  .maybeSingle();
 
 setProfile(profileData);
   };
