@@ -774,31 +774,18 @@ const fetchProfile = async () => {
 const { data: authData, error: authError } = await supabase.auth.getUser();
 
 if (authError || !authData.user) {
-  alert("User session not found. Please login again.");
   return;
 }
 
 const user = authData.user;
 
-alert(
-  "USER ID = " +
-  user.id +
-  "\nEMAIL = " +
-  user.email
-);
-
 const { data } = await supabase
-
   .from("industry_profile")
   .select("*")
   .eq("user_id", user.id)
   .maybeSingle();
 
   if (data) {
-    console.log("SUPABASE DATA =", JSON.stringify(data, null, 2));
-
-console.log("IF(DATA) EXECUTED");
-console.log("PROFILE FROM DB =", data);
 
     setProfile({
   ...data,
@@ -813,19 +800,6 @@ console.log("PROFILE FROM DB =", data);
   hazardous_chemicals: data.hazardous_chemicals || [],
 });
 
-alert(
-  JSON.stringify(
-    {
-      user: user.id,
-      industry: data?.industry_name,
-    },
-    null,
-    2
-  )
-);
-
-console.log("FETCH DATA =", data);
-
     setIsEditing(false);
 
     setProducts(data.products || []);
@@ -834,23 +808,19 @@ console.log("FETCH DATA =", data);
     setFuels(data.fuels || []);
 
   } else {
-    console.log("NO PROFILE FOUND");
     setIsEditing(true);
   }
 };
 
 useEffect(() => {
-  alert("fetchProfile called");
   fetchProfile();
 }, []);
 
 const saveProfile = async () => {
-alert("SAVE PROFILE FUNCTION CALLED");
 
 const { data: authData, error: authError } = await supabase.auth.getUser();
 
 if (authError || !authData.user) {
-  alert("User session not found. Please login again.");
   return;
 }
 
@@ -860,10 +830,6 @@ const { data: existing, error: existingError } = await supabase
   .from("industry_profile")
   .select("id,user_id")
   .eq("user_id", user.id);
-
-console.log("CURRENT USER =", user.id);
-console.log("EXISTING ROWS =", existing);
-console.log("EXISTING ERROR =", existingError);
 
   const normalizeDateValue = (value: any) =>
     typeof value === "string" && value.trim() === "" ? null : value;
@@ -920,54 +886,26 @@ peso_valid_upto: normalizeDateValue(profile.peso_valid_upto),
 
 delete (payload as any).id;
 
-alert("PAYLOAD ID = " + (payload as any).id);
-
-delete (payload as any).id;
-
  if (existing && existing.length > 0) {
-
-  console.log("PROFILE ID =", (profile as any).id);
-
-  console.log("PAYLOAD =", payload);
-  console.log("PAYLOAD JSON =", JSON.stringify(payload, null, 2));
-  debugger;
-
-  console.log(
-  "PAYLOAD =",
-  JSON.stringify(payload, null, 2)
-);
-
   const { error } = await supabase
     .from("industry_profile")
     .update(payload)
     .eq("user_id", user.id);
 
     if (error) {
-      alert(error.message);
+      void(error.message);
       return;
     }
   } else {
-    console.log("PAYLOAD =", payload);
-
     const { error } = await supabase
       .from("industry_profile")
       .insert([payload]);
 
     if (error) {
-      alert(error.message);
+      void(error.message);
       return;
     }
   }
-
-const { data: rows } = await supabase
-  .from("industry_profile")
-  .select("id,user_id,industry_name");
-
-console.log("CURRENT USER =", user.id);
-console.log("EXISTING ROWS =", existing);
-console.log("EXISTING ERROR =", existingError);
-
-alert(JSON.stringify(rows, null, 2));
 
   await fetchProfile();
 
@@ -982,7 +920,7 @@ const addProduct = () => {
     !productForm.quantity ||
     !productForm.unit
   ) {
-    alert("Please fill all product details.");
+    void("Please fill all product details.");
     return;
   }
 
@@ -1023,7 +961,7 @@ const addByProduct = () => {
     !byProductForm.quantity ||
     !byProductForm.unit
   ) {
-    alert("Please fill all By-product details.");
+    void("Please fill all By-product details.");
     return;
   }
 
@@ -1066,7 +1004,7 @@ const addRawMaterial = () => {
     !rawMaterialForm.quantity ||
     !rawMaterialForm.unit
   ) {
-    alert("Please fill all Raw Material details.");
+    void("Please fill all Raw Material details.");
     return;
   }
 
@@ -1111,7 +1049,7 @@ const addFuel = () => {
     !fuelForm.quantity ||
     !fuelForm.unit
   ) {
-    alert("Please fill all Fuel details.");
+    void("Please fill all Fuel details.");
     return;
   }
 
@@ -1146,7 +1084,7 @@ const addChemical = () => {
     !chemicalForm.storage_qty ||
     !chemicalForm.unit
   ) {
-    alert("Please fill all Chemical details.");
+    void("Please fill all Chemical details.");
     return;
   }
 
@@ -1262,7 +1200,7 @@ const addHazardousWaste = () => {
     !hazardousWasteForm.quantity ||
     !hazardousWasteForm.unit
   ) {
-    alert("Please fill all Hazardous Waste details.");
+    void("Please fill all Hazardous Waste details.");
     return;
   }
 
@@ -1374,7 +1312,7 @@ const addNonHazardousWaste = () => {
     !nonHazardousWasteForm.quantity ||
     !nonHazardousWasteForm.unit
   ) {
-    alert("Please fill all details.");
+    void("Please fill all details.");
     return;
   }
 
@@ -1457,7 +1395,7 @@ const addPlasticWaste = () => {
     !plasticWasteForm.quantity ||
     !plasticWasteForm.unit
   ) {
-    alert("Please fill all Plastic Waste details.");
+    void("Please fill all Plastic Waste details.");
     return;
   }
 
@@ -1542,7 +1480,7 @@ const addEWaste = () => {
     !eWasteForm.quantity ||
     !eWasteForm.unit
   ) {
-    alert("Please fill all E-Waste details.");
+    void("Please fill all E-Waste details.");
     return;
   }
 
@@ -1634,7 +1572,7 @@ const addDisposalFacility = () => {
     !disposalFacilityForm.facility_type ||
     !disposalFacilityForm.facility_name
   ) {
-    alert("Please fill all Disposal Facility details.");
+    void("Please fill all Disposal Facility details.");
     return;
   }
 
@@ -1721,7 +1659,7 @@ const addUsedOil = () => {
     !usedOilForm.quantity ||
     !usedOilForm.unit
   ) {
-    alert("Please fill all Used Oil details.");
+    void("Please fill all Used Oil details.");
     return;
   }
 
@@ -1806,7 +1744,7 @@ const addBatteryWaste = () => {
     !batteryWasteForm.quantity ||
     !batteryWasteForm.unit
   ) {
-    alert("Please fill all Battery Waste details.");
+    void("Please fill all Battery Waste details.");
     return;
   }
 
@@ -1892,7 +1830,7 @@ const addBiomedicalWaste = () => {
     !biomedicalWasteForm.quantity ||
     !biomedicalWasteForm.unit
   ) {
-    alert("Please fill all Biomedical Waste details.");
+    void("Please fill all Biomedical Waste details.");
     return;
   }
 
@@ -2320,15 +2258,11 @@ isEditing={isEditing}
 
 try{
 
-console.log(profile);
-
 downloadIndustryProfile(profile);
 
 }catch(error){
 
 console.error("PDF Error :",error);
-
-alert(String(error));
 
 }
 

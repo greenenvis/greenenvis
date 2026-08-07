@@ -1,10 +1,16 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
+import { supabase } from "../supabase";
 
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
 
  const sidebarMenu = [
   { title: "📝 Daily Work Record", path: "/dashboard/daily-work-record" },
@@ -84,7 +90,7 @@ export default function Sidebar() {
         ))}
 
         <button
-          onClick={() => router.push("/login")}
+          onClick={handleLogout}
           style={{
             marginTop: "25px",
             background: "#dc2626",

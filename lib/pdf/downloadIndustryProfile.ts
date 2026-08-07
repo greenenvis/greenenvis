@@ -2,26 +2,6 @@
 import autoTable from "jspdf-autotable";
 
 export const downloadIndustryProfile = async (profile: any) => {
-  console.group("========== GREENENVIS PDF PROFILE ==========");
-console.log("Complete Profile:", profile);
-
-console.log("Area Fields", {
-  total_area: profile.total_area,
-  total_plot_area: profile.total_plot_area,
-  plot_area: profile.plot_area,
-  plot_size: profile.plot_size,
-  factory_area: profile.factory_area,
-  site_area: profile.site_area,
-});
-
-console.log("Water Source", {
-  water_source: profile.water_source,
-  water_sources: profile.water_sources,
-  source_of_water: profile.source_of_water,
-  other_water_source: profile.other_water_source,
-});
-
-console.groupEnd();
   const doc = new jsPDF({
   orientation: "portrait",
   unit: "mm",

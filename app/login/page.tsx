@@ -41,37 +41,8 @@ const handleLogin = async () => {
   return;
 }
 
-const { data: profile } = await supabase
-  .from("industry_profiles")
-  .select("id")
-  .eq("user_id", data.user.id)
-  .maybeSingle();
-
-if (!profile) {
-  const { error: profileError } = await supabase
-    .from("industry_profiles")
-    .insert({
-      user_id: data.user.id,
-      company_name:
-        data.user.user_metadata?.company_name || "",
-      contact_person:
-        data.user.user_metadata?.contact_person || "",
-      mobile:
-        data.user.user_metadata?.mobile || "",
-      email: data.user.email,
-      gst_number:
-        data.user.user_metadata?.gst_number || null,
-      gpcb_id:
-        data.user.user_metadata?.gpcb_id || null,
-    });
-
-  if (profileError) {
-    alert(profileError.message);
-    return;
-  }
-}
-
 router.push("/dashboard");
+
 };
 
   const features = [
