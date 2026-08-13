@@ -13,16 +13,99 @@ export default function DailyWorkSummaryPage() {
   const reportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const raw = sessionStorage.getItem("daily-work-summary");
+  const loadSummary = async () => {
+    const raw = sessionStorage.getItem(
+      "daily-work-summary"
+    );
 
     if (!raw) return;
 
     const data = JSON.parse(raw);
+    const records = data.records || [];
 
-    const summary = generateSummary(data.records || []);
-    console.log("SUMMARY SESSION DATA =", data);
-    console.log("SUMMARY RECORDS =", data.records);
-    console.table(data.records);
+    console.log(
+      "SUMMARY SESSION DATA =",
+      data
+    );
+    console.log(
+      "SUMMARY RECORDS =",
+      records
+    );
+    console.table(records);
+
+    // Keep existing summary as safe fallback.
+    let summary = generateSummary(records);
+
+    try {
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
+      if (sessionError) {
+        console.error(
+          "SESSION ERROR =",
+          sessionError
+        );
+      }
+
+      if (
+        session?.access_token &&
+        records.length > 0
+      ) {
+        const response = await fetch(
+          "/api/ai/daily-summary",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json",
+              Authorization: `Bearer ${session.access_token}`,
+            },
+            body: JSON.stringify({
+              records,
+            }),
+          }
+        );
+
+        if (response.ok) {
+          const aiSummary =
+            await response.json();
+
+          if (
+            Array.isArray(
+              aiSummary.technicalWorkDone
+            ) &&
+            Array.isArray(
+              aiSummary.officeWorkDone
+            ) &&
+            Array.isArray(
+              aiSummary.nextDayPlan
+            ) &&
+            Array.isArray(
+              aiSummary.blockers
+            )
+          ) {
+            summary = aiSummary;
+
+            console.log(
+              "AI DAILY SUMMARY =",
+              aiSummary
+            );
+          }
+        } else {
+          console.error(
+            "AI SUMMARY API ERROR =",
+            await response.text()
+          );
+        }
+      }
+    } catch (error) {
+      console.error(
+        "AI SUMMARY CONNECTION ERROR =",
+        error
+      );
+    }
 
     setSummaryData({
       ...data,
@@ -36,19 +119,25 @@ export default function DailyWorkSummaryPage() {
 
       if (!user) return;
 
-      const { data } = await supabase
-        .from("industry_profile")
-        .select("industry_name")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      const { data: industryData } =
+        await supabase
+          .from("industry_profile")
+          .select("industry_name")
+          .eq("user_id", user.id)
+          .maybeSingle();
 
-      if (data?.industry_name) {
-        setIndustryName(data.industry_name);
+      if (industryData?.industry_name) {
+        setIndustryName(
+          industryData.industry_name
+        );
       }
     };
 
-    fetchIndustry();
-  }, []);
+    await fetchIndustry();
+  };
+
+  loadSummary();
+}, []);
 
   // 1. WhatsApp Share Function (Fixed String Processing)
   const shareOnWhatsApp = () => {

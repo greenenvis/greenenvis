@@ -7,30 +7,51 @@ export type SummaryResult = {
 
 export function generateSummary(records: any[]): SummaryResult {
 const technicalWorkDone = records
+
   .filter(
-    (item: any) =>
-      item.inquiry_type !== "Office Work" &&
-      (item.scope_of_work || item.task_title)
+  (item: any) =>
+    item.inquiry_type !== "Office Work" &&
+    (
+      item.scope_of_work ||
+      item.task_title ||
+      item.work_description
+    )
 )
+
   .map((item: any) => {
-    const work = item.scope_of_work || item.task_title || "assigned work";
-    const unit = item.unit_name || "Client";
-    const description = (item.work_description || "").trim();
-    const nextAction = (item.next_action || "").trim();
+    const work = (
+      item.scope_of_work ||
+      item.task_title ||
+      "assigned work"
+    ).trim();
 
-    // 1. જો Work Description ભરેલું હોય તો તેને Priority આપવી
+    const unit = (
+      item.unit_name ||
+      "Client"
+    ).trim();
+
+    const description = (
+      item.work_description ||
+      ""
+    ).trim();
+
+    const nextAction = (
+      item.next_action ||
+      ""
+    ).trim();
+
+    // 1. Actual Work Description gets highest priority
     if (description) {
-      let sentence = `${description}`;
+      let sentence = description;
 
-      // Full stop ન હોય તો Add કરવો
       if (!sentence.endsWith(".")) {
         sentence += ".";
       }
 
-      // Client Name Add કરવું
-      sentence += ` (${unit})`;
+      if (unit && unit !== "Client") {
+        sentence += ` (${unit})`;
+      }
 
-      // Next Action Add કરવું
       if (nextAction) {
         sentence += ` Next step: ${nextAction}.`;
       }
@@ -38,80 +59,106 @@ const technicalWorkDone = records
       return sentence;
     }
 
-    // 2. Fallback
-    return `Worked on ${work} for ${unit}.`;
+    // 2. Professional fallback
+    let sentence =
+      `Worked on ${work}`;
+
+    if (unit && unit !== "Client") {
+      sentence += ` for ${unit}`;
+    }
+
+    sentence += ".";
+
+    if (nextAction) {
+      sentence += ` Next step: ${nextAction}.`;
+    }
+
+    return sentence;
   });
 
   const officeWorkDone = records
-  .filter((item: any) => item.inquiry_type === "Office Work")
+  .filter(
+    (item: any) =>
+      item.inquiry_type === "Office Work"
+  )
   .map((item: any) => {
-    const work =
+    const description = (
+      item.work_description || ""
+    ).trim();
+
+    const taskTitle = (
+      item.task_title || ""
+    ).trim();
+
+    const workType =
       item.office_work_type === "Other"
-        ? item.other_office_work
-        : item.office_work_type;
+        ? (
+            item.other_office_work || ""
+          ).trim()
+        : (
+            item.office_work_type || ""
+          ).trim();
 
-    switch (work) {
-      case "Courier Inward":
-        return "Received and recorded incoming courier documents.";
+    const nextAction = (
+      item.next_action || ""
+    ).trim();
 
-      case "Courier Outward":
-        return "Prepared and dispatched outgoing courier documents.";
+    const unit = (
+      item.unit_name || ""
+    ).trim();
 
-      case "Meeting":
-        return `Attended an official meeting${
-          item.task_title ? ` regarding ${item.task_title}` : "."
-        }`;
+    // 1. Actual Work Description gets highest priority
+    if (description) {
+      let sentence = description;
 
-      case "Client Meeting":
-        return `Conducted a client meeting${
-          item.task_title ? ` regarding ${item.task_title}` : "."
-        }`;
+      if (!sentence.endsWith(".")) {
+        sentence += ".";
+      }
 
-      case "Client Follow-up":
-        return `Followed up with the client${
-          item.task_title ? ` regarding ${item.task_title}` : "."
-        }`;
+      if (unit) {
+        sentence += ` (${unit})`;
+      }
 
-      case "Document Verification":
-        return `Verified project documents${
-          item.task_title ? ` for ${item.task_title}` : "."
-        }`;
+      if (nextAction) {
+        sentence += ` Next step: ${nextAction}.`;
+      }
 
-      case "Document Collection":
-        return `Collected required documents${
-          item.task_title ? ` for ${item.task_title}` : "."
-        }`;
-
-      case "Email":
-        return `Prepared and sent official email correspondence${
-          item.task_title ? ` regarding ${item.task_title}` : "."
-        }`;
-
-      case "Phone Call":
-        return `Communicated through official phone calls${
-          item.task_title ? ` regarding ${item.task_title}` : "."
-        }`;
-
-      case "Invoice":
-        return `Prepared invoice${
-          item.task_title ? ` for ${item.task_title}` : "."
-        }`;
-
-      case "Payment Follow-up":
-        return `Followed up for pending payment${
-          item.task_title ? ` related to ${item.task_title}` : "."
-        }`;
-
-      case "Data Entry":
-        return `Updated office records and data entries${
-          item.task_title ? ` for ${item.task_title}` : "."
-        }`;
-
-      default:
-        return `Completed office work related to ${
-          item.task_title || work || "daily operations"
-        }.`;
+      return sentence;
     }
+
+    // 2. Task Title + Work Type fallback
+    if (taskTitle && workType) {
+      let sentence =
+        `Completed ${workType.toLowerCase()} ` +
+        `regarding ${taskTitle}`;
+
+      if (unit) {
+        sentence += ` (${unit})`;
+      }
+
+      sentence += ".";
+
+      if (nextAction) {
+        sentence += ` Next step: ${nextAction}.`;
+      }
+
+      return sentence;
+    }
+
+    // 3. Work Type fallback
+    if (workType) {
+      let sentence =
+        `Completed office work related to ${workType.toLowerCase()}.`;
+
+      if (nextAction) {
+        sentence += ` Next step: ${nextAction}.`;
+      }
+
+      return sentence;
+    }
+
+    // 4. Final fallback
+    return "Completed office and administrative work.";
   });
   
   const nextDayPlan = records
