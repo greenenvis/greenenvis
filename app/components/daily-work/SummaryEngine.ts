@@ -6,161 +6,121 @@ export type SummaryResult = {
 };
 
 export function generateSummary(records: any[]): SummaryResult {
-const technicalWorkDone = records
-
-  .filter(
-  (item: any) =>
-    item.inquiry_type !== "Office Work" &&
-    (
-      item.scope_of_work ||
-      item.task_title ||
-      item.work_description
+  const technicalWorkDone = records
+    .filter(
+      (item: any) =>
+        item.inquiry_type !== "Office Work" &&
+        (
+          item.scope_of_work ||
+          item.task_title ||
+          item.work_description
+        )
     )
-)
+    .map((item: any) => {
+      const work = String(
+        item.scope_of_work ||
+        item.task_title ||
+        "compliance work"
+      ).trim();
 
-  .map((item: any) => {
-    const work = (
-      item.scope_of_work ||
-      item.task_title ||
-      "assigned work"
-    ).trim();
+      const unit = String(item.unit_name || "").trim();
 
-    const unit = (
-      item.unit_name ||
-      "Client"
-    ).trim();
+      const description = String(
+        item.work_description || ""
+      ).trim();
 
-    const description = (
-      item.work_description ||
-      ""
-    ).trim();
+      const nextAction = String(
+        item.next_action || ""
+      ).trim();
 
-    const nextAction = (
-      item.next_action ||
-      ""
-    ).trim();
+      let sentence = "";
 
-    // 1. Actual Work Description gets highest priority
-    if (description) {
-      let sentence = description;
+      if (description) {
+        sentence = `Work related to ${work}`;
 
-      if (!sentence.endsWith(".")) {
-        sentence += ".";
-      }
+        if (unit) {
+          sentence += ` for ${unit}`;
+        }
 
-      if (unit && unit !== "Client") {
-        sentence += ` (${unit})`;
+        sentence +=
+          ` was carried out as per the current project requirements.`;
+      } else {
+        sentence = `Work related to ${work}`;
+
+        if (unit) {
+          sentence += ` for ${unit}`;
+        }
+
+        sentence +=
+          ` was undertaken as per the current project requirements.`;
       }
 
       if (nextAction) {
-        sentence += ` Next step: ${nextAction}.`;
+        sentence += ` The next step is ${nextAction}.`;
       }
 
       return sentence;
-    }
-
-    // 2. Professional fallback
-    let sentence =
-      `Worked on ${work}`;
-
-    if (unit && unit !== "Client") {
-      sentence += ` for ${unit}`;
-    }
-
-    sentence += ".";
-
-    if (nextAction) {
-      sentence += ` Next step: ${nextAction}.`;
-    }
-
-    return sentence;
-  });
+    });
 
   const officeWorkDone = records
-  .filter(
-    (item: any) =>
-      item.inquiry_type === "Office Work"
-  )
-  .map((item: any) => {
-    const description = (
-      item.work_description || ""
-    ).trim();
+    .filter(
+      (item: any) =>
+        item.inquiry_type === "Office Work"
+    )
+    .map((item: any) => {
+      const description = String(
+        item.work_description || ""
+      ).trim();
 
-    const taskTitle = (
-      item.task_title || ""
-    ).trim();
+      const taskTitle = String(
+        item.task_title || ""
+      ).trim();
 
-    const workType =
-      item.office_work_type === "Other"
-        ? (
-            item.other_office_work || ""
-          ).trim()
-        : (
-            item.office_work_type || ""
-          ).trim();
+      const workType =
+        item.office_work_type === "Other"
+          ? String(
+              item.other_office_work || ""
+            ).trim()
+          : String(
+              item.office_work_type || ""
+            ).trim();
 
-    const nextAction = (
-      item.next_action || ""
-    ).trim();
+      const nextAction = String(
+        item.next_action || ""
+      ).trim();
 
-    const unit = (
-      item.unit_name || ""
-    ).trim();
+      const unit = String(
+        item.unit_name || ""
+      ).trim();
 
-    // 1. Actual Work Description gets highest priority
-    if (description) {
-      let sentence = description;
+      let sentence = "";
 
-      if (!sentence.endsWith(".")) {
-        sentence += ".";
-      }
+      if (taskTitle) {
+        sentence = `Office and administrative work related to ${taskTitle}`;
 
-      if (unit) {
-        sentence += ` (${unit})`;
+        if (unit) {
+          sentence += ` for ${unit}`;
+        }
+
+        sentence += ` was completed.`;
+      } else if (workType) {
+        sentence =
+          `Office and administrative activities related to ${workType.toLowerCase()} were completed.`;
+      } else if (description) {
+        sentence =
+          `The required office and administrative activities were completed.`;
+      } else {
+        sentence =
+          `The required office and administrative work was completed.`;
       }
 
       if (nextAction) {
-        sentence += ` Next step: ${nextAction}.`;
+        sentence += ` The next step is ${nextAction}.`;
       }
 
       return sentence;
-    }
+    });
 
-    // 2. Task Title + Work Type fallback
-    if (taskTitle && workType) {
-      let sentence =
-        `Completed ${workType.toLowerCase()} ` +
-        `regarding ${taskTitle}`;
-
-      if (unit) {
-        sentence += ` (${unit})`;
-      }
-
-      sentence += ".";
-
-      if (nextAction) {
-        sentence += ` Next step: ${nextAction}.`;
-      }
-
-      return sentence;
-    }
-
-    // 3. Work Type fallback
-    if (workType) {
-      let sentence =
-        `Completed office work related to ${workType.toLowerCase()}.`;
-
-      if (nextAction) {
-        sentence += ` Next step: ${nextAction}.`;
-      }
-
-      return sentence;
-    }
-
-    // 4. Final fallback
-    return "Completed office and administrative work.";
-  });
-  
   const nextDayPlan = records
     .filter((item: any) => {
       if (item.status === "Completed") return false;
@@ -174,12 +134,16 @@ const technicalWorkDone = records
     .map((item: any) => {
       if (item.inquiry_type === "Office Work") {
         return `${item.task_title || "Office Task"}${
-          item.due_date ? ` (Due: ${item.due_date})` : ""
+          item.due_date
+            ? ` (Due: ${item.due_date})`
+            : ""
         }`;
       }
 
-      return `${item.scope_of_work}${
-        item.next_action ? ` → ${item.next_action}` : ""
+      return `${item.scope_of_work || item.task_title || "Compliance Work"}${
+        item.next_action
+          ? ` → ${item.next_action}`
+          : ""
       }${
         item.next_followup
           ? ` (Follow-up: ${item.next_followup})`
@@ -188,9 +152,16 @@ const technicalWorkDone = records
     });
 
   const blockers = records
-    .filter((item: any) => item.status === "On Hold")
+    .filter(
+      (item: any) =>
+        item.status === "On Hold"
+    )
     .map((item: any) => {
-      return `${item.scope_of_work || item.task_title} - Status: On Hold`;
+      return `${
+        item.scope_of_work ||
+        item.task_title ||
+        "Work"
+      } - Status: On Hold`;
     });
 
   return {
