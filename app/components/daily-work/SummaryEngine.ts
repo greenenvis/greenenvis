@@ -13,278 +13,200 @@ function cleanText(value: unknown): string {
 
 function ensurePeriod(value: string): string {
   const text = cleanText(value);
+  return text && !/[.!?]$/.test(text) ? `${text}.` : text;
+}
 
-  if (!text) return "";
+function professionalWorkName(value: unknown, fallback: string): string {
+  const name = cleanText(value) || fallback;
 
-  return /[.!?]$/.test(text) ? text : `${text}.`;
+  return name
+    .replace(/\bMOEFCC\b/gi, "Ministry of Environment, Forest and Climate Change (MoEFCC)")
+    .replace(/\s*[-–—>]+\s*/g, " ")
+    .trim();
+}
+
+function companyPhrase(unit: unknown): string {
+  const company = cleanText(unit);
+  return company ? ` for ${company}` : "";
+}
+
+function formatDate(value: unknown): string {
+  const text = cleanText(value);
+  const match = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  if (!match) return "";
+
+  const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  return date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 }
 
 function professionalizeTechnicalWork(
-  description: string,
-  work: string,
-  unit: string,
-  nextAction: string
+  description: unknown,
+  work: unknown,
+  unit: unknown
 ): string {
-  const text = cleanText(description);
-  const service = cleanText(work);
-  const company = cleanText(unit);
+  const descriptionText = cleanText(description).toLowerCase();
+  const service = professionalWorkName(work, "assigned compliance activity");
+  const company = companyPhrase(unit);
 
-  let sentence = "";
-
-  if (text) {
-    const lower = text.toLowerCase();
-
-    if (
-      lower.startsWith("already proceed") ||
-      lower.startsWith("proceed") ||
-      lower.startsWith("proceeded")
-    ) {
-      const cleaned = text
-        .replace(/^already\s+/i, "")
-        .replace(/^proceed(?:ed)?\s+(?:for|with|on)\s*/i, "")
-        .trim();
-
-      sentence = cleaned
-        ? `Proceeded with ${cleaned}`
-        : `Proceeded with the ${service || "assigned compliance work"}`;
-    } else if (
-      lower.startsWith("already submit") ||
-      lower.startsWith("submit") ||
-      lower.startsWith("submitted")
-    ) {
-      const cleaned = text
-        .replace(/^already\s+/i, "")
-        .replace(/^submit(?:ted)?\s+(?:for|with|to|on)\s*/i, "")
-        .trim();
-
-      sentence = cleaned
-        ? `Submitted ${cleaned}`
-        : `Submitted the ${service || "required application"} for further processing`;
-    } else if (
-      lower.startsWith("already prepare") ||
-      lower.startsWith("prepare") ||
-      lower.startsWith("prepared")
-    ) {
-      const cleaned = text
-        .replace(/^already\s+/i, "")
-        .replace(/^prepare(?:d)?\s+(?:for|of|on)\s*/i, "")
-        .trim();
-
-      sentence = cleaned
-        ? `Prepared ${cleaned}`
-        : `Prepared the required documents for ${service || "the assigned work"}`;
-    } else if (
-      lower.startsWith("verify") ||
-      lower.startsWith("verified") ||
-      lower.startsWith("verification")
-    ) {
-      sentence = `Reviewed and verified ${text.replace(
-        /^(verify|verified|verification)\s*/i,
-        ""
-      )}`.trim();
-    } else if (
-      lower.startsWith("follow up") ||
-      lower.startsWith("follow-up") ||
-      lower.startsWith("followed up")
-    ) {
-      const cleaned = text
-        .replace(/^follow(?:ed)?[-\s]?up\s*/i, "")
-        .trim();
-
-      sentence = cleaned
-        ? `Followed up regarding ${cleaned}`
-        : `Followed up regarding ${service || "the ongoing work"}`;
-    } else {
-      sentence = text;
-    }
-  } else {
-    sentence = service
-      ? `Worked on ${service}`
-      : "Worked on the assigned compliance activities";
+  if (/submit|file|application\s+submitted/.test(descriptionText)) {
+    return ensurePeriod(`Submitted the ${service}${company}`);
   }
 
-  if (company && !sentence.toLowerCase().includes(company.toLowerCase())) {
-    sentence += ` for ${company}`;
+  if (/prepare|document/.test(descriptionText)) {
+    return ensurePeriod(`Prepared the required documentation for ${service}${company}`);
   }
 
-  sentence = ensurePeriod(sentence);
-
-  if (nextAction) {
-    sentence += ` Next step: ${ensurePeriod(nextAction)}`;
+  if (/verify|verification|review/.test(descriptionText)) {
+    return ensurePeriod(`Reviewed and verified the requirements for ${service}${company}`);
   }
 
-  return sentence;
+  if (/follow[\s-]?up/.test(descriptionText)) {
+    return ensurePeriod(`Followed up on ${service}${company}`);
+  }
+
+  return ensurePeriod(`Initiated the ${service}${company}`);
 }
 
 function professionalizeOfficeWork(
-  description: string,
-  taskTitle: string,
-  workType: string,
-  unit: string,
-  nextAction: string
+  description: unknown,
+  taskTitle: unknown,
+  workType: unknown,
+  unit: unknown
 ): string {
-  const text = cleanText(description);
-  const title = cleanText(taskTitle);
-  const type = cleanText(workType);
+  const descriptionText = cleanText(description).toLowerCase();
+  const title = professionalWorkName(taskTitle, "the assigned administrative activity");
+  const type = cleanText(workType).toLowerCase();
+  const company = companyPhrase(unit);
 
-  let sentence = "";
+  if (/meeting|discussion/.test(descriptionText) || type === "meeting") {
+    if (/discipline|conduct/.test(descriptionText)) {
+      const organization = cleanText(unit) || "the organization";
 
-  if (text) {
-    const lower = text.toLowerCase();
-
-    console.log("TECHNICAL RAW TEXT =", text);
-    console.log("TECHNICAL LOWER TEXT =", lower);
-
-    if (
-      lower.includes("meeting") ||
-      type.toLowerCase() === "meeting"
-    ) {
-      const topic =
-        text
-          .replace(/^(completed|attended|conducted)?\s*(a\s*)?meeting\s*(and\s*)?(discussion)?\s*(for|regarding|about|on)?\s*/i, "")
-          .trim() ||
-        title;
-
-      sentence = topic
-        ? `Participated in a meeting and discussion focused on ${topic}`
-        : "Participated in an official meeting and discussion";
-    } else if (
-      lower.startsWith("verify") ||
-      lower.includes("verification")
-    ) {
-      const topic =
-        text.replace(/^(completed\s*)?(document\s*)?verification\s*/i, "").trim() ||
-        title;
-
-      sentence = topic
-        ? `Reviewed and verified the relevant documents and information related to ${topic}`
-        : "Reviewed and verified the relevant documents and information";
-    } else if (
-      lower.includes("email")
-    ) {
-      sentence = title
-        ? `Prepared and managed official email correspondence regarding ${title}`
-        : "Prepared and managed official email correspondence";
-    } else if (
-      lower.includes("phone") ||
-      lower.includes("call")
-    ) {
-      sentence = title
-        ? `Conducted official communication and follow-up regarding ${title}`
-        : "Conducted official communication and follow-up";
-    } else {
-      sentence = text;
+      return ensurePeriod(
+        `Participated in a discussion regarding the maintenance of professional discipline and conduct within ${organization}`
+      );
     }
-  } else if (type && title) {
-    sentence = `Completed ${type.toLowerCase()} related to ${title}`;
-  } else if (title) {
-    sentence = `Completed office and administrative work related to ${title}`;
-  } else if (type) {
-    sentence = `Completed office and administrative activities related to ${type.toLowerCase()}`;
+
+    return ensurePeriod(`Participated in an official discussion regarding ${title}${company}`);
+  }
+
+  if (/verify|verification|portal/.test(descriptionText) || /verify|verification/.test(type)) {
+    if (/portal/.test(descriptionText) || /portal/.test(title.toLowerCase())) {
+      return ensurePeriod(`Conducted verification and updated the portal using the available information${company}`);
+    }
+
+    return ensurePeriod(`Reviewed and verified the relevant documents and information for ${title}${company}`);
+  }
+
+  if (/email/.test(descriptionText) || /email/.test(type)) {
+    return ensurePeriod(`Prepared and managed official email correspondence regarding ${title}${company}`);
+  }
+
+  if (/phone|call/.test(descriptionText) || /phone|call/.test(type)) {
+    return ensurePeriod(`Conducted official communication and follow-up regarding ${title}${company}`);
+  }
+
+  return ensurePeriod(`Completed the required office and administrative work related to ${title}${company}`);
+}
+
+function professionalNextDayPlan(item: any): string {
+  const isOfficeWork = item.inquiry_type === "Office Work";
+  const subject = professionalWorkName(
+    isOfficeWork ? item.task_title : item.scope_of_work || item.task_title,
+    isOfficeWork ? "the assigned administrative activity" : "the assigned compliance activity"
+  );
+  const company = companyPhrase(item.unit_name);
+  const nextAction = cleanText(item.next_action).toLowerCase();
+  const descriptionText = cleanText(item.work_description).toLowerCase();
+  const followUpDate = formatDate(item.next_followup);
+  const dueDate = formatDate(item.due_date);
+
+  let plan: string;
+
+  if (isOfficeWork) {
+    plan = `Complete the scheduled administrative activity related to ${subject}${company}`;
+  } else if (/await|pending.*approval|authority.*approval/.test(nextAction)) {
+    plan = `Monitor the ${subject} status${company}, as approval from the authority is awaited`;
+  } else if (/follow[\s-]?up/.test(nextAction)) {
+    plan = `Follow up on ${subject}${company} to progress the scheduled activity`;
+  } else if (/submit|file/.test(nextAction)) {
+    plan = `Prepare and submit the required documentation for ${subject}${company}`;
+  } else if (/prepare|document/.test(nextAction)) {
+    plan = `Prepare the required documentation for ${subject}${company}`;
   } else {
-    sentence = "Completed the required office and administrative work";
+    plan = `Continue work on ${subject}${company} in accordance with the scheduled activity`;
   }
 
-  if (
-    unit &&
-    !sentence.toLowerCase().includes(unit.toLowerCase())
-  ) {
-    sentence += ` for ${unit}`;
+  if (followUpDate) {
+    plan += `. A follow-up is scheduled for ${followUpDate}`;
+  } else if (dueDate) {
+    plan += `. The activity is due on ${dueDate}`;
   }
 
-  sentence = ensurePeriod(sentence);
-
-  if (nextAction) {
-    sentence += ` Next step: ${ensurePeriod(nextAction)}`;
+  if (!isOfficeWork && /dgft/.test(descriptionText) && /await|pending.*approval|authority.*approval/.test(nextAction)) {
+    plan += ". Preparatory work for the Directorate General of Foreign Trade (DGFT) license application will commence upon approval";
   }
 
-  return sentence;
+  return ensurePeriod(plan);
 }
 
 export function generateSummary(records: any[]): SummaryResult {
-  const technicalWorkDone = records
+  const safeRecords = Array.isArray(records) ? records : [];
+
+  const technicalWorkDone = safeRecords
     .filter(
       (item: any) =>
         item.inquiry_type !== "Office Work" &&
-        (
-          item.scope_of_work ||
-          item.task_title ||
-          item.work_description
-        )
+        (item.scope_of_work || item.task_title || item.work_description)
     )
-    .map((item: any) => {
-      const work = cleanText(
-        item.scope_of_work ||
-        item.task_title ||
-        "assigned compliance work"
-      );
+    .map((item: any) =>
+      professionalizeTechnicalWork(
+        item.work_description,
+        item.scope_of_work || item.task_title,
+        item.unit_name
+      )
+    );
 
-      return professionalizeTechnicalWork(
-        cleanText(item.work_description),
-        work,
-        cleanText(item.unit_name),
-        cleanText(item.next_action)
-      );
-    });
-
-  const officeWorkDone = records
-    .filter(
-      (item: any) =>
-        item.inquiry_type === "Office Work"
-    )
+  const officeWorkDone = safeRecords
+    .filter((item: any) => item.inquiry_type === "Office Work")
     .map((item: any) => {
       const workType =
         item.office_work_type === "Other"
-          ? cleanText(item.other_office_work)
-          : cleanText(item.office_work_type);
+          ? item.other_office_work
+          : item.office_work_type;
 
       return professionalizeOfficeWork(
-        cleanText(item.work_description),
-        cleanText(item.task_title),
+        item.work_description,
+        item.task_title,
         workType,
-        cleanText(item.unit_name),
-        cleanText(item.next_action)
+        item.unit_name
       );
     });
 
-  const nextDayPlan = records
-    .filter((item: any) => {
-      if (item.status === "Completed") return false;
+  const nextDayPlan = safeRecords
+    .filter(
+      (item: any) =>
+        item.status !== "Completed" &&
+        (item.next_action || item.next_followup || item.due_date)
+    )
+    .map(professionalNextDayPlan);
 
-      return (
-        item.next_action ||
-        item.next_followup ||
-        item.due_date
-      );
-    })
-    .map((item: any) => {
-      if (item.inquiry_type === "Office Work") {
-        return `${item.task_title || "Office Task"}${
-          item.due_date
-            ? ` (Due: ${item.due_date})`
-            : ""
-        }`;
-      }
-
-      return `${item.scope_of_work || item.task_title || "Compliance Work"}${
-        item.next_action
-          ? ` → ${item.next_action}`
-          : ""
-      }${
-        item.next_followup
-          ? ` (Follow-up: ${item.next_followup})`
-          : ""
-      }`;
-    });
-
-  const blockers = records
+  const blockers = safeRecords
     .filter((item: any) => item.status === "On Hold")
     .map((item: any) => {
-      return `${
-        item.scope_of_work ||
-        item.task_title ||
-        "Work"
-      } - Status: On Hold`;
+      const subject = professionalWorkName(
+        item.scope_of_work || item.task_title,
+        "assigned work"
+      );
+
+      return ensurePeriod(
+        `The ${subject}${companyPhrase(item.unit_name)} remains on hold pending further action`
+      );
     });
 
   return {
