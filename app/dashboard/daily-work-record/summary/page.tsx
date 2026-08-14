@@ -8,38 +8,38 @@ import html2canvas from "html2canvas";
 import autoTable from "jspdf-autotable";
 
 export default function DailyWorkSummaryPage() {
-  const [summaryData, setSummaryData] = useState<any>(null);
-  const [industryName, setIndustryName] = useState("Work Update");
-  const reportRef = useRef<HTMLDivElement>(null);
+const [summaryData, setSummaryData] = useState<any>(null);
+const [industryName, setIndustryName] = useState("Work Update");
+const reportRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-  const loadSummary = async () => {
-    const raw = sessionStorage.getItem(
-      "daily-work-summary"
-    );
+useEffect(() => {
+const loadSummary = async () => {
+const raw = sessionStorage.getItem(
+"daily-work-summary"
+);
 
-    if (!raw) return;
+if (!raw) return;
 
-    const data = JSON.parse(raw);
-    const records = data.records || [];
+const data = JSON.parse(raw);
+const records = data.records || [];
 
-    console.log(
-      "SUMMARY SESSION DATA =",
-      data
-    );
-    console.log(
-      "SUMMARY RECORDS =",
-      records
-    );
-    console.table(records);
+console.log(
+"SUMMARY SESSION DATA =",
+data
+);
+console.log(
+"SUMMARY RECORDS =",
+records
+);
+console.table(records);
 
-    // Keep existing summary as safe fallback.
-    let summary = generateSummary(records);
+// Keep existing summary as safe fallback.
+let summary = generateSummary(records);
 
-    try {
-      const {
-        data: { session },
-        error: sessionError,
+try {
+const {
+data: { session },
+error: sessionError,
       } = await supabase.auth.getSession();
 
       if (sessionError) {
@@ -86,7 +86,9 @@ export default function DailyWorkSummaryPage() {
               aiSummary.blockers
             )
           ) {
-  summary = aiSummary;
+
+  // summary = aiSummary;
+
           console.log(
               "AI DAILY SUMMARY =",
               aiSummary
