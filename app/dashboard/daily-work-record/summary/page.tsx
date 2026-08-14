@@ -21,7 +21,7 @@ const raw = sessionStorage.getItem(
 if (!raw) return;
 
 const data = JSON.parse(raw);
-const records = data.records || [];
+const records = Array.isArray(data.records) ? data.records : [];
 
 console.log(
 "SUMMARY SESSION DATA =",
@@ -33,83 +33,11 @@ records
 );
 console.table(records);
 
-// Keep existing summary as safe fallback.
-let summary = generateSummary(records);
-
-try {
-const {
-data: { session },
-error: sessionError,
-      } = await supabase.auth.getSession();
-
-      if (sessionError) {
-        console.error(
-          "SESSION ERROR =",
-          sessionError
-        );
-      }
-
-      if (
-        session?.access_token &&
-        records.length > 0
-      ) {
-        const response = await fetch(
-          "/api/ai/daily-summary",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type":
-                "application/json",
-              Authorization: `Bearer ${session.access_token}`,
-            },
-            body: JSON.stringify({
-              records,
-            }),
-          }
-        );
-
-        if (response.ok) {
-          const aiSummary =
-            await response.json();
-
-          if (
-            Array.isArray(
-              aiSummary.technicalWorkDone
-            ) &&
-            Array.isArray(
-              aiSummary.officeWorkDone
-            ) &&
-            Array.isArray(
-              aiSummary.nextDayPlan
-            ) &&
-            Array.isArray(
-              aiSummary.blockers
-            )
-          ) {
-
-  // summary = aiSummary;
-
-          console.log(
-              "AI DAILY SUMMARY =",
-              aiSummary
-            );
-          }
-        } else {
-          console.error(
-            "AI SUMMARY API ERROR =",
-            await response.text()
-          );
-        }
-      }
-    } catch (error) {
-      console.error(
-        "AI SUMMARY CONNECTION ERROR =",
-        error
-      );
-    }
+const summary = generateSummary(records);
 
     setSummaryData({
       ...data,
+      records,
       summary,
     });
 
