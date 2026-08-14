@@ -132,6 +132,9 @@ function professionalizeOfficeWork(
   if (text) {
     const lower = text.toLowerCase();
 
+    console.log("TECHNICAL RAW TEXT =", text);
+    console.log("TECHNICAL LOWER TEXT =", lower);
+
     if (
       lower.includes("meeting") ||
       type.toLowerCase() === "meeting"

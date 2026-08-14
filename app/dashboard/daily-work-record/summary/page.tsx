@@ -86,9 +86,8 @@ export default function DailyWorkSummaryPage() {
               aiSummary.blockers
             )
           ) {
-            summary = aiSummary;
-
-            console.log(
+  summary = aiSummary;
+          console.log(
               "AI DAILY SUMMARY =",
               aiSummary
             );
