@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { generateSummary } from "@/app/components/daily-work/SummaryEngine";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/app/supabase";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -9,6 +9,7 @@ import autoTable from "jspdf-autotable";
 
 export default function DailyWorkSummaryPage() {
 const [summaryData, setSummaryData] = useState<any>(null);
+const [summaryError, setSummaryError] = useState("");
 const [industryName, setIndustryName] = useState("Work Update");
 const reportRef = useRef<HTMLDivElement>(null);
 
@@ -35,15 +36,15 @@ console.table(records);
 
 const summary = generateSummary(records);
 
-    setSummaryData({
-      ...data,
-      records,
-      summary,
-    });
+setSummaryData({
+  ...data,
+  records,
+  summary,
+});
 
-    const fetchIndustry = async () => {
-      const {
-        data: { user },
+const fetchIndustry = async () => {
+  const {
+    data: { user },
       } = await supabase.auth.getUser();
 
       if (!user) return;
@@ -65,7 +66,15 @@ const summary = generateSummary(records);
     await fetchIndustry();
   };
 
-  loadSummary();
+  loadSummary().catch((error) => {
+  console.error("DAILY WORK SUMMARY ERROR =", error);
+
+  setSummaryError(
+    error instanceof Error
+      ? error.message
+      : "Failed to load the daily work summary."
+  );
+});
 }, []);
 
   // 1. WhatsApp Share Function (Fixed String Processing)
@@ -260,6 +269,21 @@ const downloadPDF = async () => {
     };
   }
 };
+
+if (summaryError) {
+  return (
+    <div
+      style={{
+        padding: "40px",
+        textAlign: "center",
+        fontSize: "18px",
+        color: "#dc2626",
+      }}
+    >
+      {summaryError}
+    </div>
+  );
+}
 
 if (!summaryData) {
   return (

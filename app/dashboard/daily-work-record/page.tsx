@@ -1406,127 +1406,58 @@ const getServiceMessage = (
   status?: string,
   paymentStatus?: string
 ) => {
-
   const service = String(scope || "").trim();
 
-  const statusMessage = getStatusMessage(
-  status,
-  paymentStatus
-);
+  const serviceName =
+    service ||
+    "environmental compliance and regulatory work";
 
-const formattedStatus = statusMessage
-  ? `${statusMessage}\n\n`
-  : "";
+  const currentStatus = String(status || "").trim();
+  const payment = String(paymentStatus || "").trim();
 
-switch (service) {
-    case "Consent to Establish (CTE)":
-      return `This is a reminder regarding your Consent to Establish (CTE) application.
+  const paragraphs: string[] = [];
 
-${formattedStatus}${pendingMessage}`;
-
-
-    case "Consent to Operate (CCA)":
-      return `This is a reminder regarding your Consent to Operate (CCA) application.
-
-${formattedStatus}${pendingMessage}`;
-
-
-    case "CCA Renewal":
-      return `This is a reminder regarding your CCA Renewal process.
-
-${formattedStatus}${pendingMessage}`;
-
-
-    case "Hazardous Waste Authorization":
-      return `This is a reminder regarding your Hazardous Waste Authorization.
-
-${formattedStatus}${pendingMessage}`;
-
-
-    case "Biomedical Waste Authorization":
-      return `This is a reminder regarding your Biomedical Waste Authorization.
-
-${formattedStatus}${pendingMessage}`;
-
-
-    case "Plastic EPR":
-      return `This is a reminder regarding your Plastic EPR compliance.
-
-${formattedStatus}${pendingMessage}`;
-
-
-    case "Battery EPR":
-      return `This is a reminder regarding your Battery EPR compliance.
-
-${formattedStatus}${pendingMessage}`;
-
-
-    case "E-Waste EPR":
-      return `This is a reminder regarding your E-Waste EPR compliance.
-
-${formattedStatus}${pendingMessage}`;
-
-
-    case "Used Oil EPR":
-      return `This is a reminder regarding your Used Oil EPR compliance.
-
-${formattedStatus}${pendingMessage}`;
-
-
-    case "Tyre EPR":
-      return `This is a reminder regarding your Tyre EPR compliance.
-
-${formattedStatus}${pendingMessage}`;
-
-
-    case "CGWA NOC":
-      return `This is a reminder regarding your CGWA NOC application.
-
-${formattedStatus}${pendingMessage}`;
-
-
-    case "CGWA Renewal":
-      return `This is a reminder regarding your CGWA Renewal application.
-
-${formattedStatus}${pendingMessage}`;
-
-
-    case "Environmental Clearance (EC)":
-      return `This is a reminder regarding your Environmental Clearance (EC).
-
-${formattedStatus}${pendingMessage}`;
-
-
-    case "Environmental Audit":
-      return `This is a reminder regarding your Environmental Audit.
-
-${formattedStatus}${pendingMessage}`;
-
-
-    case "NABL Laboratory Setup":
-      return `This is a reminder regarding your NABL Laboratory Setup project.
-
-${formattedStatus}${pendingMessage}`;
-
-
-    case "Factory License":
-      return `This is a reminder regarding your Factory License application.
-
-${formattedStatus}${pendingMessage}`;
-
-
-    case "Fire NOC":
-      return `This is a reminder regarding your Fire NOC application.
-
-${formattedStatus}${pendingMessage}`;
-
-
-    default:
-      return `This is a reminder regarding your compliance work.
-
-${formattedStatus}${pendingMessage}`;
-
+  if (currentStatus === "In Progress") {
+    paragraphs.push(
+      `We would like to update you that your ${serviceName} is currently in progress. The relevant requirements and project details are being reviewed, and the necessary actions are being carried out for further processing.`
+    );
+  } else if (currentStatus === "Submitted") {
+    paragraphs.push(
+      `We would like to update you that your ${serviceName} has been submitted to the concerned authority. We will continue to monitor the progress and take the necessary action based on any further response or requirement.`
+    );
+  } else if (currentStatus === "Completed") {
+    paragraphs.push(
+      `We are pleased to inform you that your ${serviceName} work has been completed successfully.`
+    );
+  } else if (currentStatus === "On Hold") {
+    paragraphs.push(
+      `We would like to inform you that your ${serviceName} is currently on hold. Further processing will continue once the required matter is resolved.`
+    );
+  } else if (currentStatus === "Pending") {
+    paragraphs.push(
+      `Your ${serviceName} is currently pending for further processing. The required next steps will be taken based on the available project information and pending requirements.`
+    );
+  } else {
+    paragraphs.push(
+      `We would like to provide you with an update regarding your ${serviceName}. Our team is reviewing the current project requirements and will proceed with the necessary next steps accordingly.`
+    );
   }
+
+  if (pendingMessage) {
+    paragraphs.push(pendingMessage);
+  }
+
+  if (payment === "Pending") {
+    paragraphs.push(
+      "Our records indicate that payment related to this service is pending. Kindly arrange the pending payment to avoid any delay in further processing."
+    );
+  } else if (payment === "Partially Paid") {
+    paragraphs.push(
+      "Partial payment has been received. Kindly arrange the remaining payment as applicable for the continuation of the service."
+    );
+  }
+
+  return paragraphs.join("\n\n");
 };
 
 const addHistory = async (
@@ -2187,6 +2118,12 @@ if (error) {
   alert("Industry Profile not found.");
   return;
 }
+
+const service =
+  item.scope_of_work ||
+  item.task_title ||
+  item.work_description ||
+  "Compliance Service";
 
 const pendingMessage = getPendingActionMessage(item.next_action);
 

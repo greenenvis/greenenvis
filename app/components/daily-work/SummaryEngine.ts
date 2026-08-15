@@ -78,78 +78,150 @@ function professionalizeOfficeWork(
   workType: unknown,
   unit: unknown
 ): string {
-  const descriptionText = cleanText(description).toLowerCase();
-  const title = professionalWorkName(taskTitle, "the assigned administrative activity");
+  const originalDescription =
+  cleanText(description) || cleanText(taskTitle);
+  const descriptionText = originalDescription.toLowerCase();
   const type = cleanText(workType).toLowerCase();
   const company = companyPhrase(unit);
 
-  if (/meeting|discussion/.test(descriptionText) || type === "meeting") {
-    if (/discipline|conduct/.test(descriptionText)) {
-      const organization = cleanText(unit) || "the organization";
+  const normalizedDescription = originalDescription
+    .replace(
+      /\bMOEFCC\b/gi,
+      "Ministry of Environment, Forest and Climate Change (MoEFCC)"
+    )
+    .replace(/\s+/g, " ")
+    .trim();
 
-      return ensurePeriod(
-        `Participated in a discussion regarding the maintenance of professional discipline and conduct within ${organization}`
-      );
-    }
+  if (!normalizedDescription) {
+    const title = professionalWorkName(
+      taskTitle,
+      "assigned office and administrative activity"
+    );
 
-    return ensurePeriod(`Participated in an official discussion regarding ${title}${company}`);
+    return ensurePeriod(
+      `Completed the assigned office and administrative activity related to ${title}${company}`
+    );
   }
 
-  if (/verify|verification|portal/.test(descriptionText) || /verify|verification/.test(type)) {
-    if (/portal/.test(descriptionText) || /portal/.test(title.toLowerCase())) {
-      return ensurePeriod(`Conducted verification and updated the portal using the available information${company}`);
-    }
-
-    return ensurePeriod(`Reviewed and verified the relevant documents and information for ${title}${company}`);
+  if (
+    /vendor registration actual users authorized by gpcb under hazardous and other wastes on econexa portal/i.test(
+      normalizedDescription
+    )
+  ) {
+    return ensurePeriod(
+      "Completed the required vendor registration activity for actual users authorized by GPCB under the applicable Hazardous and Other Wastes requirements through the EcoNexa Portal"
+    );
   }
 
-  if (/email/.test(descriptionText) || /email/.test(type)) {
-    return ensurePeriod(`Prepared and managed official email correspondence regarding ${title}${company}`);
+  if (
+    /meeting|discussion/.test(descriptionText) ||
+    type === "meeting"
+  ) {
+    return ensurePeriod(
+      `Participated in an official discussion regarding ${normalizedDescription}${company}`
+    );
   }
 
-  if (/phone|call/.test(descriptionText) || /phone|call/.test(type)) {
-    return ensurePeriod(`Conducted official communication and follow-up regarding ${title}${company}`);
+  if (
+    /verify|verification/.test(descriptionText) ||
+    /verify|verification/.test(type)
+  ) {
+    return ensurePeriod(
+      `Reviewed and verified the relevant information and documentation for ${normalizedDescription}${company}`
+    );
   }
 
-  return ensurePeriod(`Completed the required office and administrative work related to ${title}${company}`);
+  if (/portal/.test(descriptionText)) {
+    return ensurePeriod(
+      `Completed the required portal-related activity for ${normalizedDescription}${company}`
+    );
+  }
+
+  if (
+    /email/.test(descriptionText) ||
+    /email/.test(type)
+  ) {
+    return ensurePeriod(
+      `Handled official email communication regarding ${normalizedDescription}${company}`
+    );
+  }
+
+  if (
+    /phone|call/.test(descriptionText) ||
+    /phone|call/.test(type)
+  ) {
+    return ensurePeriod(
+      `Conducted official communication and follow-up regarding ${normalizedDescription}${company}`
+    );
+  }
+
+  return ensurePeriod(
+    `Completed the assigned office and administrative activity related to ${normalizedDescription}${company}`
+  );
 }
 
 function professionalNextDayPlan(item: any): string {
   const isOfficeWork = item.inquiry_type === "Office Work";
-  const subject = professionalWorkName(
-    isOfficeWork ? item.task_title : item.scope_of_work || item.task_title,
-    isOfficeWork ? "the assigned administrative activity" : "the assigned compliance activity"
-  );
-  const company = companyPhrase(item.unit_name);
   const nextAction = cleanText(item.next_action).toLowerCase();
-  const descriptionText = cleanText(item.work_description).toLowerCase();
+  const description =
+  cleanText(item.work_description) ||
+  cleanText(item.task_title);
+  const descriptionText = description.toLowerCase();
   const followUpDate = formatDate(item.next_followup);
   const dueDate = formatDate(item.due_date);
 
-  let plan: string;
+  let plan = "";
 
-  if (isOfficeWork) {
-    plan = `Complete the scheduled administrative activity related to ${subject}${company}`;
-  } else if (/await|pending.*approval|authority.*approval/.test(nextAction)) {
-    plan = `Monitor the ${subject} status${company}, as approval from the authority is awaited`;
-  } else if (/follow[\s-]?up/.test(nextAction)) {
-    plan = `Follow up on ${subject}${company} to progress the scheduled activity`;
-  } else if (/submit|file/.test(nextAction)) {
-    plan = `Prepare and submit the required documentation for ${subject}${company}`;
-  } else if (/prepare|document/.test(nextAction)) {
-    plan = `Prepare the required documentation for ${subject}${company}`;
+  if (
+    isOfficeWork &&
+    /vendor registration actual users authorized by gpcb under hazardous and other wastes on econexa portal/i.test(
+      description
+    )
+  ) {
+    plan =
+      "Continue the vendor registration process for actual users authorized by GPCB under the applicable Hazardous and Other Wastes requirements through the EcoNexa Portal";
   } else {
-    plan = `Continue work on ${subject}${company} in accordance with the scheduled activity`;
+    const subject = professionalWorkName(
+      isOfficeWork
+        ? item.task_title || item.work_description
+        : item.scope_of_work || item.task_title || item.work_description,
+      isOfficeWork
+        ? "the assigned administrative activity"
+        : "the assigned compliance activity"
+    );
+
+    const company = companyPhrase(item.unit_name);
+
+    if (isOfficeWork) {
+      plan = `Continue the scheduled administrative activity related to ${subject}${company}`;
+    } else if (
+      /await|pending.*approval|authority.*approval/.test(nextAction)
+    ) {
+      plan = `Monitor the status of ${subject}${company}, as approval from the concerned authority is awaited`;
+    } else if (/follow[\s-]?up/.test(nextAction)) {
+      plan = `Follow up on ${subject}${company} to facilitate further progress of the activity`;
+    } else if (/submit|file/.test(nextAction)) {
+      plan = `Prepare and submit the required documentation for ${subject}${company}`;
+    } else if (/prepare|document/.test(nextAction)) {
+      plan = `Prepare the required documentation for ${subject}${company}`;
+    } else {
+      plan = `Continue the scheduled work related to ${subject}${company}`;
+    }
   }
 
   if (followUpDate) {
-    plan += `. A follow-up is scheduled for ${followUpDate}`;
+    plan += `, with follow-up scheduled for ${followUpDate}`;
   } else if (dueDate) {
-    plan += `. The activity is due on ${dueDate}`;
+    plan += `, with the activity scheduled for completion by ${dueDate}`;
   }
 
-  if (!isOfficeWork && /dgft/.test(descriptionText) && /await|pending.*approval|authority.*approval/.test(nextAction)) {
-    plan += ". Preparatory work for the Directorate General of Foreign Trade (DGFT) license application will commence upon approval";
+  if (
+    !isOfficeWork &&
+    /dgft/.test(descriptionText) &&
+    /await|pending.*approval|authority.*approval/.test(nextAction)
+  ) {
+    plan +=
+      ". Preparatory work for the Directorate General of Foreign Trade (DGFT) license application will commence upon receipt of the required approval";
   }
 
   return ensurePeriod(plan);
