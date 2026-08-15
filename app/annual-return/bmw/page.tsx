@@ -161,14 +161,45 @@ const deleteRecord = async (id: string) => {
   return (
   <>
     <style jsx global>{`
-      @media print {
-        .no-print {
-          display: none !important;
-        }
-      }
-    `}</style>
+  .annual-return-form table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-bottom: 16px;
+  }
 
-    <div style={{ padding: 20 }}>
+  .annual-return-form th,
+  .annual-return-form td {
+    border: 1px solid #333 !important;
+    padding: 8px !important;
+    vertical-align: middle !important;
+  }
+
+  .annual-return-form th {
+    font-weight: 600 !important;
+  }
+
+  .annual-return-form input,
+  .annual-return-form select,
+  .annual-return-form textarea {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border: 1px solid #555 !important;
+    padding: 6px !important;
+    background: #fff !important;
+  }
+
+  .annual-return-form input[type="radio"] {
+    width: auto !important;
+  }
+
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+  }
+`}</style>
+
+    <div className="annual-return-form" style={{ padding: 20 }}>
 
       <h1>Biomedical Waste Annual Return (Form IV)</h1>
 <div style={{ marginBottom: "20px" }}>
