@@ -19,7 +19,7 @@ export default function Sidebar() {
   { title: "🏭 Client Profile", path: "/dashboard/industry-profile" },
   { title: "📋 Compliance Tracker", path: "/dashboard/compliance-tracker" },
   { title: "📄 Forms", path: "/dashboard/forms" },
-  { title: "📁 Formats", path: "/dashboard/under-development" },
+  { title: "📁 Formats", path: "/dashboard/formats" },
   { title: "📚 Knowledge Center", path: "/dashboard/under-development" },
   { title: "💳 Payment Details", path: "/dashboard/under-development" },
   { title: "👨‍💼 My Consultant", path: "/dashboard/under-development" },
