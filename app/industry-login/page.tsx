@@ -114,7 +114,7 @@ export default function IndustryLogin() {
         </button>
 
         <p
-          onClick={() => router.push("/industry-register")}
+          onClick={() => router.push("/register")}
           style={{
             textAlign: "center",
             marginTop: "20px",

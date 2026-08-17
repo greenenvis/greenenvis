@@ -23,7 +23,7 @@ export default function Sidebar() {
   { title: "📚 Knowledge Center", path: "/dashboard/under-development" },
   { title: "💳 Payment Details", path: "/dashboard/under-development" },
   { title: "👨‍💼 My Consultant", path: "/dashboard/under-development" },
-  { title: "🛟 Support", path: "/dashboard/under-development" },
+  { title: "🛟 Support", path: "/dashboard/support" },
   { title: "🗂️ Digital Locker", path: "/dashboard/under-development" },
 ];
 
