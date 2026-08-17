@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { industryCategories } from "@/data/industryCategories";
 import {
-  environmentalClearanceRules,
+environmentalClearanceRules,
 } from "@/data/environmentalClearanceRules";
 
 type ECRule = (typeof environmentalClearanceRules)[number];
@@ -461,38 +461,45 @@ function getEnvironmentalClearanceDecision(
     };
   }
 
-  if (!matchedRule.hasThreshold) {
+  if (!(matchedRule as { hasThreshold?: boolean }).hasThreshold) {
     return {
       status: "APPLICABLE",
       matchedRule,
       reason:
-        matchedRule.specialConditions ??
-        `The identified activity matches Environmental Clearance Schedule Item ${matchedRule.itemNo}: ${matchedRule.activityName}.`,
+        (matchedRule as { specialConditions?: string }).specialConditions ??
+       `The identified activity matches Environmental Clearance Schedule Item ${(matchedRule as { itemNo?: string }).itemNo}: ${(matchedRule as { activityName?: string }).activityName}.`,
     };
   }
 
   const thresholdDetails =
-    matchedRule.thresholds;
+  (matchedRule as { thresholds?: unknown }).thresholds;
 
-  if (!thresholdDetails) {
-    return {
-      status: "VERIFICATION REQUIRED",
-      matchedRule,
-      reason:
-        matchedRule.specialConditions ??
-        "Applicable Environmental Clearance threshold details require verification.",
+if (!thresholdDetails) {
+return {
+  status: "VERIFICATION REQUIRED",
+  matchedRule,
+  reason:
+    (matchedRule as {
+      specialConditions?: string;
+    }).specialConditions ??
+    "Applicable Environmental Clearance threshold details require verification.",
     };
-  }
+}
 
-  return {
-    status: "VERIFICATION REQUIRED",
-    matchedRule,
-    reason:
-      `The identified activity matches Environmental Clearance Schedule Item ${matchedRule.itemNo}: ${matchedRule.activityName}. ` +
-      `Applicable thresholds: Category A – ${thresholdDetails.categoryA}; ` +
-      `Category B – ${thresholdDetails.categoryB}. ` +
-      `Please provide the required project capacity, area, production details or other applicable threshold parameters for final Environmental Clearance determination.`,
-  };
+  const thresholdInfo = thresholdDetails as {
+  categoryA?: string;
+  categoryB?: string;
+};
+
+return {
+  status: "VERIFICATION REQUIRED",
+  matchedRule,
+  reason:
+    `The identified activity matches Environmental Clearance Schedule Item ${(matchedRule as { itemNo?: string }).itemNo}: ${(matchedRule as { activityName?: string }).activityName}. ` +
+    `Thresholds: Category A – ${thresholdInfo.categoryA ?? ""}; ` +
+    `Category B – ${thresholdInfo.categoryB ?? ""}. ` +
+    `Please provide the required project capacity, area, production details...`,
+};
 }
 
 function getSitingDecision(
