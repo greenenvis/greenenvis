@@ -1,9 +1,10 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { industryCategories } from "@/data/industryCategories";
 import {
-environmentalClearanceRules,
-type ECRule,
+  environmentalClearanceRules,
 } from "@/data/environmentalClearanceRules";
+
+type ECRule = (typeof environmentalClearanceRules)[number];
 
 import { sitingCriteria } from "@/data/sitingCriteria";
 
