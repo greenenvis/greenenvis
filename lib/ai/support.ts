@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { industryCategories } from "@/data/industryCategories";
 import {
 environmentalClearanceRules,
-  type ECRule,
+type ECRule,
 } from "@/data/environmentalClearanceRules";
 
 import { sitingCriteria } from "@/data/sitingCriteria";
